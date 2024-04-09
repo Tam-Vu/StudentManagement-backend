@@ -6,10 +6,11 @@ require("dotenv").config();
 
 const PORT = process.env.PORT || 8080;
 
-initWebRoutes(app);
-
+const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
+
+initWebRoutes(app);
 
 Connection();
 app.listen(PORT, () => {

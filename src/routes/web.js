@@ -9,7 +9,9 @@ const router = express.Router();
  */
 //gọi tên hàm từ controller không cần ()
 const initWebRoutes = (app) => {
-    router.get("/", studentController.test);
+    router.get("/", (req, res) => {
+        console.log(req.body);
+    });
 
     router.post("/account/create-account", accountController.handleCreateNewAccount)
 
