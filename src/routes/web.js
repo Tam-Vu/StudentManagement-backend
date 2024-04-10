@@ -13,8 +13,11 @@ const initWebRoutes = (app) => {
         console.log(req.body);
     });
 
-    router.post("/account/create-account", accountController.handleCreateNewAccount)
-
+    router.post("/account/create-account", accountController.handleCreateNewAccount);
+    router.get("/account", accountController.handleFindAllUser);
+    router.get("/account/:id", accountController.handleFindUserById);
+    router.post("/account/update-account/:id", accountController.handleUpdateUser);
+    router.post("/account/delete-account/:id", accountController.handleDeleteUser);
     return app.use("/", router);
 }
 
