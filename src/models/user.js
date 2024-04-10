@@ -11,13 +11,21 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.belongsTo(models.students, {
+        foreignKey: "userId",
+      });
+      User.belongsTo(models.teachers, {
+        foreignKey: "userId",
+      });
+      User.belongsTo(models.GroupUser, {
+        foreignKey: "groupId",
+      })
     }
   }
   User.init({
     username: DataTypes.STRING,
     password: DataTypes.STRING,
     email: DataTypes.STRING,
-    role: DataTypes.INTEGER,
     isLocked: DataTypes.INTEGER
   }, {
     sequelize,

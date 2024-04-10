@@ -7,7 +7,8 @@ class AccountController {
             let password = req.body.password;
             let email = req.body.email;
             let role = req.body.role;
-            await accountService.serviceCreateNewAccount(username, password, email, role);
+            let user = await accountService.serviceCreateNewAccount(username, password, email, role);
+            res.status(200).json({data: user});
         }
         catch (err) {
             return res.status(500).json({ message: e.message });
@@ -15,18 +16,14 @@ class AccountController {
     }
 
     handleFindAllUser = async(req, res) => {
-        try {
-            let userList = await accountService.getAllUserService()
-            .then(user => {
-                res.status(200).json({ user });
-            })
-            .catch(err => {
-                console.error(err);
-                res.status(500).json({ message: err.message });
-            });
-        } catch (e) {
-            return res.status(500).json({ message: e.message });
-        }
+        await accountService.getAllUserService()
+        .then(user => {
+            res.status(200).json({ data: user });
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({ message: err.message });
+        });
     }
 
     handleFindUserById = async(req, res) => {
@@ -48,7 +45,7 @@ class AccountController {
             let role = req.body.role;
             let id = req.params.id;
             let updatedAccount = await  accountService.updateUserService(username, email, role, id);
-            res.status(200).json(updatedAccount);
+            res.status(200).json({message: "updated user"});
         } catch(e) {
             return res.status(500).json({ message: e.message});
         }
@@ -58,7 +55,7 @@ class AccountController {
         try {
             let id = req.params.id;
             let deletedAccount = await  accountService.deleteUserService(id);
-            res.status(200).json(deletedAccount);
+            res.status(200).json({message: "deleted user"});
         } catch(e) {
             return res.status(500).json({ message: e.message});
         }
