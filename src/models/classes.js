@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "classId",
       });
       classes.belongsTo(models.grades, {
-        foreignKey: "grade",
+        foreignKey: "gradeId",
       });
       classes.belongsTo(models.students, {
         foreignKey: "subjectId",
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       total: DataTypes.INTEGER,
       classMonitor: DataTypes.INTEGER,
       homeroomTeacher: DataTypes.INTEGER,
-      grade: DataTypes.INTEGER,
+      gradeId: DataTypes.INTEGER,
       year: DataTypes.INTEGER,
     },
     {
