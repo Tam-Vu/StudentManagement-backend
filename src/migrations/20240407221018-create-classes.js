@@ -1,30 +1,31 @@
+//20240407221018-create-assignment
 "use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Users", {
+    await queryInterface.createTable("classes", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      username: {
+      classname: {
         type: Sequelize.STRING,
       },
-      password: {
-        type: Sequelize.STRING,
-      },
-      email: {
-        type: Sequelize.STRING,
-      },
-      groupId: {
-        type: Sequelize.INTEGER
-      },
-      isLocked: {
+      total: {
         type: Sequelize.INTEGER,
       },
-      userId: {
+      classMonitor: {
+        type: Sequelize.INTEGER,
+      },
+      homeroomTeacher: {
+        type: Sequelize.INTEGER,
+      },
+      grade: {
+        type: Sequelize.INTEGER,
+      },
+      year: {
         type: Sequelize.INTEGER,
       },
       createdAt: {
@@ -38,6 +39,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Users");
+    await queryInterface.dropTable("classes");
   },
 };

@@ -1,30 +1,28 @@
+//20240407221018-create-subjects
 "use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Users", {
+    await queryInterface.createTable("subjectresults", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      username: {
+      score: {
+        type: Sequelize.FLOAT,
+      },
+      result: {
         type: Sequelize.STRING,
       },
-      password: {
+      teachercomment: {
         type: Sequelize.STRING,
       },
-      email: {
-        type: Sequelize.STRING,
-      },
-      groupId: {
-        type: Sequelize.INTEGER
-      },
-      isLocked: {
+      summaryId: {
         type: Sequelize.INTEGER,
       },
-      userId: {
+      subjectId: {
         type: Sequelize.INTEGER,
       },
       createdAt: {
@@ -38,6 +36,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Users");
+    await queryInterface.dropTable("subjectresults");
   },
 };
