@@ -1,31 +1,26 @@
+//20240407221018-create-tuitions
 "use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Users", {
+    await queryInterface.createTable("tuitions", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      username: {
-        type: Sequelize.STRING,
-      },
-      password: {
-        type: Sequelize.STRING,
-      },
-      email: {
-        type: Sequelize.STRING,
-      },
-      role: {
+      studentId: {
         type: Sequelize.INTEGER,
       },
-      isLocked: {
+      month: {
         type: Sequelize.INTEGER,
       },
-      userId: {
+      year: {
         type: Sequelize.INTEGER,
+      },
+      closingdate: {
+        type: Sequelize.DATE,
       },
       createdAt: {
         allowNull: false,
@@ -38,6 +33,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Users");
+    await queryInterface.dropTable("tuitions");
   },
 };
