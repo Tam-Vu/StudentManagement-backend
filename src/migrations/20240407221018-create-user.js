@@ -18,8 +18,8 @@ module.exports = {
       email: {
         type: Sequelize.STRING,
       },
-      role: {
-        type: Sequelize.INTEGER,
+      groupId: {
+        type: Sequelize.INTEGER
       },
       isLocked: {
         type: Sequelize.INTEGER,
