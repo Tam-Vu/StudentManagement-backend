@@ -4,21 +4,35 @@ import accountController from "../controllers/accountController";
 const router = express.Router();
 
 /**
- * 
- * @param {*} app: express app 
+ *
+ * @param {*} app: express app
  */
 //gọi tên hàm từ controller không cần ()
 const initWebRoutes = (app) => {
-    router.get("/", (req, res) => {
-        console.log(req.body);
-    });
+  router.get("/", (req, res) => {
+    console.log(req.body);
+  });
 
-    router.post("/account/create-account", accountController.handleCreateNewAccount);
-    router.get("/account", accountController.handleFindAllUser);
-    router.get("/account/:id", accountController.handleFindUserById);
-    router.post("/account/update-account/:id", accountController.handleUpdateUser);
-    router.post("/account/delete-account/:id", accountController.handleDeleteUser);
-    return app.use("/", router);
-}
+  router.post(
+    "/account/create-account",
+    accountController.handleCreateNewAccount
+  );
+  router.get("/account", accountController.handleFindAllUser);
+  router.get("/account/:id", accountController.handleFindUserById);
+  router.post(
+    "/account/update-account/:id",
+    accountController.handleUpdateUser
+  );
+  router.post(
+    "/account/delete-account/:id",
+    accountController.handleDeleteUser
+  );
 
-export default initWebRoutes;   
+  router.post(
+    "/student/create-student",
+    studentController.handleCreateNewStudent
+  );
+  return app.use("/", router);
+};
+
+export default initWebRoutes;
