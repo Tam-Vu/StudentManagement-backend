@@ -22,7 +22,7 @@ module.exports = {
       homeroomTeacher: {
         type: Sequelize.INTEGER,
       },
-      grade: {
+      gradeId: {
         type: Sequelize.INTEGER,
       },
       createdAt: {
