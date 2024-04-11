@@ -33,7 +33,6 @@ const createNewYearGrade = async (newYear) => {
     };
   }
 };
-
 module.exports = {
   createNewYearGrade,
 };
