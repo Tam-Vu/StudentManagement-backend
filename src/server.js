@@ -1,8 +1,8 @@
 import bodyParser from "body-parser";
 import Connection from "./config/connnectDB";
 import express from "express";
-import AccountRoutes from "./routes/account";
-import GradeRoutes from "./routes/grade";
+import AccountRoutes from "./routes/accountRoute";
+import GradeRoutes from "./routes/gradeRoute";
 require("dotenv").config();
 
 const PORT = process.env.PORT || 8080;
