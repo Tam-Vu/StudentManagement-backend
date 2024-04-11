@@ -19,6 +19,7 @@ const serviceCreateNewAccount = async(username, password, email, role) => {
             role: role,
             isLocked: "0"
         });
+        return serviceCreateNewAccount;
     } catch(e) {
         console.log(e);
     }
