@@ -112,6 +112,8 @@ const deleteTeacherService = async (id) => {
     });
     if (teacher) {
       let user = teacher.User;
+      console.log(teacher);
+      console.log(user);
       await user.update({
         isLocked: 1,
       });

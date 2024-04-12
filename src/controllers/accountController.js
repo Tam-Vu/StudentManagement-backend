@@ -13,7 +13,11 @@ class AccountController {
         email,
         groupId
       );
-      res.status(200).json({ data: user });
+      res.status(200).json({
+        EM: user.EM,
+        EC: user.EC,
+        DT: user.DT,
+      });
     } catch (err) {
       return res.status(500).json({ message: e.message });
     }

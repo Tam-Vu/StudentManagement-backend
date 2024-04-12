@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.students, {
         foreignKey: "userId",
       });
-      User.belongsTo(models.teachers, {
+      User.hasOne(models.teachers, {
         foreignKey: "userId",
       });
       User.belongsTo(models.GroupUser, {

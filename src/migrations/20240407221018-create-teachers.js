@@ -11,7 +11,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       teachername: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
       },
       birthDate: {
         type: Sequelize.DATE,

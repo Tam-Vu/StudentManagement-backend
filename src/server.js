@@ -5,6 +5,7 @@ import AccountRoutes from "./routes/accountRoute";
 import GradeRoutes from "./routes/gradeRoute";
 import studentRouter from "./routes/studentRouter";
 import classRoute from "./routes/classRoute";
+import teacherRouter from "./routes/teacher";
 require("dotenv").config();
 
 const PORT = process.env.PORT || 8080;
