@@ -60,5 +60,14 @@ class TeacherController {
       return res.status(500).json({ message: e.message });
     }
   };
+  handleDeleteTeacher = async (req, res) => {
+    try {
+      let id = req.params.id;
+      let deletedAccount = await teacherService.deleteTeacherService(id);
+      res.status(200).json({ message: "deleted user" });
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
+    }
+  };
 }
 module.exports = new TeacherController();

@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const { Hooks } = require("sequelize/lib/hooks");
+const students = require("./students");
 module.exports = (sequelize, DataTypes) => {
   class classes extends Model {
     /**
@@ -16,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "gradeId",
       });
       classes.belongsTo(models.students, {
-        foreignKey: "subjectId",
+        foreignKey: "classMonitor",
       });
       classes.hasMany(models.students, {
         foreignKey: "classId",
@@ -29,12 +31,28 @@ module.exports = (sequelize, DataTypes) => {
       total: DataTypes.INTEGER,
       classMonitor: DataTypes.INTEGER,
       homeroomTeacher: DataTypes.INTEGER,
-      gradeId: DataTypes.INTEGER
+      gradeId: DataTypes.INTEGER,
     },
     {
       sequelize,
       modelName: "classes",
     }
   );
+  // classes.addHook('afterSave', 'updateTotal', (instance, Option) => {
+  //   return students.count({
+  //     where: {
+  //       classId: instance.id,
+  //       isDeleted: 0
+  //     }
+  //   })
+  //   .then(count => {
+  //     return instance.update({
+  //       total: count
+  //     },
+  //   {
+  //     transaction: Option.transaction
+  //   })
+  //   })
+  // })
   return classes;
 };
