@@ -25,6 +25,10 @@ module.exports = {
       gradeId: {
         type: Sequelize.INTEGER,
       },
+      subjectId: {
+        type: Sequelize.INTEGER, 
+        allowNull: true,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
