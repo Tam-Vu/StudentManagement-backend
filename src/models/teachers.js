@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         through: models.assignments,
         foreignKey: "teacherId",
       });
-      teachers.hasOne(models.User, {
+      teachers.belongsTo(models.User, {
         foreignKey: "userId",
       });
     }

@@ -1,10 +1,9 @@
 import teacherService from "../services/teacherService";
 //thêm các hàm xủ lý ở đây
-class TeacherController {
+class teacherController {
   handleCreateNewTeacher = async (req, res) => {
     try {
-      let { data } = req.body;
-      let user = await teacherService.serviceCreateNewTeacher(data);
+      let user = await teacherService.serviceCreateNewTeacher(req.body);
       res.status(200).json({
         EM: user.EM,
         EC: user.EC,
@@ -70,4 +69,4 @@ class TeacherController {
     }
   };
 }
-module.exports = new TeacherController();
+module.exports = new teacherController();

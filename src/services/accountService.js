@@ -12,16 +12,25 @@ const hashUserPassword = (userPass) => {
 const serviceCreateNewAccount = async (username, password, email, groupId) => {
   let hashPass = hashUserPassword(password);
   try {
-    await db.User.create({
+    let data = await db.User.create({
       username: username,
       password: hashPass,
       email: email,
       groupId: groupId,
       isLocked: "0",
     });
-    return serviceCreateNewAccount;
+    return {
+      EM: "success",
+      EC: 0,
+      DT: data,
+    };
   } catch (e) {
     console.log(e);
+    return {
+      EM: "something wrong with service",
+      EC: 1,
+      DT: "",
+    };
   }
 };
 
