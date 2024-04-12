@@ -10,7 +10,8 @@ const serviceCreateNewStudent = async (
   address,
   classId,
   parentId,
-  tuitionId
+  tuitionId,
+  userId
 ) => {
   try {
     let data = await db.students.create({
@@ -22,6 +23,7 @@ const serviceCreateNewStudent = async (
       classId: classId,
       parentId: parentId,
       tuitionId: tuitionId,
+      userId: userId,
     });
     return {
       EM: "success",
@@ -38,68 +40,120 @@ const serviceCreateNewStudent = async (
   }
 };
 
-// const getAllUserService = async () => {
-//   let users = [];
-//   try {
-//     users = await db.User.findAll({
-//       where: {
-//         isLocked: 0,
-//       },
-//     });
-//   } catch (e) {
-//     console.log(e);
-//   }
-//   return users;
-// };
+const getAllStudentService = async () => {
+  let data = [];
+  try {
+    data = await db.students.findAll();
+    return {
+      EM: "success",
+      EC: 0,
+      DT: data,
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      EM: "something wrong with service",
+      EC: 0,
+      DT: data,
+    };
+  }
+};
 
-// const getUserByIdService = async (id) => {
-//   let user = {};
-//   user = await db.User.findOne({
-//     where: {
-//       id: id,
-//       isLocked: 0,
-//     },
-//   });
-//   return user.get({ plain: true });
-// };
+const getStudentByIdService = async (id) => {
+  let data = {};
+  data = await db.students.findByPk(id);
+  return data.get({ plain: true });
+};
 
-// const updateUserService = async (username, email, role, id) => {
-//   let user = {};
-//   user = await db.User.update(
-//     {
-//       username: username,
-//       email: email,
-//       role: role,
-//     },
-//     {
-//       where: {
-//         id: id,
-//         isLocked: 0,
-//       },
-//     }
-//   );
-//   return user.get({ plain: true });
-// };
+const updateStudentService = async (data, id) => {
+  try {
+    let user = await db.students.findOne({
+      where: { id: id },
+    });
+    if (user) {
+      await user.update({
+        studentname: data.studentname,
+        birthDate: data.birthDate,
+        startDate: data.startDate,
+        gender: data.gender,
+        address: data.address,
+        classId: data.classId,
+        parentId: data.parentId,
+        tuitionId: data.tuitionId,
+        userId: data.userId,
+      });
+      return {
+        EM: "Update user succeeds",
+        EC: 0,
+        DT: "",
+      };
+    } else {
+      return {
+        EM: "User not found",
+        EC: 1,
+        DT: "",
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      EM: "Something wrong with service",
+      EC: 1,
+      DT: "",
+    };
+  }
+};
 
-// const deleteUserService = async (id) => {
-//   let user = {};
-//   user = await db.User.update(
-//     {
-//       isLocked: 1,
-//     },
-//     {
-//       where: {
-//         id: id,
-//       },
-//     }
-//   );
-//   return user.get({ plain: true });
-// };
+const deleteStudentService = async (id) => {
+  try {
+    let student = await db.students.findOne({
+      where: {
+        id: id,
+      },
+      include: {
+        model: db.User,
+      },
+    });
+    if (student) {
+      let user = student.User;
+      console.log(
+        user.studentname +
+          " " +
+          user.id +
+          " " +
+          user.userId +
+          " " +
+          user.isLocked
+      );
+      await user.update({
+        isLocked: 1,
+      });
+      return {
+        EM: "Delete Succeed!!!",
+        EC: 0,
+        DT: "",
+      };
+    } else {
+      return {
+        EM: "User not found!!!",
+        EC: 1,
+        DT: "",
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      EM: "Something wrong with service!!!",
+      EC: 1,
+      DT: "",
+    };
+  }
+};
 
 module.exports = {
   serviceCreateNewStudent,
-  //   getAllUserService,
-  //   getUserByIdService,
-  //   updateUserService,
-  //   deleteUserService,
+  getAllStudentService,
+  getStudentByIdService,
+  updateStudentService,
+  deleteStudentService,
 };

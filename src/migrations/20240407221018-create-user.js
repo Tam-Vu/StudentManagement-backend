@@ -19,7 +19,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       groupId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       isLocked: {
         type: Sequelize.INTEGER,

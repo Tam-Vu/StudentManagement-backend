@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.belongsTo(models.students, {
+      User.hasOne(models.students, {
         foreignKey: "userId",
       });
       User.belongsTo(models.teachers, {
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       User.belongsTo(models.GroupUser, {
         foreignKey: "groupId",
-      })
+      });
     }
   }
   User.init(
@@ -25,9 +25,8 @@ module.exports = (sequelize, DataTypes) => {
       username: DataTypes.STRING,
       password: DataTypes.STRING,
       email: DataTypes.STRING,
-      role: DataTypes.INTEGER,
+      groupId: DataTypes.INTEGER,
       isLocked: DataTypes.INTEGER,
-      userId: DataTypes.INTEGER,
     },
     {
       sequelize,
