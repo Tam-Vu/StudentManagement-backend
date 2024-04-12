@@ -6,12 +6,12 @@ class AccountController {
       let username = req.body.username;
       let password = req.body.password;
       let email = req.body.email;
-      let role = req.body.role;
+      let groupId = req.body.groupId;
       let user = await accountService.serviceCreateNewAccount(
         username,
         password,
         email,
-        role
+        groupId
       );
       res.status(200).json({ data: user });
     } catch (err) {
@@ -47,12 +47,12 @@ class AccountController {
     try {
       let username = req.body.username;
       let email = req.body.email;
-      let role = req.body.role;
+      let groupId = req.body.groupId;
       let id = req.params.id;
       let updatedAccount = await accountService.updateUserService(
         username,
         email,
-        role,
+        groupId,
         id
       );
       res.status(200).json({ message: "updated user" });
