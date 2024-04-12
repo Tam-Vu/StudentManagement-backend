@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       students.hasOne(models.summaries, {
         foreignKey: "studentId",
       });
-      students.hasOne(models.User, {
+      students.belongsTo(models.User, {
         foreignKey: "userId",
       });
     }
@@ -49,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       classId: DataTypes.INTEGER,
       parentId: DataTypes.INTEGER,
       tuitionId: DataTypes.INTEGER,
+      userId: DataTypes.INTEGER,
     },
     {
       sequelize,

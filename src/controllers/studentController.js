@@ -11,6 +11,7 @@ class StudentController {
       let classId = req.body.classId;
       let parentId = req.body.parentId;
       let tuitionId = req.body.tuitionId;
+      let userId = req.body.userId;
       let user = await studentService.serviceCreateNewStudent(
         studentname,
         birthDate,
@@ -19,7 +20,8 @@ class StudentController {
         address,
         classId,
         parentId,
-        tuitionId
+        tuitionId,
+        userId
       );
       res.status(200).json({
         EM: user.EM,
@@ -72,6 +74,15 @@ class StudentController {
         EM: updatedAccount.EM,
         EC: updatedAccount.EC,
       });
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
+    }
+  };
+  handleDeleteStudent = async (req, res) => {
+    try {
+      let id = req.params.id;
+      let deletedAccount = await studentService.deleteStudentService(id);
+      res.status(200).json({ message: "deleted user" });
     } catch (e) {
       return res.status(500).json({ message: e.message });
     }

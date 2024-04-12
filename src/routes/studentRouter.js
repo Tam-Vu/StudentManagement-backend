@@ -11,6 +11,7 @@ const studentRouter = (app) => {
   router.get("/:id", studentController.handleFindStudentById);
   router.get("/", studentController.handleFindAllStudent);
   router.put("/update-student/:id", studentController.handleUpdateStudent);
+  router.put("/delete-student/:id", studentController.handleDeleteStudent);
   router.post("/create-student", studentController.handleCreateNewStudent);
   return app.use("/student", router);
 };

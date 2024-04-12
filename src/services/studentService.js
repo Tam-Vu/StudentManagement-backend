@@ -10,7 +10,8 @@ const serviceCreateNewStudent = async (
   address,
   classId,
   parentId,
-  tuitionId
+  tuitionId,
+  userId
 ) => {
   try {
     let data = await db.students.create({
@@ -22,6 +23,7 @@ const serviceCreateNewStudent = async (
       classId: classId,
       parentId: parentId,
       tuitionId: tuitionId,
+      userId: userId,
     });
     return {
       EM: "success",
@@ -78,6 +80,7 @@ const updateStudentService = async (data, id) => {
         classId: data.classId,
         parentId: data.parentId,
         tuitionId: data.tuitionId,
+        userId: data.userId,
       });
       return {
         EM: "Update user succeeds",
@@ -101,25 +104,56 @@ const updateStudentService = async (data, id) => {
   }
 };
 
-// const deleteUserService = async (id) => {
-//   let user = {};
-//   user = await db.User.update(
-//     {
-//       isLocked: 1,
-//     },
-//     {
-//       where: {
-//         id: id,
-//       },
-//     }
-//   );
-//   return user.get({ plain: true });
-// };
+const deleteStudentService = async (id) => {
+  try {
+    let student = await db.students.findOne({
+      where: {
+        id: id,
+      },
+      include: {
+        model: db.User,
+      },
+    });
+    if (student) {
+      let user = student.User;
+      console.log(
+        user.studentname +
+          " " +
+          user.id +
+          " " +
+          user.userId +
+          " " +
+          user.isLocked
+      );
+      await user.update({
+        isLocked: 1,
+      });
+      return {
+        EM: "Delete Succeed!!!",
+        EC: 0,
+        DT: "",
+      };
+    } else {
+      return {
+        EM: "User not found!!!",
+        EC: 1,
+        DT: "",
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      EM: "Something wrong with service!!!",
+      EC: 1,
+      DT: "",
+    };
+  }
+};
 
 module.exports = {
   serviceCreateNewStudent,
   getAllStudentService,
   getStudentByIdService,
   updateStudentService,
-  //   deleteUserService,
+  deleteStudentService,
 };
