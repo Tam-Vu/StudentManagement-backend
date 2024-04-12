@@ -49,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       classId: DataTypes.INTEGER,
       parentId: DataTypes.INTEGER,
       tuitionId: DataTypes.INTEGER,
+      isDeleted: DataTypes.INTEGER,
     },
     {
       sequelize,
