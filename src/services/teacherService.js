@@ -101,18 +101,49 @@ const updateTeacherService = async (data, id) => {
 };
 
 const deleteTeacherService = async (id) => {
-  let user = {};
-  user = await db.teachers.update(
-    {
-      isLocked: 1,
-    },
-    {
+  try {
+    let teacher = await db.teachers.findOne({
       where: {
         id: id,
       },
+      include: {
+        model: db.User,
+      },
+    });
+    if (teacher) {
+      let user = teacher.User;
+      console.log(
+        user.studentname +
+          " " +
+          user.id +
+          " " +
+          user.userId +
+          " " +
+          user.isLocked
+      );
+      await user.update({
+        isLocked: 1,
+      });
+      return {
+        EM: "Delete Succeed!!!",
+        EC: 0,
+        DT: "",
+      };
+    } else {
+      return {
+        EM: "User not found!!!",
+        EC: 1,
+        DT: "",
+      };
     }
-  );
-  return user.get({ plain: true });
+  } catch (error) {
+    console.log(error);
+    return {
+      EM: "Something wrong with service!!!",
+      EC: 1,
+      DT: "",
+    };
+  }
 };
 
 module.exports = {
