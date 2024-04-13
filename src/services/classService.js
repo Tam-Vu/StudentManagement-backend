@@ -1,7 +1,20 @@
 import db, { Sequelize } from "../models/index";
 
 const createNewClassService = async (classname, homeroomTeacher, gradeId) => {
+  let checkClassName = {};
   try {
+    checkClassName = await db.classes.findOne({
+      where: {
+        classname: classname,
+      },
+    });
+    if (checkClassName) {
+      return {
+        EM: "Already have this class!!!",
+        EC: 1,
+        DT: "",
+      };
+    }
     if (gradeId == 1) {
       {
         if (!classname.startsWith("10")) {

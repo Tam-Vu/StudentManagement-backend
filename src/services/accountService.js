@@ -11,7 +11,33 @@ const hashUserPassword = (userPass) => {
 
 const serviceCreateNewAccount = async (username, password, email, groupId) => {
   let hashPass = hashUserPassword(password);
+  let checkUserName = {};
+  let checkEmail = {};
   try {
+    checkUserName = await db.User.findOne({
+      where: {
+        username: username,
+      },
+    });
+    if (checkUserName) {
+      return {
+        EM: "Already have this username!!!",
+        EC: 1,
+        DT: "",
+      };
+    }
+    checkEmail = await db.User.findOne({
+      where: {
+        email: email,
+      },
+    });
+    if (checkEmail) {
+      return {
+        EM: "Already have this email!!!",
+        EC: 1,
+        DT: "",
+      };
+    }
     let data = await db.User.create({
       username: username,
       password: hashPass,
