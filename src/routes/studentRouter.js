@@ -8,6 +8,7 @@ const router = express.Router();
  */
 //gọi tên hàm từ controller không cần ()
 const studentRouter = (app) => {
+  router.get("/get-class", studentController.handleFindStudentByClassname);
   router.get("/:id", studentController.handleFindStudentById);
   router.get("/", studentController.handleFindAllStudent);
   router.put("/update-student/:id", studentController.handleUpdateStudent);
