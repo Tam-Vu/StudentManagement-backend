@@ -54,7 +54,7 @@ class StudentController {
   handleFindStudentById = async (req, res) => {
     try {
       let id = req.params.id;
-      console.log("id: " + id);
+      console.log("id: " + typeof id);
       let data = await studentService.getStudentByIdService(id);
       let userData = {};
       userData = data;
@@ -83,6 +83,22 @@ class StudentController {
       let id = req.params.id;
       let deletedAccount = await studentService.deleteStudentService(id);
       res.status(200).json({ message: "deleted user" });
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
+    }
+  };
+  handleFindStudentByClassname = async (req, res) => {
+    try {
+      let classname = req.query.classname;
+      console.log("Hello: " + typeof classname);
+      let data = await studentService.getStudentByClassnameService(classname);
+      let userData = {};
+      userData = data;
+      res.status(200).json({
+        EM: userData.EM,
+        EC: userData.EC,
+        DT: userData.DT,
+      });
     } catch (e) {
       return res.status(500).json({ message: e.message });
     }

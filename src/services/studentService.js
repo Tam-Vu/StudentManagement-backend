@@ -149,11 +149,51 @@ const deleteStudentService = async (id) => {
     };
   }
 };
-
+const getStudentByClassnameService = async (classname) => {
+  let data = [];
+  let checkClass = {};
+  try {
+    checkClass = await db.classes.findAll({
+      where: {
+        classname: classname,
+      },
+    });
+    console.log(checkClass);
+    if (checkClass.length === 0) {
+      return {
+        EM: "No class found",
+        EC: 1,
+        DT: "",
+      };
+    }
+    data = await db.students.findAll({
+      include: {
+        model: db.classes,
+        where: {
+          classname: classname,
+        },
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+      },
+    });
+    return {
+      EM: "success",
+      EC: 0,
+      DT: data,
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      EM: "something wrong with service",
+      EC: 1,
+      DT: "",
+    };
+  }
+};
 module.exports = {
   serviceCreateNewStudent,
   getAllStudentService,
   getStudentByIdService,
   updateStudentService,
   deleteStudentService,
+  getStudentByClassnameService,
 };
