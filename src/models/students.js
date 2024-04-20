@@ -11,9 +11,6 @@ module.exports = (sequelize, DataTypes) => {
       students.hasOne(models.classes, {
         foreignKey: "classMonitor",
       });
-      students.belongsTo(models.classes, {
-        foreignKey: "classId",
-      });
       students.belongsTo(models.parents, {
         foreignKey: "parentId",
       });
@@ -28,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
       });
       students.belongsTo(models.User, {
         foreignKey: "userId",
+      });
+      students.belongsToMany(models.classes, {
+        through: models.belongtoclasses,
+        foreignKey: "studentId",
       });
     }
   }
