@@ -1,7 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
 const subjects = require("./subjects");
-const subjects = require("./subjects");
 module.exports = (sequelize, DataTypes) => {
   class summaries extends Model {
     /**
@@ -38,20 +37,20 @@ module.exports = (sequelize, DataTypes) => {
   summaries.afterCreate(async (summaries, options) => {
     await summariesdetails.create({
       summaryId: summaries.id,
-    })
+    });
 
     const subjectTemp = await subjects.findAll({
       attributes: [id],
       group: [id],
-    })
-    for(subjectTemp of subjects) {      
+    });
+    for (subjectTemp of subjects) {
       await subjectresults.create([
-      {
-        summaryId:  summaries.id,
-        subjectId: subjectId.getDataValue("id"),
-      }
-    ])
+        {
+          summaryId: summaries.id,
+          subjectId: subjectId.getDataValue("id"),
+        },
+      ]);
     }
-  })
+  });
   return summaries;
 };
