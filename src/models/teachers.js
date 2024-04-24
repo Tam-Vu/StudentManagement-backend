@@ -14,12 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       teachers.hasOne(models.classes, {
         foreignKey: "homeroomTeacher",
       });
-      // teachers.belongsToMany(models.subjects, {
-      //   through: models.assignments,
-      //   foreignKey: "teacherId",
-      // });
-      teachers.belongsToMany(models.classes, {
-        through: models.assignments,
+      teachers.hasMany(models.assignments, {
         foreignKey: "teacherId",
       });
       teachers.belongsTo(models.User, {
