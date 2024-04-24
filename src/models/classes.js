@@ -17,9 +17,6 @@ module.exports = (sequelize, DataTypes) => {
       classes.belongsTo(models.grades, {
         foreignKey: "gradeId",
       });
-      classes.belongsTo(models.students, {
-        foreignKey: "classMonitor",
-      });
       classes.hasMany(models.belongtoclasses, {
         foreignKey: "classId",
       });
