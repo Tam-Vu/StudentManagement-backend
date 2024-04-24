@@ -16,9 +16,6 @@ module.exports = {
       factor: {
         type: Sequelize.FLOAT,
       },
-      teacherId: {
-        type: Sequelize.INTEGER,
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

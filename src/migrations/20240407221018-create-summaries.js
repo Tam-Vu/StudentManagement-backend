@@ -25,8 +25,8 @@ module.exports = {
       discipline: {
         type: Sequelize.STRING,
       },
-      studentId: {
-        type: Sequelize.INTEGER,
+      belongtoclassesId: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,

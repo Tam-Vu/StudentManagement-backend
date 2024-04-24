@@ -14,8 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       summaries.belongsToMany(models.students, {
         foreignKey: "studentId",
       });
-      summaries.belongsToMany(models.subjects, {
-        through: models.subjectresults,
+      summaries.hasMany(models.subjectresults, {
         foreignKey: "summaryId",
       });
     }

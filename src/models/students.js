@@ -26,8 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       students.belongsTo(models.User, {
         foreignKey: "userId",
       });
-      students.belongsToMany(models.classes, {
-        through: models.belongtoclasses,
+      students.hasMany(models.belongtoclasses, {
         foreignKey: "studentId",
       });
     }
@@ -39,9 +38,6 @@ module.exports = (sequelize, DataTypes) => {
       startDate: DataTypes.DATE,
       gender: DataTypes.STRING,
       address: DataTypes.STRING,
-      classId: DataTypes.INTEGER,
-      parentId: DataTypes.INTEGER,
-      tuitionId: DataTypes.INTEGER,
       userId: DataTypes.INTEGER,
     },
     {

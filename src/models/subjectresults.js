@@ -9,6 +9,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       subjectresults.hasMany(models.subjectresultdetails, {
+        foreignKey: "subjectresultId",
+      });
+      subjectresults.belongsTo(models.subjects, {
+        foreignKey: "subjectId",
+      });
+      subjectresults.belongsTo(models.summaries, {
         foreignKey: "subjectId",
       });
     }
