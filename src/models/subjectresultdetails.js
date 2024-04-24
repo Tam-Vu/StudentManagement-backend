@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
       testturn: DataTypes.INTEGER, // lần kiểm tra
       testdate: DataTypes.DATE,
       score: DataTypes.FLOAT,
-      testtype: DataTypes.INTEGER, // loại bài kiểm tra
-      factor: DataTypes.FLOAT, //hệ số
+      testtype: DataTypes.INTEGER,
+      factor: DataTypes.FLOAT,
       subjectresultId: DataTypes.INTEGER,
     },
     {

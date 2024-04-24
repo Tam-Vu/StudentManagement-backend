@@ -9,8 +9,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       teachers.belongsTo(models.subjects, {
-        foreignKey: "subjectsId",
+        foreignKey: "subjectId",
       });
+      teachers.hasOne(models.classes, {
+        foreignKey: "homeroomTeacher",
+      });
+      // teachers.belongsToMany(models.subjects, {
+      //   through: models.assignments,
+      //   foreignKey: "teacherId",
+      // });
       teachers.belongsToMany(models.classes, {
         through: models.assignments,
         foreignKey: "teacherId",
@@ -26,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       birthDate: DataTypes.DATE,
       startDate: DataTypes.DATE,
       gender: DataTypes.STRING,
+      subjectId: DataTypes.STRING,
       userId: DataTypes.INTEGER,
     },
     {

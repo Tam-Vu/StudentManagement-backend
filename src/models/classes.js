@@ -17,9 +17,16 @@ module.exports = (sequelize, DataTypes) => {
       classes.belongsTo(models.grades, {
         foreignKey: "gradeId",
       });
+<<<<<<< HEAD
       classes.belongsToMany(models.students, {
         through: models.belongtoclasses,
+=======
+      classes.hasMany(models.belongtoclasses, {
+>>>>>>> 80bc6fecd6ad6d631c2f66ec2c06206079588a6f
         foreignKey: "classId",
+      });
+      classes.belongsTo(models.teachers, {
+        foreignKey: "homeroomTeacher",
       });
     }
   }

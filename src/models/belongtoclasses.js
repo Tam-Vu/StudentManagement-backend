@@ -9,6 +9,12 @@ module.exports = (sequelize, DataTypes) => {
      * ĐÂY LÀ BẢNG HỌC SINH THUỘC LỚP
      */
     static associate(models) {
+      belongtoclasses.belongsTo(models.students, {
+        foreignKey: "studentId",
+      });
+      belongtoclasses.belongsTo(models.classes, {
+        foreignKey: "classId",
+      });
       belongtoclasses.hasOne(models.summaries, {
         foreignKey: "belongtoclassesId",
       });
@@ -24,10 +30,5 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "belongtoclasses",
     }
   );
-  belongtoclasses.afterCreate(async (belongtoclasses, options) => {
-    await  models.summaries.create({
-      belongtoclassesId:  belongtoclasses.id,
-    })
-  })
   return belongtoclasses;
 };

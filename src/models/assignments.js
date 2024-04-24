@@ -8,7 +8,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      * ĐÂY LÀ BẢNG PHÂN CÔNG
      */
-    static associate(models) {}
+    static associate(models) {
+      assignments.belongsTo(models.teachers, {
+        foreignKey: "teacherId",
+      });
+      assignments.belongsTo(models.classes, {
+        foreignKey: "classId",
+      });
+    }
   }
   assignments.init(
     {
