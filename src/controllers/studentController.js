@@ -34,8 +34,10 @@ class StudentController {
   };
   handleFindAllStudent = async (req, res) => {
     try {
+      const gradeId = req.query.gradeId || "";
+      const year = req.query.year || "";
       await studentService
-        .getAllStudentService()
+        .getAllStudentService(gradeId, year)
         .then((data) => {
           res.status(200).json({
             EM: data.EM,
@@ -66,9 +68,11 @@ class StudentController {
   handleUpdateStudent = async (req, res) => {
     try {
       let id = req.params.id;
+      let belongtoclassId = req.params.btcId;
       let updatedAccount = await studentService.updateStudentService(
         req.body,
-        id
+        id,
+        belongtoclassId
       );
       res.status(200).json({
         EM: updatedAccount.EM,

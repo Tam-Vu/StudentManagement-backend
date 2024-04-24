@@ -25,15 +25,6 @@ module.exports = {
       address: {
         type: Sequelize.STRING,
       },
-      classId: {
-        type: Sequelize.INTEGER,
-      },
-      parentId: {
-        type: Sequelize.INTEGER,
-      },
-      tuitionId: {
-        type: Sequelize.INTEGER,
-      },
       userId: {
         type: Sequelize.INTEGER,
       },

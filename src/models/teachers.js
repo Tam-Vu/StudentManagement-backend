@@ -8,13 +8,16 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      teachers.hasOne(models.subjects, {
-        foreignKey: "teacherId",
+      teachers.belongsTo(models.subjects, {
+        foreignKey: "subjectId",
       });
-      teachers.belongsToMany(models.subjects, {
-        through: models.assignments,
-        foreignKey: "teacherId",
+      teachers.hasOne(models.classes, {
+        foreignKey: "homeroomTeacher",
       });
+      // teachers.belongsToMany(models.subjects, {
+      //   through: models.assignments,
+      //   foreignKey: "teacherId",
+      // });
       teachers.belongsToMany(models.classes, {
         through: models.assignments,
         foreignKey: "teacherId",
@@ -30,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       birthDate: DataTypes.DATE,
       startDate: DataTypes.DATE,
       gender: DataTypes.STRING,
+      subjectId: DataTypes.STRING,
       userId: DataTypes.INTEGER,
     },
     {

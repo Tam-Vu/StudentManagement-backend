@@ -11,11 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       summaries.hasMany(models.summariesdetails, {
         foreignKey: "summaryId",
       });
-      summaries.belongsTo(models.students, {
-        foreignKey: "studentId",
+      summaries.belongsTo(models.belongtoclasses, {
+        foreignKey: "belongtoclassesId",
       });
-      summaries.belongsToMany(models.subjects, {
-        through: models.subjectresults,
+      summaries.hasMany(models.subjectresults, {
         foreignKey: "summaryId",
       });
     }

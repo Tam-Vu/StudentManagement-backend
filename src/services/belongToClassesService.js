@@ -1,18 +1,33 @@
 import { where } from "sequelize";
-import db from "../models/index";
+import db, { Sequelize } from "../models/index";
 import bcrypt from "bcryptjs";
+const { Op } = require("sequelize");
 const createNewBelongToClassesService = async (data) => {
+  let checkStudent = {};
   try {
-    if (!data.studentId || !data.teacherId) {
+    if (!data.studentId || !data.classId) {
       return {
         EM: "All fields are required!!!",
         EC: 1,
         DT: [],
       };
     } else {
+      checkStudent = await db.belongtoclasses.findOne({
+        where: {
+          classId: data.classId,
+          studentId: data.studentId,
+        },
+      });
+      if (checkStudent) {
+        return {
+          EM: "This student is already in this class",
+          EC: 1,
+          DT: [],
+        };
+      }
       let res = await db.belongtoclasses.create({
         studentId: data.studentId,
-        teacherId: data.teacherId,
+        classId: data.classId,
       });
       return {
         EM: "success",
@@ -32,6 +47,7 @@ const createNewBelongToClassesService = async (data) => {
 const getAllStudentByClassIdService = async (classId) => {
   let data = [];
   let checkClass = {};
+  console.log("CLASSID: " + classId);
   try {
     checkClass = await db.classes.findAll({
       where: {
@@ -121,8 +137,151 @@ const getAllClassByStudentIdService = async (studentId) => {
     };
   }
 };
+const getAllStudentService = async (searchFilter, gradename, year) => {
+  let data = [];
+  console.log("SEARCHFILTER: " + searchFilter);
+  try {
+    if (gradename != "" && year == "") {
+      data = await db.belongtoclasses.findAll({
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          {
+            model: db.classes,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            include: {
+              model: db.grades,
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+              where: {
+                gradename: gradename,
+              },
+            },
+            where: {
+              // classname: { [Op.like]: `%${searchFilter}%` },
+            },
+          },
+          {
+            model: db.students,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            where: {
+              studentname: { [Op.like]: `%${searchFilter}%` },
+            },
+          },
+        ],
+      });
+      return {
+        EM: "success",
+        EC: 0,
+        DT: data,
+      };
+    } else if (year != "" && gradename == "") {
+      data = await db.belongtoclasses.findAll({
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          {
+            model: db.classes,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            include: {
+              model: db.grades,
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+              where: {
+                year: year,
+              },
+            },
+            where: {
+              // classname: { [Op.like]: `%${searchFilter}%` },
+            },
+          },
+          {
+            model: db.students,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            where: {
+              studentname: { [Op.like]: `%${searchFilter}%` },
+            },
+          },
+        ],
+      });
+      return {
+        EM: "success",
+        EC: 0,
+        DT: data,
+      };
+    } else if (year != "" && gradename != "") {
+      data = await db.belongtoclasses.findAll({
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          {
+            model: db.classes,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            where: {
+              // classname: { [Op.like]: `%${searchFilter}%` },
+            },
+            include: {
+              model: db.grades,
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+              where: {
+                gradename: gradename,
+                year: year,
+              },
+            },
+          },
+          {
+            model: db.students,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            where: {
+              studentname: { [Op.like]: `%${searchFilter}%` },
+            },
+          },
+        ],
+      });
+      return {
+        EM: "success",
+        EC: 0,
+        DT: data,
+      };
+    } else if (year == "" && gradename == "") {
+      data = await db.belongtoclasses.findAll({
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          {
+            model: db.classes,
+            attributes: { exclude: ["createdAt", "updatedAt", "id"] },
+            where: {
+              id: Sequelize.col("belongtoclasses.classId"),
+            },
+            include: {
+              model: db.grades,
+              attributes: { exclude: ["createdAt", "updatedAt", "id"] },
+            },
+          },
+          {
+            model: db.students,
+            attributes: { exclude: ["createdAt", "updatedAt", "id"] },
+            where: {
+              id: Sequelize.col("belongtoclasses.studentId"),
+              studentname: { [Op.like]: `%${searchFilter}%` },
+            },
+          },
+        ],
+      });
+      console.log("ID: ", data[0].studentId);
+      return {
+        EM: "success",
+        EC: 0,
+        DT: data,
+      };
+    }
+  } catch (e) {
+    console.log(e);
+    return {
+      EM: "something wrong with service",
+      EC: 1,
+      DT: "",
+    };
+  }
+};
 module.exports = {
   getAllStudentByClassIdService,
   getAllClassByStudentIdService,
   createNewBelongToClassesService,
+  getAllStudentService,
 };

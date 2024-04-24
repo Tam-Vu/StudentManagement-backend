@@ -1,11 +1,53 @@
+import { where } from "sequelize";
 import db, { Sequelize } from "../models/index";
 
-const createNewClassService = async (classname, homeroomTeacher, gradeId) => {
+const createNewClassService = async (
+  classname,
+  total,
+  homeroomTeacher,
+  gradeId
+) => {
+  let checkHomeRoomTeacher = {};
+  let gradename;
+  let getGrade = {};
+  getGrade = await db.grades.findOne({
+    where: {
+      id: gradeId,
+    },
+  });
+  console.log("Ten khoi: " + getGrade.gradename);
+  gradename = getGrade.gradename;
+  if (gradename == 10) {
+    if (!classname.startsWith("10")) {
+      return {
+        EM: "your Class don't match with your gradeId!!!",
+        EC: 1,
+        DT: "",
+      };
+    }
+  } else if (gradename == 11) {
+    if (!classname.startsWith("11")) {
+      return {
+        EM: "your Class don't match with your gradeId!!!",
+        EC: 1,
+        DT: "",
+      };
+    }
+  } else {
+    if (!classname.startsWith("12")) {
+      return {
+        EM: "your Class don't match with your gradeId!!!",
+        EC: 1,
+        DT: "",
+      };
+    }
+  }
   let checkClassName = {};
   try {
     checkClassName = await db.classes.findOne({
       where: {
         classname: classname,
+        gradeId: gradeId,
       },
     });
     if (checkClassName) {
@@ -15,42 +57,29 @@ const createNewClassService = async (classname, homeroomTeacher, gradeId) => {
         DT: "",
       };
     }
-    if (gradeId == 1) {
-      {
-        if (!classname.startsWith("10")) {
-          return {
-            EM: "your Class don't match with your gradeId!!!",
-            EC: 1,
-            DT: "",
-          };
-        }
-      }
-    }
-    if (gradeId == 2) {
-      {
-        if (!classname.startsWith("11")) {
-          return {
-            EM: "your Class don't match with your gradeId!!!",
-            EC: 1,
-            DT: "",
-          };
-        }
-      }
-    }
-    if (gradeId == 3) {
-      {
-        if (!classname.startsWith("12")) {
-          return {
-            EM: "your Class don't match with your gradeId!!!",
-            EC: 1,
-            DT: "",
-          };
-        }
-      }
+    checkHomeRoomTeacher = await db.classes.findOne({
+      where: {
+        homeroomTeacher: homeroomTeacher,
+        gradeId: gradeId,
+      },
+      include: {
+        model: db.grades,
+        where: {
+          id: Sequelize.col("classes.gradeId"),
+        },
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+      },
+    });
+    if (checkHomeRoomTeacher) {
+      return {
+        EM: "Already have this homeroomTeacher in another class!!!",
+        EC: 1,
+        DT: "",
+      };
     }
     let data = await db.classes.create({
       classname: classname,
-      total: 0,
+      total: total,
       classMonitor: null,
       homeroomTeacher: homeroomTeacher,
       gradeId: gradeId,
@@ -88,18 +117,22 @@ const getAllClassService = async () => {
     };
   }
 };
-const getAllClassByGradeService = async (gradeId) => {
-  let data = {};
+const getAllClassByGradeService = async (gradename, year) => {
+  let data = [];
+  let getYear = {};
+  if (year == "") {
+    getYear = await db.grades.max("year");
+    console.log("getYear " + getYear + typeof getYear);
+    year = getYear;
+  }
   try {
-    console.log(gradeId);
     data = await db.classes.findAll({
-      where: {
-        gradeId: gradeId,
-      },
       include: {
         model: db.grades,
         where: {
           id: Sequelize.col("classes.gradeId"),
+          gradename: gradename,
+          year: year,
         },
         attributes: { exclude: ["createdAt", "updatedAt"] },
       },
