@@ -51,5 +51,6 @@ class ClassController {
         res.status(500).json({ message: e.message });
       });
   };
+
 }
 module.exports = new ClassController();

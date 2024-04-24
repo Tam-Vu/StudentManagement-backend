@@ -118,8 +118,10 @@ const getAllClassByGradeService = async (gradeId) => {
     };
   }
 };
+
 module.exports = {
   createNewClassService,
   getAllClassService,
   getAllClassByGradeService,
+  
 };
