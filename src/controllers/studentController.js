@@ -8,9 +8,6 @@ class StudentController {
       let startDate = req.body.startDate;
       let gender = req.body.gender;
       let address = req.body.address;
-      let classId = req.body.classId;
-      let parentId = req.body.parentId;
-      let tuitionId = req.body.tuitionId;
       let userId = req.body.userId;
       let user = await studentService.serviceCreateNewStudent(
         studentname,
@@ -18,9 +15,6 @@ class StudentController {
         startDate,
         gender,
         address,
-        classId,
-        parentId,
-        tuitionId,
         userId
       );
       res.status(200).json({
@@ -34,8 +28,10 @@ class StudentController {
   };
   handleFindAllStudent = async (req, res) => {
     try {
+      const gradeId = req.query.gradeId || "";
+      const year = req.query.year || "";
       await studentService
-        .getAllStudentService()
+        .getAllStudentService(gradeId, year)
         .then((data) => {
           res.status(200).json({
             EM: data.EM,
@@ -66,9 +62,11 @@ class StudentController {
   handleUpdateStudent = async (req, res) => {
     try {
       let id = req.params.id;
+      let belongtoclassId = req.params.btcId;
       let updatedAccount = await studentService.updateStudentService(
         req.body,
-        id
+        id,
+        belongtoclassId
       );
       res.status(200).json({
         EM: updatedAccount.EM,

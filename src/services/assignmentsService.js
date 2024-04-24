@@ -2,7 +2,7 @@ import { where } from "sequelize";
 import db, { Sequelize } from "../models/index";
 import bcrypt from "bcryptjs";
 const { Op } = require("sequelize");
-const createNewBelongToClassesService = async (data) => {
+const createNewAssignmentService = async (data, id) => {
   let checkStudent = {};
   try {
     if (!data.studentId || !data.classId) {
@@ -282,6 +282,6 @@ const getAllStudentService = async (searchFilter, gradename, year) => {
 module.exports = {
   getAllStudentByClassIdService,
   getAllClassByStudentIdService,
-  createNewBelongToClassesService,
+  createNewAssignmentService,
   getAllStudentService,
 };

@@ -2,10 +2,11 @@ import classService from "../services/classService";
 class ClassController {
   handleCreateNewClass = async (req, res) => {
     let classname = req.body.classname;
+    let total = req.body.total;
     let homeroomTeacher = req.body.homeroomTeacher;
     let gradeId = req.body.gradeId;
     await classService
-      .createNewClassService(classname, homeroomTeacher, gradeId)
+      .createNewClassService(classname, total, homeroomTeacher, gradeId)
       .then((result) => {
         res.status(200).json({
           EM: result.EM,
@@ -35,10 +36,11 @@ class ClassController {
       });
   };
   handleGetAllClassesByGrade = async (req, res) => {
-    let gradeId = req.query.gradeId;
-    console.log("gradeId: " + gradeId);
+    let gradename = req.query.gradename;
+    let year = req.query.year || "";
+    console.log("gradename: " + gradename);
     await classService
-      .getAllClassByGradeService(gradeId)
+      .getAllClassByGradeService(gradename, year)
       .then((classes) => {
         res.status(200).json({
           EM: classes.EM,
@@ -51,5 +53,6 @@ class ClassController {
         res.status(500).json({ message: e.message });
       });
   };
+
 }
 module.exports = new ClassController();

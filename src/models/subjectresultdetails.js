@@ -9,18 +9,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       subjectresultdetails.belongsTo(models.subjectresults, {
-        foreignKey: "subjectId",
+        foreignKey: "subjectresultId",
       });
     }
   }
   subjectresultdetails.init(
     {
-      testturn: DataTypes.INTEGER,
+      testturn: DataTypes.INTEGER, // lần kiểm tra
       testdate: DataTypes.DATE,
       score: DataTypes.FLOAT,
       testtype: DataTypes.INTEGER,
       factor: DataTypes.FLOAT,
-      subjectId: DataTypes.INTEGER,
+      subjectresultId: DataTypes.INTEGER,
     },
     {
       sequelize,

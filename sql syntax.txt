@@ -1,0 +1,2 @@
+INSERT INTO `studentmanagement`.`subjects` (`subjectname`, `factor`, `createdAt`, `updatedAt`) 
+VALUES ('Toán', '2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

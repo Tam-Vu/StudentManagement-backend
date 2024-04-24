@@ -16,18 +16,11 @@ module.exports = {
       total: {
         type: Sequelize.INTEGER,
       },
-      classMonitor: {
-        type: Sequelize.INTEGER,
-      },
       homeroomTeacher: {
         type: Sequelize.INTEGER,
       },
       gradeId: {
         type: Sequelize.INTEGER,
-      },
-      subjectId: {
-        type: Sequelize.INTEGER, 
-        allowNull: true,
       },
       createdAt: {
         allowNull: false,

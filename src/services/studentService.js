@@ -20,9 +20,6 @@ const serviceCreateNewStudent = async (
       startDate: startDate,
       gender: gender,
       address: address,
-      classId: classId,
-      parentId: parentId,
-      tuitionId: tuitionId,
       userId: userId,
     });
     return {
@@ -40,10 +37,28 @@ const serviceCreateNewStudent = async (
   }
 };
 
-const getAllStudentService = async () => {
+const getAllStudentService = async (gradeId, year) => {
   let data = [];
   try {
-    data = await db.students.findAll();
+    data = await db.students.findAll({
+      include: [
+        {
+          model: db.classes,
+          attributes: ["classname"],
+          where: {
+            gradeId: {
+              include: {
+                model: db.grades,
+                where: {
+                  gradeId: gradeId,
+                  year: year,
+                },
+              },
+            },
+          },
+        },
+      ],
+    });
     return {
       EM: "success",
       EC: 0,
@@ -65,23 +80,46 @@ const getStudentByIdService = async (id) => {
   return data.get({ plain: true });
 };
 
-const updateStudentService = async (data, id) => {
+const updateStudentService = async (data, id, btcId) => {
   try {
     let user = await db.students.findOne({
       where: { id: id },
     });
+    console.log("USER: ", user.get({ raw: true }));
     if (user) {
       await user.update({
         studentname: data.studentname,
         birthDate: data.birthDate,
-        startDate: data.startDate,
         gender: data.gender,
         address: data.address,
-        classId: data.classId,
         parentId: data.parentId,
-        tuitionId: data.tuitionId,
-        userId: data.userId,
       });
+      if (data.gradeId && data.classId) {
+        console.log("UPDATE");
+        console.log(data.gradeId, data.classId);
+        let res = await db.belongtoclasses.findOne({
+          where: {
+            id: btcId,
+          },
+        });
+        if (res) {
+          console.log("Chay vao update");
+          let check = {};
+          try {
+            check = await res.update({
+              classId: data.classId,
+            });
+            console.log("CHECK: ", check.get({ raw: true }));
+          } catch (error) {
+            console.log(error);
+            return {
+              EM: "Something wrong with service",
+              EC: 1,
+              DT: "",
+            };
+          }
+        }
+      }
       return {
         EM: "Update user succeeds",
         EC: 0,

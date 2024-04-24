@@ -15,18 +15,6 @@ module.exports = {
       classId: {
         type: Sequelize.INTEGER,
       },
-      semester: {
-        type: Sequelize.INTEGER,
-      },
-      startDate: {
-        type: Sequelize.DATE,
-      },
-      endDate: {
-        type: Sequelize.DATE,
-      },
-      subjectId: {
-        type: Sequelize.INTEGER,
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

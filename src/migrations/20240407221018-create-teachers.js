@@ -22,7 +22,13 @@ module.exports = {
       gender: {
         type: Sequelize.STRING,
       },
+      subjectId: {
+        type: Sequelize.INTEGER,
+      },
       userId: {
+        type: Sequelize.INTEGER,
+      },
+      subjectId: {
         type: Sequelize.INTEGER,
       },
       createdAt: {

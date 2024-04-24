@@ -25,7 +25,7 @@ module.exports = {
       factor: {
         type: Sequelize.FLOAT,
       },
-      subjectId: {
+      subjectresultId: {
         type: Sequelize.INTEGER,
       },
       createdAt: {
