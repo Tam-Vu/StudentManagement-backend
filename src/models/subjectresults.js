@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "subjectId",
       });
       subjectresults.belongsTo(models.summaries, {
-        foreignKey: "subjectId",
-      });
+        foreignKey: "summaryId"
+      })
     }
   }
   subjectresults.init(

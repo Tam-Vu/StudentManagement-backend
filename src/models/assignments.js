@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
+     * ĐÂY LÀ BẢNG PHÂN CÔNG
      */
     static associate(models) {
       assignments.belongsTo(models.teachers, {

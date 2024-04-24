@@ -1,5 +1,7 @@
 import { where } from "sequelize";
 import db from "../models/index";
+import belongtoclasses from "../models/belongtoclasses";
+import { FORCE } from "sequelize/lib/index-hints";
 const createNewYearGrade = async (newYear) => {
   try {
     let data = await db.grades.bulkCreate([

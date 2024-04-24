@@ -151,8 +151,10 @@ const getAllClassByGradeService = async (gradename, year) => {
     };
   }
 };
+
 module.exports = {
   createNewClassService,
   getAllClassService,
   getAllClassByGradeService,
+  
 };

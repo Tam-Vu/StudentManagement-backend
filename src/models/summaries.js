@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const subjects = require("./subjects");
+const subjects = require("./subjects");
 module.exports = (sequelize, DataTypes) => {
   class summaries extends Model {
     /**
@@ -11,8 +13,8 @@ module.exports = (sequelize, DataTypes) => {
       summaries.hasMany(models.summariesdetails, {
         foreignKey: "summaryId",
       });
-      summaries.belongsToMany(models.students, {
-        foreignKey: "studentId",
+      summaries.belongsTo(models.belongtoclasses, {
+        foreignKey: "belongtoclassesId",
       });
       summaries.hasMany(models.subjectresults, {
         foreignKey: "summaryId",
@@ -26,12 +28,30 @@ module.exports = (sequelize, DataTypes) => {
       teachercomment: DataTypes.STRING,
       behaviorpoint: DataTypes.INTEGER,
       discipline: DataTypes.STRING,
-      studentId: DataTypes.INTEGER,
+      belongtoclassesId: DataTypes.INTEGER,
     },
     {
       sequelize,
       modelName: "summaries",
     }
   );
+  summaries.afterCreate(async (summaries, options) => {
+    await summariesdetails.create({
+      summaryId: summaries.id,
+    })
+
+    const subjectTemp = await subjects.findAll({
+      attributes: [id],
+      group: [id],
+    })
+    for(subjectTemp of subjects) {      
+      await subjectresults.create([
+      {
+        summaryId:  summaries.id,
+        subjectId: subjectId.getDataValue("id"),
+      }
+    ])
+    }
+  })
   return summaries;
 };

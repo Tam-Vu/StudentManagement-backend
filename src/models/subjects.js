@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
   subjects.init(
     {
       subjectname: DataTypes.STRING,
-      factor: DataTypes.FLOAT,
     },
     {
       sequelize,

@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   subjectresultdetails.init(
     {
-      testturn: DataTypes.INTEGER,
+      testturn: DataTypes.INTEGER, // lần kiểm tra
       testdate: DataTypes.DATE,
       score: DataTypes.FLOAT,
       testtype: DataTypes.INTEGER,

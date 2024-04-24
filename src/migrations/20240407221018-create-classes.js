@@ -16,9 +16,6 @@ module.exports = {
       total: {
         type: Sequelize.INTEGER,
       },
-      classMonitor: {
-        type: Sequelize.INTEGER,
-      },
       homeroomTeacher: {
         type: Sequelize.INTEGER,
       },
