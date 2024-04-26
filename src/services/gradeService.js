@@ -35,6 +35,27 @@ const createNewYearGrade = async (newYear) => {
     };
   }
 };
+
+const findAllGradesByYear = async (year) => {
+  try {
+    const result = await db.grades.findAll({
+      where: { year: year },
+    })
+    return {
+      EM: "success",
+      EC: 0,
+      DT: result,
+    } 
+  } catch(e) {
+      console.log(e);
+      return {
+        EM:"fail to get the grade by year",
+        EC:1,
+        DT:[],
+      }
+    }
+}
 module.exports = {
   createNewYearGrade,
+  findAllGradesByYear
 };

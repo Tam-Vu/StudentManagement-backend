@@ -1,26 +1,24 @@
 import { where } from "sequelize";
 import db, { Sequelize } from "../models/index";
 
-const createNewClassService = async (
-  classname,
-  total,
-  homeroomTeacher,
-  gradeId
-) => {
+const createNewClassService = async (classname, total, homeroomTeacher, gradeId) => {
   let checkHomeRoomTeacher = {};
   let gradename;
   let getGrade = {};
+
   getGrade = await db.grades.findOne({
     where: {
       id: gradeId,
     },
   });
-  console.log("Ten khoi: " + getGrade.gradename);
+  console.log("Grade name: " + getGrade.gradename);
+
   gradename = getGrade.gradename;
+
   if (gradename == 10) {
     if (!classname.startsWith("10")) {
       return {
-        EM: "your Class don't match with your gradeId!!!",
+        EM: "your Class don't match with your grade!!!",
         EC: 1,
         DT: "",
       };
@@ -28,7 +26,7 @@ const createNewClassService = async (
   } else if (gradename == 11) {
     if (!classname.startsWith("11")) {
       return {
-        EM: "your Class don't match with your gradeId!!!",
+        EM: "your Class don't match with your grade!!!",
         EC: 1,
         DT: "",
       };
@@ -36,7 +34,7 @@ const createNewClassService = async (
   } else {
     if (!classname.startsWith("12")) {
       return {
-        EM: "your Class don't match with your gradeId!!!",
+        EM: "your Class don't match with your grade!!!",
         EC: 1,
         DT: "",
       };
@@ -72,7 +70,7 @@ const createNewClassService = async (
     });
     if (checkHomeRoomTeacher) {
       return {
-        EM: "Already have this homeroomTeacher in another class!!!",
+        EM: "Already have this homeroom teacher in another class!!!",
         EC: 1,
         DT: "",
       };

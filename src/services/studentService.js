@@ -21,6 +21,7 @@ const serviceCreateNewStudent = async (
       gender: gender,
       address: address,
       userId: userId,
+      classesId: classId
     });
     return {
       EM: "success",
