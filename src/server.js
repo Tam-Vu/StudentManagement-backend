@@ -6,7 +6,7 @@ import GradeRoutes from "./routes/gradeRoute";
 import studentRouter from "./routes/studentRouter";
 import classRoute from "./routes/classRoute";
 import teacherRouter from "./routes/teacher";
-import belongToClassesRoute from "./routes/belongToClassesRoute";
+import summariesRoute from "./routes/summariesRoute";
 require("dotenv").config();
 
 const PORT = process.env.PORT || 8080;
@@ -20,7 +20,7 @@ AccountRoutes(app);
 studentRouter(app);
 classRoute(app);
 teacherRouter(app);
-belongToClassesRoute(app);
+summariesRoute(app);
 Connection();
 app.listen(PORT, () => {
   console.log("backend is running in port: " + PORT);

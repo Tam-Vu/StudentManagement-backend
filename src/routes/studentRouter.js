@@ -1,6 +1,6 @@
 import express from "express";
 import studentController from "../controllers/studentController";
-import belongtoclassesController from "../controllers/belongToClassesController";
+import summariesController from "../controllers/summariesController";
 const router = express.Router();
 // const studentRouter = express.Router();
 /**
@@ -11,10 +11,10 @@ const router = express.Router();
 const studentRouter = (app) => {
   router.get(
     "/get-class/:id",
-    belongtoclassesController.handleFindAllClassByStudentId
+    summariesController.handleFindAllClassByStudentId
   );
   router.get("/:id", studentController.handleFindStudentById);
-  router.get("/", belongtoclassesController.handleFindAllStudent);
+  router.get("/", summariesController.handleFindAllStudent);
   router.put(
     "/update-student/:id/:btcId",
     studentController.handleUpdateStudent

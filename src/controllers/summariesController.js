@@ -1,9 +1,9 @@
-import belongToClassesService from "../services/belongToClassesService";
+import summariesService from "../services/summariesService";
 //thêm các hàm xủ lý ở đây
-class belongToClassesController {
-  handleCreateBelongToClasses = async (req, res) => {
+class summariesController {
+  handleCreatesummaries = async (req, res) => {
     try {
-      let data = await belongToClassesService.createNewBelongToClassesService(
+      let data = await summariesService.createSummaryService(
         req.body
       );
       let userData = {};
@@ -22,7 +22,7 @@ class belongToClassesController {
       const searchFilter = req.query.searchFilter || "";
       const gradename = req.query.gradename || "";
       const year = req.query.year || "";
-      let data = await belongToClassesService.getAllStudentService(
+      let data = await summariesService.getAllStudentService(
         searchFilter,
         gradename,
         year
@@ -41,7 +41,7 @@ class belongToClassesController {
   handleFindAllStudentByClassId = async (req, res) => {
     try {
       const classId = req.params.id;
-      let data = await belongToClassesService.getAllStudentByClassIdService(
+      let data = await summariesService.getAllStudentByClassIdService(
         classId
       );
       let userData = {};
@@ -58,7 +58,7 @@ class belongToClassesController {
   handleFindAllClassByStudentId = async (req, res) => {
     try {
       const studentId = req.params.id;
-      let data = await belongToClassesService.getAllClassByStudentIdService(
+      let data = await summariesService.getAllClassByStudentIdService(
         studentId
       );
       let userData = {};
@@ -73,4 +73,4 @@ class belongToClassesController {
     }
   };
 }
-module.exports = new belongToClassesController();
+module.exports = new summariesController();

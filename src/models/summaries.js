@@ -12,11 +12,16 @@ module.exports = (sequelize, DataTypes) => {
       summaries.hasMany(models.summariesdetails, {
         foreignKey: "summaryId",
       });
-      summaries.belongsTo(models.belongtoclasses, {
-        foreignKey: "belongtoclassesId",
-      });
+      
       summaries.hasMany(models.subjectresults, {
         foreignKey: "summaryId",
+      });
+
+      summaries.belongsTo(models.students, {
+        foreignKey: "studentId",
+      });
+      summaries.belongsTo(models.classes, {
+        foreignKey: "classId",
       });
     }
   }
@@ -27,30 +32,29 @@ module.exports = (sequelize, DataTypes) => {
       teachercomment: DataTypes.STRING,
       behaviorpoint: DataTypes.INTEGER,
       discipline: DataTypes.STRING,
-      belongtoclassesId: DataTypes.INTEGER,
     },
     {
       sequelize,
       modelName: "summaries",
     }
   );
-  summaries.afterCreate(async (summaries, options) => {
-    await summariesdetails.create({
-      summaryId: summaries.id,
-    });
+  // summaries.afterCreate(async (summaries, options) => {
+  //   await summariesdetails.create({
+  //     summaryId: summaries.id,
+  //   });
 
-    const subjectTemp = await subjects.findAll({
-      attributes: [id],
-      group: [id],
-    });
-    for (subjectTemp of subjects) {
-      await subjectresults.create([
-        {
-          summaryId: summaries.id,
-          subjectId: subjectId.getDataValue("id"),
-        },
-      ]);
-    }
-  });
+  //   const subjectTemp = await subjects.findAll({
+  //     attributes: [id],
+  //     group: [id],
+  //   });
+  //   for (subjectTemp of subjects) {
+  //     await subjectresults.create([
+  //       {
+  //         summaryId: summaries.id,
+  //         subjectId: subjectId.getDataValue("id"),
+  //       },
+  //     ]);
+  //   }
+  // });
   return summaries;
 };
