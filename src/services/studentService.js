@@ -20,10 +20,8 @@ const serviceCreateNewStudent = async (
       startDate: startDate,
       gender: gender,
       address: address,
-      classId: classId,
-      parentId: parentId,
-      tuitionId: tuitionId,
       userId: userId,
+      classesId: classId
     });
     return {
       EM: "success",
@@ -100,7 +98,7 @@ const updateStudentService = async (data, id, btcId) => {
       if (data.gradeId && data.classId) {
         console.log("UPDATE");
         console.log(data.gradeId, data.classId);
-        let res = await db.belongtoclasses.findOne({
+        let res = await db.summaries.findOne({
           where: {
             id: btcId,
           },
