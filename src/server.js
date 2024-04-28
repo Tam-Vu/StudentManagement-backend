@@ -7,6 +7,7 @@ import studentRouter from "./routes/studentRouter";
 import classRoute from "./routes/classRoute";
 import teacherRouter from "./routes/teacher";
 import belongToClassesRoute from "./routes/belongToClassesRoute";
+import cors from "cors";
 require("dotenv").config();
 
 const PORT = process.env.PORT || 8080;
@@ -14,6 +15,14 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
 
 GradeRoutes(app);
 AccountRoutes(app);

@@ -156,5 +156,4 @@ module.exports = {
   createNewClassService,
   getAllClassService,
   getAllClassByGradeService,
-  
 };

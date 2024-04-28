@@ -36,8 +36,8 @@ class ClassController {
       });
   };
   handleGetAllClassesByGrade = async (req, res) => {
-    let gradename = req.query.gradename;
-    let year = req.query.year || "";
+    let gradename = req.params.gradename;
+    let year = req.params.year || "";
     console.log("gradename: " + gradename);
     await classService
       .getAllClassByGradeService(gradename, year)
@@ -53,6 +53,5 @@ class ClassController {
         res.status(500).json({ message: e.message });
       });
   };
-
 }
 module.exports = new ClassController();
