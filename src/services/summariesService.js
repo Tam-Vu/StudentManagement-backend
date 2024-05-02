@@ -1,9 +1,14 @@
 import { where } from "sequelize";
 import db, { Sequelize } from "../models/index";
+import subjects from "../models/subjects";
+import subjectresults from "../models/subjectresults"
 const { Op } = require("sequelize");
+
+// Tạo học bạ
 const createSummaryService = async (data) => {
   let checkStudent = {};
   try {
+    // kiểm tra tham số đầu vào
     if (!data.studentId || !data.classId) {
       return {
         EM: "All fields are required!!!",
@@ -11,6 +16,7 @@ const createSummaryService = async (data) => {
         DT: [],
       };
     } else {
+      // kiểm tra xem hs có lớp chưa
       checkStudent = await db.summaries.findOne({
         where: {
           classId: data.classId,
@@ -24,10 +30,22 @@ const createSummaryService = async (data) => {
           DT: [],
         };
       }
+      
       let res = await db.summaries.create({
         studentId: data.studentId,
         classId: data.classId,
       });
+
+      //Khi tạo học bạ thì tạo các môn trong học bạ
+      let subjects = await db.subjects.findAll();
+      console.log(subjects);
+      for (const subject of subjects) {
+        await db.subjectresults.create({
+          summaryId: res.id,
+          subjectId: subject.id,
+        });
+      }
+
       return {
         EM: "success",
         EC: 0,
@@ -43,6 +61,8 @@ const createSummaryService = async (data) => {
     };
   }
 };
+
+//lấy học sinh theo lớp
 const getAllStudentByClassIdService = async (classId) => {
   let data = [];
   let checkClass = {};
@@ -90,6 +110,7 @@ const getAllStudentByClassIdService = async (classId) => {
     };
   }
 };
+
 const getAllClassByStudentIdService = async (studentId) => {
   let data = [];
   let checkStudentId = {};
@@ -136,6 +157,7 @@ const getAllClassByStudentIdService = async (studentId) => {
     };
   }
 };
+
 const getAllStudentService = async (searchFilter, gradename, year) => {
   let data = [];
   console.log("SEARCHFILTER: " + searchFilter);
@@ -278,6 +300,7 @@ const getAllStudentService = async (searchFilter, gradename, year) => {
     };
   }
 };
+
 module.exports = {
   getAllStudentByClassIdService,
   getAllClassByStudentIdService,

@@ -21,6 +21,7 @@ const studentRouter = (app) => {
   );
   router.put("/delete-student/:id", studentController.handleDeleteStudent);
   router.post("/create-student", studentController.handleCreateNewStudent);
+  router.post("/student-without-class", studentController.handleFindNonClassStudent);
   return app.use("/student", router);
 };
 

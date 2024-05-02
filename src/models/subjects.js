@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   subjects.init(
     {
       subjectname: DataTypes.STRING,
+      factor: DataTypes.INTEGER,
     },
     {
       sequelize,
