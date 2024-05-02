@@ -10,7 +10,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      score: {
+      averageScore: {
         type: Sequelize.FLOAT,
       },
       result: {
@@ -24,6 +24,27 @@ module.exports = {
       },
       subjectId: {
         type: Sequelize.INTEGER,
+      },
+      fifteenMinExam_1: {
+        type: Sequelize.FLOAT,
+      },
+      fifteenMinExam_2: {
+        type: Sequelize.FLOAT,
+      },
+      fifteenMinExam_3: {
+        type: Sequelize.FLOAT,
+      },
+      fifteenMinExam_4: {
+        type: Sequelize.FLOAT,
+      },
+      fortyFiveMinExam_1: {
+        type: Sequelize.FLOAT,
+      },
+      fortyFiveMinExam_2: {
+        type: Sequelize.FLOAT,
+      },
+      finalTest: {
+        type: Sequelize.FLOAT,
       },
       createdAt: {
         allowNull: false,

@@ -8,9 +8,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      subjectresults.hasMany(models.subjectresultdetails, {
-        foreignKey: "subjectresultId",
-      });
       subjectresults.belongsTo(models.subjects, {
         foreignKey: "subjectId",
       });
@@ -21,11 +18,18 @@ module.exports = (sequelize, DataTypes) => {
   }
   subjectresults.init(
     {
-      score: DataTypes.FLOAT,
+      averageScore: DataTypes.FLOAT,
       result: DataTypes.STRING,
       teachercomment: DataTypes.STRING,
       summaryId: DataTypes.INTEGER,
-      subjectId: DataTypes.INTEGER,
+      subjectId: DataTypes.INTEGER, 
+      fifteenMinExam_1: DataTypes.FLOAT,
+      fifteenMinExam_2: DataTypes.FLOAT,
+      fifteenMinExam_3: DataTypes.FLOAT,
+      fifteenMinExam_4: DataTypes.FLOAT,
+      fortyFiveMinExam_1: DataTypes.FLOAT,
+      fortyFiveMinExam_2: DataTypes.FLOAT,
+      finalTest: DataTypes.FLOAT
     },
     {
       sequelize,

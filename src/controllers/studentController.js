@@ -101,5 +101,21 @@ class StudentController {
       return res.status(500).json({ message: e.message });
     }
   };
+  
+  handleFindNonClassStudent = async(req, res) => {
+    try {
+      let year = req.body.year;
+      let data = await studentService.getAllNonClassStudentByYear(year);
+      let studentData = {};
+      studentData = data;
+      res.status(200).json({
+        EM: studentData.EM,
+        EC: studentData.EC,
+        DT: studentData.DT,
+      })
+    } catch(e) {
+      return res.status(500).json({message: e.message});
+    }
+  }
 }
 module.exports = new StudentController();

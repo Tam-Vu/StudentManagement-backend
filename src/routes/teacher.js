@@ -13,6 +13,7 @@ const teacherRouter = (app) => {
   router.put("/update-teacher/:id", teacherController.handleUpdateTeacher);
   router.put("/delete-teacher/:id", teacherController.handleDeleteTeacher);
   router.post("/create-teacher", teacherController.handleCreateNewTeacher);
+  router.post("/class-without-subject-teacher", teacherController.handleFindClassNonSubjectClass);
   return app.use("/teacher", router);
 };
 
