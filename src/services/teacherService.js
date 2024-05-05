@@ -1,6 +1,7 @@
 import { where } from "sequelize";
-import db from "../models/index";
+import db, { sequelize } from "../models/index";
 import bcrypt from "bcryptjs";
+import QueryTypes from "sequelize";
 
 const serviceCreateNewTeacher = async (data) => {
   try {
@@ -9,7 +10,8 @@ const serviceCreateNewTeacher = async (data) => {
       !data.birthDate ||
       !data.startDate ||
       !data.gender ||
-      !data.userId
+      !data.userId ||
+      !data.subjectId
     ) {
       return {
         EM: "All fields are required!!!",
@@ -21,6 +23,7 @@ const serviceCreateNewTeacher = async (data) => {
         teachername: data.teachername,
         birthDate: data.birthDate,
         startDate: data.startDate,
+        subjectId: data.subjectId,
         gender: data.gender,
         userId: data.userId,
       });
@@ -75,6 +78,7 @@ const updateTeacherService = async (data, id) => {
         teachername: data.teachername,
         birthDate: data.birthDate,
         startDate: data.startDate,
+        subjectId: data.subjectId,
         gender: data.gender,
         userId: data.userId,
       });
@@ -139,10 +143,32 @@ const deleteTeacherService = async (id) => {
   }
 };
 
+const getAllClassNotAssignBySubject = async(teacherId, year)=>{
+  let subjectId = await db.teachers.findOne({
+    where: {
+      id: teacherId,
+    },
+    attributes:['subjectId']
+  })
+  let classes = await sequelize.query(`select * from classes 
+  where classes.id not in (select classes.id from classes left join assignments 
+  on classes.id = assignments.classId left join grades on grades.id = classes.gradeId
+  left join teachers on assignments.teacherId = teachers.id
+  where teachers.subjectId = :subjectid and grades.year = :year)`, {
+    replacements: { subjectid: subjectId.subjectId, year: year},
+    type: sequelize.QueryTypes.SELECT
+  })
+  return{
+    EM: "success.",
+    EC: 1,
+    DT: classes,
+  }
+}
 module.exports = {
   serviceCreateNewTeacher,
   getAllTeacherService,
   getTeacherByIdService,
   updateTeacherService,
   deleteTeacherService,
+  getAllClassNotAssignBySubject
 };

@@ -1,5 +1,6 @@
 import { where } from "sequelize";
-import db, { Sequelize } from "../models/index";
+import db, { Sequelize, sequelize } from "../models/index";
+import subjects from "../models/subjects";
 
 const createNewClassService = async (
   classname,

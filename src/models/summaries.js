@@ -39,23 +39,5 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "summaries",
     }
   );
-  // summaries.afterCreate(async (summaries, options) => {
-  //   await summariesdetails.create({
-  //     summaryId: summaries.id,
-  //   });
-
-  //   const subjectTemp = await subjects.findAll({
-  //     attributes: [id],
-  //     group: [id],
-  //   });
-  //   for (subjectTemp of subjects) {
-  //     await subjectresults.create([
-  //       {
-  //         summaryId: summaries.id,
-  //         subjectId: subjectId.getDataValue("id"),
-  //       },
-  //     ]);
-  //   }
-  // });
   return summaries;
 };

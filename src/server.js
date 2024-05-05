@@ -7,6 +7,9 @@ import studentRouter from "./routes/studentRouter";
 import classRoute from "./routes/classRoute";
 import teacherRouter from "./routes/teacher";
 import summariesRoute from "./routes/summariesRoute";
+import assignmentRoute from "./routes/assignmentRoute";
+import summaryDetailsRoute from "./routes/summaryDetailsRoute";
+import subjectResultRoute from "./routes/subjectResultRoute";
 import cors from "cors";
 require("dotenv").config();
 
@@ -30,6 +33,9 @@ studentRouter(app);
 classRoute(app);
 teacherRouter(app);
 summariesRoute(app);
+assignmentRoute(app);
+summaryDetailsRoute(app);
+subjectResultRoute(app);
 Connection();
 app.listen(PORT, () => {
   console.log("backend is running in port: " + PORT);

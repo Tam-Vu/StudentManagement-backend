@@ -1,6 +1,11 @@
 import { where } from "sequelize";
-import db from "../models/index";
+import db, { sequelize } from "../models/index";
 import bcrypt from "bcryptjs";
+import summaries from "../models/summaries";
+const excelJs = require('exceljs')
+const fs = require('fs');
+const { Op } = require('sequelize');
+
 
 const serviceCreateNewStudent = async (
   studentname,
@@ -228,6 +233,77 @@ const getStudentByClassnameService = async (classname) => {
     };
   }
 };
+
+//lấy học sinh chưa có lớp trong năm học đang chọn 
+// const getAllNonClassStudentByYear = async(year) => {
+//   try{
+//     let studentsInThisYear = await db.students.findAll({
+//       // where:{
+
+//       // },
+//       include: [
+//         {
+//           model: db.summaries,
+//           // where: {
+//           //   studentId: db.sequelize.col("students.id"),
+//           // },
+//           attributes: { exclude: ["createdAt", "updatedAt"] },
+//           include: [
+//             {
+//               model: db.classes,
+//               attributes: { exclude: ["createdAt", "updatedAt"] },
+//               include: [
+//                 {
+//                   model: db.grades,
+//                   attributes: {exclude: ["createdAt","updatedAt"]},
+//                   where: {
+//                     year: year,
+//                   }
+//                 }
+//               ]
+//             }
+//           ]
+//         }
+//       ],
+//     })
+//   return {
+//     EM: "success",
+//     EC: 0,
+//     DT: studentsInThisYear,
+//   };
+//   }catch(e) {
+//     console.log(e);
+//     return {
+//       EM: "not found",
+//       EC: 1,
+//       DT: "",
+//     };
+//   }
+// }
+//lấy học sinh chưa có lớp trong năm học đang chọn 
+const getAllNonClassStudentByYear = async(year) => {
+  try{
+    let studentsInThisYear = await sequelize.query(`select * from students where students.id not in 
+    (select distinct students.id from students left join summaries on students.id = summaries.studentId left join classes 
+    on classes.id = summaries.classId left join grades on classes.gradeId = grades.id where grades.year = :year)`, {
+      replacements:{year},
+      type: sequelize.QueryTypes.SELECT
+    })
+  return {
+    EM: "success",
+    EC: 0,
+    DT: studentsInThisYear,
+  };
+  }catch(e) {
+    console.log(e);
+    return {
+      EM: "not found",
+      EC: 1,
+      DT: "",
+    };
+  }
+}
+
 module.exports = {
   serviceCreateNewStudent,
   getAllStudentService,
@@ -235,4 +311,5 @@ module.exports = {
   updateStudentService,
   deleteStudentService,
   getStudentByClassnameService,
+  getAllNonClassStudentByYear
 };

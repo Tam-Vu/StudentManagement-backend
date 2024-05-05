@@ -2,12 +2,10 @@ import assignmentsService from "../services/assignmentsService";
 //thêm các hàm xủ lý ở đây
 class assignmentsController {
   handleCreateAssignments = async (req, res) => {
+    let teacherId = req.body.teacherId;
+    let classIds = req.body.classId;
     try {
-      let id = req.params.id;
-      let data = await assignmentsService.createNewAssignmentService(
-        req.body.dataList,
-        id
-      );
+      let data = await assignmentsService.assignTeacherIntoClasses(teacherId, classIds);
       let userData = {};
       userData = data;
       res.status(200).json({
