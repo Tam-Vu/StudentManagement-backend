@@ -8,9 +8,6 @@ class StudentController {
       let startDate = req.body.startDate;
       let gender = req.body.gender;
       let address = req.body.address;
-      let classId = req.body.classId;
-      let parentId = req.body.parentId;
-      let tuitionId = req.body.tuitionId;
       let userId = req.body.userId;
       let user = await studentService.serviceCreateNewStudent(
         studentname,
@@ -18,9 +15,6 @@ class StudentController {
         startDate,
         gender,
         address,
-        classId,
-        parentId,
-        tuitionId,
         userId
       );
       res.status(200).json({

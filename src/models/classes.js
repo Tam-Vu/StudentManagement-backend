@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       classes.belongsTo(models.grades, {
         foreignKey: "gradeId",
       });
-      classes.hasMany(models.belongtoclasses, {
+      classes.hasMany(models.summaries, {
         foreignKey: "classId",
       });
       classes.belongsTo(models.teachers, {

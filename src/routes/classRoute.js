@@ -1,13 +1,13 @@
 import express from "express";
 import classController from "../controllers/classController";
-import belongtoclassesController from "../controllers/belongToClassesController";
+import summariesController from "../controllers/summariesController";
 const router = express.Router();
 
 const ClassRoute = (app) => {
   router.post("/create-class", classController.handleCreateNewClass);
   router.get(
     "/get-student/:id",
-    belongtoclassesController.handleFindAllStudentByClassId
+    summariesController.handleFindAllStudentByClassId
   );
   router.get(
     "/get-grade/:gradename/:year",

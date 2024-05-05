@@ -3,7 +3,7 @@ class ClassController {
   handleCreateNewClass = async (req, res) => {
     let classname = req.body.classname;
     let total = req.body.total;
-    let homeroomTeacher = req.body.homeroomTeacher;
+    let homeroomTeacher = null;
     let gradeId = req.body.gradeId;
     await classService
       .createNewClassService(classname, total, homeroomTeacher, gradeId)

@@ -25,7 +25,10 @@ module.exports = {
       discipline: {
         type: Sequelize.STRING,
       },
-      belongtoclassId: {
+      studentId: {
+        type: Sequelize.INTEGER,
+      },
+      classId: {
         type: Sequelize.INTEGER,
       },
       createdAt: {

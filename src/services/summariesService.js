@@ -1,8 +1,7 @@
 import { where } from "sequelize";
 import db, { Sequelize } from "../models/index";
-import bcrypt from "bcryptjs";
 const { Op } = require("sequelize");
-const createNewBelongToClassesService = async (data) => {
+const createSummaryService = async (data) => {
   let checkStudent = {};
   try {
     if (!data.studentId || !data.classId) {
@@ -12,7 +11,7 @@ const createNewBelongToClassesService = async (data) => {
         DT: [],
       };
     } else {
-      checkStudent = await db.belongtoclasses.findOne({
+      checkStudent = await db.summaries.findOne({
         where: {
           classId: data.classId,
           studentId: data.studentId,
@@ -25,7 +24,7 @@ const createNewBelongToClassesService = async (data) => {
           DT: [],
         };
       }
-      let res = await db.belongtoclasses.create({
+      let res = await db.summaries.create({
         studentId: data.studentId,
         classId: data.classId,
       });
@@ -62,7 +61,7 @@ const getAllStudentByClassIdService = async (classId) => {
         DT: "",
       };
     }
-    data = await db.belongtoclasses.findAll({
+    data = await db.summaries.findAll({
       where: {
         classId: classId,
       },
@@ -108,7 +107,7 @@ const getAllClassByStudentIdService = async (studentId) => {
         DT: "",
       };
     }
-    data = await db.belongtoclasses.findAll({
+    data = await db.summaries.findAll({
       where: {
         studentId: studentId,
       },
@@ -142,7 +141,7 @@ const getAllStudentService = async (searchFilter, gradename, year) => {
   console.log("SEARCHFILTER: " + searchFilter);
   try {
     if (gradename != "" && year == "") {
-      data = await db.belongtoclasses.findAll({
+      data = await db.summaries.findAll({
         attributes: { exclude: ["createdAt", "updatedAt"] },
         include: [
           {
@@ -174,7 +173,7 @@ const getAllStudentService = async (searchFilter, gradename, year) => {
         DT: data,
       };
     } else if (year != "" && gradename == "") {
-      data = await db.belongtoclasses.findAll({
+      data = await db.summaries.findAll({
         attributes: { exclude: ["createdAt", "updatedAt"] },
         include: [
           {
@@ -206,7 +205,7 @@ const getAllStudentService = async (searchFilter, gradename, year) => {
         DT: data,
       };
     } else if (year != "" && gradename != "") {
-      data = await db.belongtoclasses.findAll({
+      data = await db.summaries.findAll({
         attributes: { exclude: ["createdAt", "updatedAt"] },
         include: [
           {
@@ -239,14 +238,14 @@ const getAllStudentService = async (searchFilter, gradename, year) => {
         DT: data,
       };
     } else if (year == "" && gradename == "") {
-      data = await db.belongtoclasses.findAll({
+      data = await db.summaries.findAll({
         attributes: { exclude: ["createdAt", "updatedAt"] },
         include: [
           {
             model: db.classes,
             attributes: { exclude: ["createdAt", "updatedAt", "id"] },
             where: {
-              id: Sequelize.col("belongtoclasses.classId"),
+              id: Sequelize.col("summaries.classId"),
             },
             include: {
               model: db.grades,
@@ -257,13 +256,12 @@ const getAllStudentService = async (searchFilter, gradename, year) => {
             model: db.students,
             attributes: { exclude: ["createdAt", "updatedAt", "id"] },
             where: {
-              id: Sequelize.col("belongtoclasses.studentId"),
+              id: Sequelize.col("summaries.studentId"),
               studentname: { [Op.like]: `%${searchFilter}%` },
             },
           },
         ],
       });
-      console.log("ID: ", data[0].studentId);
       return {
         EM: "success",
         EC: 0,
@@ -282,6 +280,6 @@ const getAllStudentService = async (searchFilter, gradename, year) => {
 module.exports = {
   getAllStudentByClassIdService,
   getAllClassByStudentIdService,
-  createNewBelongToClassesService,
+  createSummaryService,
   getAllStudentService,
 };

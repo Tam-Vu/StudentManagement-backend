@@ -10,17 +10,20 @@ const createNewClassService = async (
   let checkHomeRoomTeacher = {};
   let gradename;
   let getGrade = {};
+
   getGrade = await db.grades.findOne({
     where: {
       id: gradeId,
     },
   });
-  console.log("Ten khoi: " + getGrade.gradename);
+  console.log("Grade name: " + getGrade.gradename);
+
   gradename = getGrade.gradename;
+
   if (gradename == 10) {
     if (!classname.startsWith("10")) {
       return {
-        EM: "your Class don't match with your gradeId!!!",
+        EM: "your Class don't match with your grade!!!",
         EC: 1,
         DT: "",
       };
@@ -28,7 +31,7 @@ const createNewClassService = async (
   } else if (gradename == 11) {
     if (!classname.startsWith("11")) {
       return {
-        EM: "your Class don't match with your gradeId!!!",
+        EM: "your Class don't match with your grade!!!",
         EC: 1,
         DT: "",
       };
@@ -36,7 +39,7 @@ const createNewClassService = async (
   } else {
     if (!classname.startsWith("12")) {
       return {
-        EM: "your Class don't match with your gradeId!!!",
+        EM: "your Class don't match with your grade!!!",
         EC: 1,
         DT: "",
       };
@@ -70,9 +73,9 @@ const createNewClassService = async (
         attributes: { exclude: ["createdAt", "updatedAt"] },
       },
     });
-    if (checkHomeRoomTeacher) {
+    if (checkHomeRoomTeacher && homeroomTeacher != null) {
       return {
-        EM: "Already have this homeroomTeacher in another class!!!",
+        EM: "Already have this homeroom teacher in another class!!!",
         EC: 1,
         DT: "",
       };
