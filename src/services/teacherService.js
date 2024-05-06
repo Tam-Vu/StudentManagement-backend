@@ -45,8 +45,10 @@ const serviceCreateNewTeacher = async (data) => {
 
 const getAllTeacherService = async () => {
   let data = [];
+  console.log("CHAYVAO");
   try {
     data = await db.teachers.findAll();
+    console.log("DATA", data);
     return {
       EM: "success",
       EC: 0,
@@ -143,32 +145,35 @@ const deleteTeacherService = async (id) => {
   }
 };
 
-const getAllClassNotAssignBySubject = async(teacherId, year)=>{
+const getAllClassNotAssignBySubject = async (teacherId, year) => {
   let subjectId = await db.teachers.findOne({
     where: {
       id: teacherId,
     },
-    attributes:['subjectId']
-  })
-  let classes = await sequelize.query(`select * from classes 
+    attributes: ["subjectId"],
+  });
+  let classes = await sequelize.query(
+    `select * from classes 
   where classes.id not in (select classes.id from classes left join assignments 
   on classes.id = assignments.classId left join grades on grades.id = classes.gradeId
   left join teachers on assignments.teacherId = teachers.id
-  where teachers.subjectId = :subjectid and grades.year = :year)`, {
-    replacements: { subjectid: subjectId.subjectId, year: year},
-    type: sequelize.QueryTypes.SELECT
-  })
-  return{
+  where teachers.subjectId = :subjectid and grades.year = :year)`,
+    {
+      replacements: { subjectid: subjectId.subjectId, year: year },
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+  return {
     EM: "success.",
     EC: 1,
     DT: classes,
-  }
-}
+  };
+};
 module.exports = {
   serviceCreateNewTeacher,
   getAllTeacherService,
   getTeacherByIdService,
   updateTeacherService,
   deleteTeacherService,
-  getAllClassNotAssignBySubject
+  getAllClassNotAssignBySubject,
 };

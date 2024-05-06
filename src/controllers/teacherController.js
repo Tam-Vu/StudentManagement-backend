@@ -14,6 +14,7 @@ class teacherController {
     }
   };
   handleFindAllTeacher = async (req, res) => {
+    console.log("TEACHER");
     try {
       await teacherService
         .getAllTeacherService()
@@ -69,19 +70,22 @@ class teacherController {
     }
   };
 
-  handleFindClassNonSubjectClass = async(req, res) => {
+  handleFindClassNonSubjectClass = async (req, res) => {
     try {
       let teacherId = req.body.teacherId;
       let year = req.body.year;
-      let classes = await teacherService.getAllClassNotAssignBySubject(teacherId, year);
+      let classes = await teacherService.getAllClassNotAssignBySubject(
+        teacherId,
+        year
+      );
       res.status(200).json({
         EM: classes.EM,
         EC: classes.EC,
         DT: classes.DT,
-      })
-    } catch(e) {
-      return res.status(500).json({message: e.message})
+      });
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
     }
-  }
+  };
 }
 module.exports = new teacherController();
