@@ -42,8 +42,8 @@ const findSubjectResultBySubjectService = async(summaryId, subjectId) => {
     }
 }
 
-const inputScoreService = async(subjectResultId, teacherComment, fifteen_1, fifteen_2, fifteen_3, fifteen_4,
-fourtyFive_1, fourtyFive_2, finalExam) => {
+const inputScoreService = async(classId, studentId, teacherComment, fifteen_1, fifteen_2, fifteen_3, fifteen_4,
+fourtyFive_1, fourtyFive_2, finalExam, subjectId) => {
     if (fifteen_1 < 0 || fifteen_2 < 0 || fifteen_3 < 0 || fifteen_4 < 0 || fourtyFive_1 < 0 || fourtyFive_2 < 0 || finalExam < 0) {
         return {
             EM: "the score must be greater than 0.",
@@ -51,14 +51,29 @@ fourtyFive_1, fourtyFive_2, finalExam) => {
             DT: [],
         };
     }
-    let temp1 = await db.params.findOne({where:{paramName:"fifteenMinNum"},attributes: [ 'paramValue' ]});
-    let fifteenMinNum = temp1.dataValues.paramValue;
+    let summaryTemp = await db.summaries.findOne({
+        attributes: ['id'],
+        where: {
+            studentId: studentId,
+            classId: classId,
+        }
+    })
+    let summary = summaryTemp.dataValues.id;
+    let subjectResultIdTemp = await db.subjectresults.findOne({
+        where: {
+            summaryId: summary,
+            subjectId: subjectId,
+        }
+    })
+    let subjectResultId = subjectResultIdTemp.dataValues.id;
+    let temp1 = await db.subjects.findOne({where:{id:subjectId},attributes: [ 'fifteenMinFactor' ]});
+    let fifteenMinNum = temp1.dataValues.fifteenMinFactor;
 
-    let temp2 = await db.params.findOne({where:{paramName:"fourtyFiveMinNum"}, attributes: [ 'paramValue' ]});
-    let fourtyFiveMinNum = temp2.dataValues.paramValue;
+    let temp2 = await db.subjects.findOne({where:{id:subjectId}, attributes: [ 'fourtyFiveMinFactor' ]});
+    let fourtyFiveMinNum = temp2.dataValues.fourtyFiveMinFactor;
 
-    let temp3 = await db.params.findOne({where:{paramName:"lastTestMinNum"}, attributes: [ 'paramValue' ]});
-    let lastTestMinNum = temp3.dataValues.paramValue;
+    let temp3 = await db.subjects.findOne({where:{id:subjectId}, attributes: [ 'finalFactor' ]});
+    let lastTestMinNum = temp3.dataValues.finalFactor;
 
     let temp4 = await db.params.findOne({where:{paramName:"minPassScore"}, attributes: [ 'paramValue' ]});
     let finalResult = temp4.dataValues.paramValue;

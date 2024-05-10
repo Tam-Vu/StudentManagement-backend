@@ -300,9 +300,40 @@ const getAllStudentService = async (searchFilter, gradename, year) => {
   }
 };
 
+const getDetailsTranscriptByStudentId = async(studentId) => {
+  try {
+    let data = await db.summaries.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      where: {
+        studentId: studentId
+      }
+      ,
+      include: [
+        {
+          model: db.subjectresults,
+            attributes: { exclude: ["createdAt", "updatedAt", "id"] },
+        }
+      ]
+    })
+    return {
+      EM: "success",
+      EC: 0,
+      DT: data,
+    };
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "something wrong with service",
+      EC: 1,
+      DT: "",
+    };
+  }
+} 
+
 module.exports = {
   getAllStudentByClassIdService,
   getAllClassByStudentIdService,
   createSummaryService,
   getAllStudentService,
+  getDetailsTranscriptByStudentId,
 };

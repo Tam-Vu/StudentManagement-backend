@@ -35,6 +35,7 @@ class ClassController {
         res.status(500).json({ message: e.message });
       });
   };
+
   handleGetAllClassesByGrade = async (req, res) => {
     let gradename = req.params.gradename;
     let year = req.params.year || "";
@@ -53,5 +54,25 @@ class ClassController {
         res.status(500).json({ message: e.message });
       });
   };
+
+  handleGetAllSummariesByClass = async(req, res) => {
+    let classId = req.params.id;
+    await classService.getAllStudentSummariesByClassId(classId)
+    .then((data) => {
+      res.status(200).json({
+        EM: data.EM,
+        ED: data.ED,
+        DT: data.DT,
+      });
+    })
+    .catch((e) => {
+      console.log(e);
+      res.status(500).json({ message: e.message });
+    });
+  }
+
+  
 }
+
+
 module.exports = new ClassController();

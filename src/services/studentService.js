@@ -280,6 +280,7 @@ const getStudentByClassnameService = async (classname) => {
 //     };
 //   }
 // }
+
 //lấy học sinh chưa có lớp trong năm học đang chọn 
 const getAllNonClassStudentByYear = async(year) => {
   try{
@@ -304,6 +305,58 @@ const getAllNonClassStudentByYear = async(year) => {
   }
 }
 
+const getAllNonClassStudentByClassId = async(classId) => {
+  try {
+    let freeStudentsInThisYear = [];
+    let classNameTemp = await db.classes.findByPk(classId);
+    if(classNameTemp == null) {
+      return {
+        EM: "not found class",
+        EC: 1,
+        DT: "",
+      };
+    }
+    let className = classNameTemp.dataValues.classname;
+    //lấy học sinh chưa có lớp 10: tức là chưa có bất kì học bạ nào đạt
+    if(className.startsWith("10")) {
+      freeStudentsInThisYear = await sequelize.query(`select distinct s.* from students s
+      left join summaries su on s.id = su.studentId where su.studentId is null or not exists
+      (select 1 from summaries where studentId = s.id and title <> 'yếu')`, {
+        type: sequelize.QueryTypes.SELECT
+      })
+    }
+
+    //lấy học sinh chưa có lớp 10: tức là có 1 học bạ đạt
+    else if(className.startsWith("11")) {
+      freeStudentsInThisYear = await sequelize.query(`select distinct s.* from students s
+      join summaries su on s.id = su.studentId where su.title <> 'yếu'
+      group by s.id having count(*) = 1 `, {
+        type: sequelize.QueryTypes.SELECT
+      })
+    }
+
+    else if(className.startsWith("12")) {
+      freeStudentsInThisYear = await sequelize.query(`select distinct s.* from students s
+      join summaries su on s.id = su.studentId where su.title <> 'yếu'
+      group by s.id having count(*) = 2`, {
+        type: sequelize.QueryTypes.SELECT
+      })
+    }
+    return {
+      EM: "success",
+      EC: 0,
+      DT: freeStudentsInThisYear,
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      EM: "not found",
+      EC: 1,
+      DT: "",
+    };
+  }
+}
+
 module.exports = {
   serviceCreateNewStudent,
   getAllStudentService,
@@ -311,5 +364,6 @@ module.exports = {
   updateStudentService,
   deleteStudentService,
   getStudentByClassnameService,
-  getAllNonClassStudentByYear
+  getAllNonClassStudentByYear,
+  getAllNonClassStudentByClassId
 };
