@@ -56,7 +56,7 @@ const getAllStudentService = async (gradeId, year) => {
               include: {
                 model: db.grades,
                 where: {
-                  gradeId: gradeId,
+                  id: gradeId,
                   year: year,
                 },
               },
