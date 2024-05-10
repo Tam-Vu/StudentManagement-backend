@@ -36,5 +36,6 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "subjectresults",
     }
   );
+
   return subjectresults;
 };

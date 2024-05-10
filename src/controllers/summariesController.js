@@ -72,5 +72,25 @@ class summariesController {
       return res.status(500).json({ message: e.message });
     }
   };
+
+  handleShowSummariesByStudentId = async(req, res) => {
+    try {
+      let id = req.body.studentId;
+      await summariesService.getDetailsTranscriptByStudentId(id)
+      .then((data) => {
+        res.status(200).json({
+          EM: data.EM,
+          EC: data.EC,
+          DT: data.DT,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+        res.status(500).json({ message: e.message });
+      });
+    } catch(e) {
+      return res.status(500).json({ message: e.message });
+    }
+  }
 }
 module.exports = new summariesController();

@@ -10,6 +10,8 @@ import summariesRoute from "./routes/summariesRoute";
 import assignmentRoute from "./routes/assignmentRoute";
 import summaryDetailsRoute from "./routes/summaryDetailsRoute";
 import subjectResultRoute from "./routes/subjectResultRoute";
+import subjectRoute from "./routes/subjectRoute";
+import tuitionsRoute from "./routes/tuitionsRoute"
 import cors from "cors";
 require("dotenv").config();
 
@@ -36,6 +38,8 @@ summariesRoute(app);
 assignmentRoute(app);
 summaryDetailsRoute(app);
 subjectResultRoute(app);
+subjectRoute(app);
+tuitionsRoute(app);
 Connection();
 app.listen(PORT, () => {
   console.log("backend is running in port: " + PORT);

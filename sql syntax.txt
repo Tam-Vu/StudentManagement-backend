@@ -1,40 +1,6 @@
-INSERT INTO `studentmanagement`.`subjects` (`subjectname`, `factor`, `createdAt`, `updatedAt`) 
-VALUES ('Toán', '2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO `studentmanagement`.`subjects` (`subjectname`, `factor`, `createdAt`, `updatedAt`) 
-VALUES ('lý', '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO `studentmanagement`.`subjects` (`subjectname`, `factor`, `createdAt`, `updatedAt`) 
-VALUES ('Hóa', '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO `studentmanagement`.`subjects` (`subjectname`, `factor`, `createdAt`, `updatedAt`) 
-VALUES ('Sinh', '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO `studentmanagement`.`subjects` (`subjectname`, `factor`, `createdAt`, `updatedAt`) 
-VALUES ('Anh', '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO `studentmanagement`.`subjects` (`subjectname`, `factor`, `createdAt`, `updatedAt`) 
-VALUES ('Văn', '2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO `studentmanagement`.`subjects` (`subjectname`, `factor`, `createdAt`, `updatedAt`) 
-VALUES ('Sử', '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO `studentmanagement`.`subjects` (`subjectname`, `factor`, `createdAt`, `updatedAt`) 
-VALUES ('Địa', '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO `studentmanagement`.`subjects` (`subjectname`, `factor`, `createdAt`, `updatedAt`) 
-VALUES ('Thể dục', '0', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+Môn học sẽ tự nhập tay, lần lượt gồm: tên, hệ số điểm 15p, hệ số điểm 45p, hệ số điểm cuối kì, hệ số điểm của môn 
 
 ------------------------------------------------------------------------------------------------------------
-
-INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
-VALUES ('fifteenMinNum', '1', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
-VALUES ('fourtyFiveMinNum', '2', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
-VALUES ('lastTestMinNum', '3', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
 VALUES ('minPassScore', '5', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

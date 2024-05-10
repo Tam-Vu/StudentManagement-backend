@@ -13,6 +13,12 @@ module.exports = {
       studentId: {
         type: Sequelize.INTEGER,
       },
+      price: {
+        type: Sequelize.STRING,
+      },
+      status: {
+        type: Sequelize.STRING,
+      },
       month: {
         type: Sequelize.INTEGER,
       },
