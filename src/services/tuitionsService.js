@@ -31,6 +31,7 @@ const createTuitionByClassId = async(classId, price, month, year, closingdate) =
 const changeTuitionByClassId = async(tuitionId, price, month, year, closingdate) => {
     
 }
+
 module.exports = {
     createTuitionByClassId,
 }
