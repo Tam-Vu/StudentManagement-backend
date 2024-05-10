@@ -13,7 +13,19 @@ module.exports = {
       subjectname: {
         type: Sequelize.STRING,
       },
+      finalFactor: {
+        type: Sequelize.INTEGER,
+      },
+      fourtyFiveMinFactor: {
+        type: Sequelize.INTEGER,
+      },
+      fifteenMinFactor: {
+        type: Sequelize.INTEGER,
+      },
       factor: {
+        type: Sequelize.INTEGER,
+      },
+      isdeleted: {
         type: Sequelize.INTEGER,
       },
       createdAt: {

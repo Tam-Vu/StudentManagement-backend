@@ -33,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       behaviorpoint: DataTypes.INTEGER,
       discipline: DataTypes.STRING,
       classId: DataTypes.INTEGER,
+      studentId: DataTypes.INTEGER,
     },
     {
       sequelize,

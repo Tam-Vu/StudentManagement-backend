@@ -117,5 +117,26 @@ class StudentController {
       return res.status(500).json({message: e.message});
     }
   }
+
+  handleFindAllNonClassStudentByClassId = async(req, res) => {
+    try {
+      let classId = req.params.id;
+      console.log(classId)
+      await studentService.getAllNonClassStudentByClassId(classId)
+      .then((data) => {
+        res.status(200).json({
+          EM: data.EM,
+          EC: data.EC,
+          DT: data.DT,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+      });
+    } catch(e) {
+      return res.status(500).json({message: e.message});
+    }
+  }
 }
 module.exports = new StudentController();
