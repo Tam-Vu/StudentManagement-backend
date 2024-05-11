@@ -7,17 +7,7 @@ const fs = require('fs');
 const { Op } = require('sequelize');
 
 
-const serviceCreateNewStudent = async (
-  studentname,
-  birthDate,
-  startDate,
-  gender,
-  address,
-  classId,
-  parentId,
-  tuitionId,
-  userId
-) => {
+const serviceCreateNewStudent = async (studentname, birthDate, startDate, gender, address, classId, parentId, tuitionId, userId ) => {
   try {
     let data = await db.students.create({
       studentname: studentname,

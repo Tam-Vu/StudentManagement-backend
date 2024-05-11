@@ -20,8 +20,7 @@ class GradeController {
   findGradeByYear = async (req, res) => {
     let year = req.params.year;
     console.log(year);
-    await gradeService
-      .findAllGradesByYear(year)
+    await gradeService.findAllGradesByYear(year)
       .then((grade) => {
         res.status(200).json({
           EM: grade.EM,
