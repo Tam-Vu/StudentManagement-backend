@@ -274,6 +274,7 @@ const getStudentByClassnameService = async (classname) => {
 //lấy học sinh chưa có lớp trong năm học đang chọn 
 const getAllNonClassStudentByYear = async(year) => {
   try{
+    console.log("hello");
     let studentsInThisYear = await sequelize.query(`select * from students where students.id not in 
     (select distinct students.id from students left join summaries on students.id = summaries.studentId left join classes 
     on classes.id = summaries.classId left join grades on classes.gradeId = grades.id where grades.year = :year)`, {

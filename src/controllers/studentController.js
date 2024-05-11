@@ -93,6 +93,7 @@ class StudentController {
   handleFindNonClassStudent = async(req, res) => {
     try {
       let year = req.params.year;
+      console.log(year);
       let data = await studentService.getAllNonClassStudentByYear(year);
       let studentData = {};
       studentData = data;
