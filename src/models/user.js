@@ -15,9 +15,9 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.teachers, {
         foreignKey: "userId",
       });
-      User.belongsTo(models.GroupUser, {
-        foreignKey: "groupId",
-      });
+      // User.belongsTo(models.GroupUser, {
+      //   foreignKey: "groupId",
+      // });
     }
   }
   User.init(
