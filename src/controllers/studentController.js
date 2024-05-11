@@ -9,14 +9,7 @@ class StudentController {
       let gender = req.body.gender;
       let address = req.body.address;
       let userId = req.body.userId;
-      let user = await studentService.serviceCreateNewStudent(
-        studentname,
-        birthDate,
-        startDate,
-        gender,
-        address,
-        userId
-      );
+      let user = await studentService.serviceCreateNewStudent( studentname, birthDate, startDate, gender, address, userId);
       res.status(200).json({
         EM: user.EM,
         EC: user.EC,
@@ -30,8 +23,7 @@ class StudentController {
     try {
       const gradeId = req.query.gradeId || "";
       const year = req.query.year || "";
-      await studentService
-        .getAllStudentService(gradeId, year)
+      await studentService.getAllStudentService(gradeId, year)
         .then((data) => {
           res.status(200).json({
             EM: data.EM,
@@ -63,11 +55,7 @@ class StudentController {
     try {
       let id = req.params.id;
       let belongtoclassId = req.params.btcId;
-      let updatedAccount = await studentService.updateStudentService(
-        req.body,
-        id,
-        belongtoclassId
-      );
+      let updatedAccount = await studentService.updateStudentService( req.body, id, belongtoclassId);
       res.status(200).json({
         EM: updatedAccount.EM,
         EC: updatedAccount.EC,
@@ -104,7 +92,7 @@ class StudentController {
   
   handleFindNonClassStudent = async(req, res) => {
     try {
-      let year = req.body.year;
+      let year = req.params.year;
       let data = await studentService.getAllNonClassStudentByYear(year);
       let studentData = {};
       studentData = data;

@@ -164,7 +164,6 @@ let data = await db.summaries.findAll({
       model: db.students,
       attributes: ['studentname']
     },
-
     {
       model: db.classes,
       attributes:['classname'],

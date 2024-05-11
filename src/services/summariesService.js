@@ -37,8 +37,11 @@ const createSummaryService = async (data) => {
       });
 
       //Khi tạo học bạ thì tạo các môn trong học bạ
-      let subjects = await db.subjects.findAll();
-      console.log(subjects);
+      let subjects = await db.subjects.findAll({
+        where: {
+          isdeleted: 0,
+        }
+      });
       for (const subject of subjects) {
         await db.subjectresults.create({
           summaryId: res.id,
