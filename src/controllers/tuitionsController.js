@@ -78,9 +78,30 @@ class TuitionsController {
             res.status(500).json({ message: e.message });
         }
     }
+
+    handleFindAllTuitionOfStudentInYear = async(req, res) => {
+      try {
+        let year = req.params.year;
+        await tuitionsService.getAllTuitionOfStudentInYear(year)
+        .then((data) => {
+            res.status(200).json({
+              EM: data.EM,
+              EC: data.EC,
+              DT: data.DT,
+            });
+          })
+          .catch((e) => {
+            console.log(e);
+            res.status(500).json({ message: e.message });
+          });
+    } catch(e) {
+        res.status(500).json({ message: e.message });
+    }
+    }
 }
 
 
 // payTuition,
 // getAllTuitionsByStudentId,
+//getAllTuitionOfStudentInYear
 module.exports = new TuitionsController();

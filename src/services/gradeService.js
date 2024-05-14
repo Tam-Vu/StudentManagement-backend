@@ -3,6 +3,10 @@ import db from "../models/index";
 import { FORCE } from "sequelize/lib/index-hints";
 const createNewYearGrade = async (newYear) => {
   try {
+    await db.students.update({
+      statusinyear: 0,
+    }, {where: {}})
+
     let data = await db.grades.bulkCreate([
       {
         gradename: "10",

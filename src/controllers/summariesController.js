@@ -3,15 +3,15 @@ import summariesService from "../services/summariesService";
 class summariesController {
   handleCreatesummaries = async (req, res) => {
     try {
-      let data = await summariesService.createSummaryService(
-        req.body
-      );
+      let arrayStudentId = req.body.data;
+      let classId = req.params.id;
+      let data = await summariesService.createSummaryService(arrayStudentId, classId);
       let userData = {};
       userData = data;
       res.status(200).json({
-        EM: userData.EM,
-        EC: userData.EC,
-        DT: userData.DT,
+        EM: res.EM,
+        EC: res.EC,
+        DT: res.DT,
       });
     } catch (e) {
       return res.status(500).json({ message: e.message });

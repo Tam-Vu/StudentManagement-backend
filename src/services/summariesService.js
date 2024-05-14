@@ -5,42 +5,22 @@ import subjectresults from "../models/subjectresults"
 const { Op } = require("sequelize");
 
 // Tạo học bạ
-const createSummaryService = async (data) => {
-  let checkStudent = {};
+const createSummaryService = async (arrayStudentId, classId) => {
   try {
-    // kiểm tra tham số đầu vào
-    if (!data.studentId || !data.classId) {
-      return {
-        EM: "All fields are required!!!",
-        EC: 1,
-        DT: [],
-      };
-    } else {
-      // kiểm tra xem hs có lớp chưa
-      checkStudent = await db.summaries.findOne({
-        where: {
-          classId: data.classId,
-          studentId: data.studentId,
-        },
-      });
-      if (checkStudent) {
-        return {
-          EM: "This student is already in this class",
-          EC: 1,
-          DT: [],
-        };
+    let subjects = await db.subjects.findAll({
+      where: {
+        isdeleted: 0,
       }
-      
+    });
+    arrayStudentId.forEach(async(studentId) => {        
+      await db.students.update({
+        statusinyear: 1,
+      }, {where: {
+        id: studentId
+      }})
       let res = await db.summaries.create({
-        studentId: data.studentId,
-        classId: data.classId,
-      });
-
-      //Khi tạo học bạ thì tạo các môn trong học bạ
-      let subjects = await db.subjects.findAll({
-        where: {
-          isdeleted: 0,
-        }
+        studentId: studentId,
+        classId: classId,
       });
       for (const subject of subjects) {
         await db.subjectresults.create({
@@ -48,13 +28,13 @@ const createSummaryService = async (data) => {
           subjectId: subject.id,
         });
       }
-
-      return {
-        EM: "success",
-        EC: 0,
-        DT: res,
-      };
-    }
+      }
+    );
+    return {
+      EM: "success",
+      EC: 0,
+      DT: res,
+    };
   } catch (e) {
     console.log(e);
     return {

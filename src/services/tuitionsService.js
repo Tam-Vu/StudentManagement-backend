@@ -3,29 +3,44 @@ import db, { sequelize } from "../models/index";
 
 
 const createTuitionByClassId = async(classId, price, month, year, closingdate) => {
-    let studentsTemp = await db.students.findAll({
-        attributes: ['id'],
-        include: [
-            {
-                model: db.summaries,
-                attributes: { exclude: ["createdAt", "updatedAt"] },
-                where: {
-                    classId: classId,
-                }
-            },
-        ]
-    });
-    studentsTemp.forEach(async(student) => {
-        let studentId = student.dataValues.id;
-        await db.tuitions.create({
-            studentId: studentId,
-            price: price,
-            month: month,
-            year: year,
-            status: 0,
-            closingdate: closingdate
+    try {
+        let studentsTemp = await db.students.findAll({
+            attributes: ['id'],
+            include: [
+                {
+                    model: db.summaries,
+                    attributes: { exclude: ["createdAt", "updatedAt"] },
+                    where: {
+                        classId: classId,
+                    }
+                },
+            ]
+        });
+        studentsTemp.forEach(async(student) => {
+            let studentId = student.dataValues.id;
+            await db.tuitions.create({
+                studentId: studentId,
+                price: price,
+                month: month,
+                year: year,
+                status: 0,
+                closingdate: closingdate
+            })
         })
-    })
+        return {
+            EM: "success",
+            EC: 0,
+            DT: "",
+          };
+    }   
+    catch (e) {
+        console.log(e);
+        return {
+          EM: "can't create class tuition",
+          EC: 1,
+          DT: "",
+        };
+    }
 }
 
 // const getAllTuitionByClassId = async() => {
@@ -119,8 +134,56 @@ const getAllTuitionsByStudentId = async(studentId) => {
     }
 }
 
+const getAllTuitionOfStudentInYear = async(year) => {
+    try {
+        let data = await db.tuitions.findAll({
+            include: [
+                {
+                    model: db.students,
+                    include: [
+                        {
+                            model: db.summaries,
+                            include: [
+                                {
+                                    model: db.classes,
+                                    include: [
+                                        {
+                                            model: db.grades,
+                                            where: {
+                                                year: year
+                                            }
+                                        }
+                                    ],
+                                }
+                            ]
+                        }
+                    ]
+                },
+            ],
+            where: {
+                year: year,
+            },
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+        })
+        return {
+            EM: "success",
+            EC: 0,
+            DT: data,
+        };
+    }
+    catch(e) {
+        console.log(e);
+        return {
+          EM: "can't find any tuistudents",
+          EC: 1,
+          DT:"",
+        };
+    }
+}
+
 module.exports = {
     createTuitionByClassId,
     payTuition,
     getAllTuitionsByStudentId,
+    getAllTuitionOfStudentInYear,
 }
