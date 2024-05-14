@@ -28,6 +28,9 @@ module.exports = {
       userId: {
         type: Sequelize.INTEGER,
       },
+      statusinyear: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

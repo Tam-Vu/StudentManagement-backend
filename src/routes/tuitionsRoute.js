@@ -7,7 +7,7 @@ const tuitionsRoute = (app) => {
     // router.get("/class", tuitionsController.handleFindAllTuitionsByClass);
     router.get("/my-tuitions", tuitionsController.handleGetAllTuitionsByStudentId);
     router.put("/pay/:tuitionId", tuitionsController.handlePayTuition);
-
+    router.get("/in-year/:year", tuitionsController.handleFindAllTuitionOfStudentInYear);
     return app.use("/tuitions", router);
 }
 export default tuitionsRoute;
