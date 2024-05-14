@@ -16,7 +16,8 @@ const serviceCreateNewStudent = async (studentname, birthDate, startDate, gender
       gender: gender,
       address: address,
       userId: userId,
-      classesId: classId
+      classesId: classId,
+      statusinyear: 0,
     });
     return {
       EM: "success",
@@ -307,12 +308,25 @@ const getAllNonClassStudentByClassId = async(classId) => {
         DT: "",
       };
     }
+    let yearTemp = await db.grades.findOne({
+      attributes:['year'],
+      include:[
+        {
+          model: db.classes,
+          where: {
+            id: classId,
+          }
+        }
+      ]
+    });
+    let year = yearTemp.dataValues.year;
     let className = classNameTemp.dataValues.classname;
     //lấy học sinh chưa có lớp 10: tức là chưa có bất kì học bạ nào đạt
     if(className.startsWith("10")) {
       freeStudentsInThisYear = await sequelize.query(`select distinct s.* from students s
       left join summaries su on s.id = su.studentId where su.studentId is null or not exists
-      (select 1 from summaries where studentId = s.id and title <> 'yếu')`, {
+      (select 1 from summaries where studentId = s.id and title <> 'yếu') and s.statusinyear = 0`, {
+        replacements:{year},
         type: sequelize.QueryTypes.SELECT
       })
     }
@@ -321,7 +335,8 @@ const getAllNonClassStudentByClassId = async(classId) => {
     else if(className.startsWith("11")) {
       freeStudentsInThisYear = await sequelize.query(`select distinct s.* from students s
       join summaries su on s.id = su.studentId where su.title <> 'yếu'
-      group by s.id having count(*) = 1 `, {
+      group by s.id having count(*) = 1 and s.statusinyear = 0`, {
+        replacements:{year},
         type: sequelize.QueryTypes.SELECT
       })
     }
@@ -329,7 +344,8 @@ const getAllNonClassStudentByClassId = async(classId) => {
     else if(className.startsWith("12")) {
       freeStudentsInThisYear = await sequelize.query(`select distinct s.* from students s
       join summaries su on s.id = su.studentId where su.title <> 'yếu'
-      group by s.id having count(*) = 2`, {
+      group by s.id having count(*) = 2 s.statusinyear = 0`, {
+        replacements:{year},
         type: sequelize.QueryTypes.SELECT
       })
     }
