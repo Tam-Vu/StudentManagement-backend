@@ -91,7 +91,7 @@ const payTuition = async(tuitionId) => {
                     id: tuitionId,
                 }
             }
-        )
+        );
         let data = await db.tuitions.findOne({
             where: {
                 id: tuitionId,
@@ -181,9 +181,42 @@ const getAllTuitionOfStudentInYear = async(year) => {
     }
 }
 
+const paySingleDebt = async(tuitionId, price, month, year, closingdate) => {
+    try {
+        let studentIdTemp = await db.tuitions.findOne({
+            where: {
+                id: tuitionId,
+            },
+            attributes:['studentId'],
+        });
+        let studentId = studentIdTemp.dataValues.studentId;
+        let data = await db.tuitions.create({
+            studentId: studentId,
+            price: price,
+            month: month,
+            year: year,
+            status: 0,
+            closingdate: closingdate,
+        });
+        return {
+            EM: "success",
+            EC: 0,
+            DT: data,
+        };
+    } catch(e) {
+        console.log(e);
+        return {
+          EM: "can't create this tuition",
+          EC: 1,
+          DT:"",
+        };
+    }
+}
+
 module.exports = {
     createTuitionByClassId,
     payTuition,
     getAllTuitionsByStudentId,
     getAllTuitionOfStudentInYear,
+    paySingleDebt,
 }

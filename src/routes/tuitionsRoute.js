@@ -6,8 +6,9 @@ const tuitionsRoute = (app) => {
     router.post("/add-tuitions", tuitionsController.handleCreateTuitionsByClass);
     // router.get("/class", tuitionsController.handleFindAllTuitionsByClass);
     router.get("/my-tuitions", tuitionsController.handleGetAllTuitionsByStudentId);
-    router.put("/pay/:tuitionId", tuitionsController.handlePayTuition);
+    router.put("/pay/:id", tuitionsController.handlePayTuition);
     router.get("/in-year/:year", tuitionsController.handleFindAllTuitionOfStudentInYear);
+    router.post("/pay-debt/:id", tuitionsController.handlePayDebt);
     return app.use("/tuitions", router);
 }
-export default tuitionsRoute;
+export default tuitionsRoute;   
