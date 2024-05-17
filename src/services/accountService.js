@@ -1,6 +1,8 @@
 import { where } from "sequelize";
 import db from "../models/index";
 import bcrypt from "bcryptjs";
+import {createJWT} from '../middleware/jwtService'
+import { access } from "fs";
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -8,6 +10,10 @@ const hashUserPassword = (userPass) => {
   let hashPassword = bcrypt.hashSync(userPass, salt);
   return hashPassword;
 };
+
+const checkPass = (inputPass, hashPass) => {
+  return bcrypt.compareSync(inputPass, hashPass);
+}
 
 const serviceCreateNewAccount = async (username, password, email, groupId) => {
   let hashPass = hashUserPassword(password);
@@ -118,10 +124,60 @@ const deleteUserService = async (id) => {
   return user.get({ plain: true });
 };
 
+const loginService = async(rawUsername, rawPass) => {
+  try {
+    let user = await db.User.findOne({
+      where: {
+        username: rawUsername
+      },
+      include: [
+        {
+          model: db.students,
+        },
+        {
+          model: db.teachers,
+        }
+      ]
+    });
+    console.log(user);
+    if(user) {  
+      let isCorrectPass = checkPass(rawPass, user.password);
+      if (isCorrectPass) {
+        let token = createJWT(user);
+        return {
+          EM: "success",
+          EC: 0,
+          DT: token
+        };
+      } else {
+        return {
+          EM: "invalid username or password",
+          EC: 0,
+          DT: "",
+        };
+      }
+    } else {
+      return {
+        EM: "invalid username or password",
+        EC: 0,
+        DT: "",
+      };
+    };
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "server error",
+      EC: 1,
+      DT: "",
+  };
+  }
+}
+
 module.exports = {
   serviceCreateNewAccount,
   getAllUserService,
   getUserByIdService,
   updateUserService,
   deleteUserService,
+  loginService
 };

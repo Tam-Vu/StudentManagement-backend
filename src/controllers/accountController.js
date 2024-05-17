@@ -1,6 +1,21 @@
 import accountService from "../services/accountService";
 
 class AccountController {
+  handleLogin = async(req, res) => {
+    try {
+      let username = req.body.username;
+      let password = req.body.password;
+      let data = await accountService.loginService(username, password);
+      res.status(200).json({
+        EM: data.EM,
+        EC: data.EC,
+        DT: data.DT,
+      });
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
+    }
+  }
+
   handleCreateNewAccount = async (req, res) => {
     try {
       let username = req.body.username;
