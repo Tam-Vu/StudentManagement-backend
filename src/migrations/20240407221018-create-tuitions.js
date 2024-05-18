@@ -17,7 +17,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       status: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       month: {
         type: Sequelize.INTEGER,

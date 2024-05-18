@@ -14,6 +14,7 @@ const tuitionsRoute = (app) => {
     "/in-year/:year",
     tuitionsController.handleFindAllTuitionOfStudentInYear
   );
+  router.post("/pay-debt/:id", tuitionsController.handlePayDebt);
   return app.use("/tuitions", router);
 };
 export default tuitionsRoute;
