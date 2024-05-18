@@ -1,15 +1,30 @@
 import accountService from "../services/accountService";
-
 class AccountController {
   handleLogin = async(req, res) => {
     try {
       let username = req.body.username;
       let password = req.body.password;
       let data = await accountService.loginService(username, password);
+      if (data.DT && data) {
+        res.cookie("jwt", data.DT.token, {httpOnly: true, maxAge: 60*60*1000*24*7})
+      }
       res.status(200).json({
         EM: data.EM,
         EC: data.EC,
         DT: data.DT,
+      });
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
+    }
+  }
+
+  handleLogout = (req, res) => {
+    try {
+      res.clearCookie("jwt");
+      res.status(200).json({
+        EM: "success",
+        EC: 0,
+        DT: '',
       });
     } catch (e) {
       return res.status(500).json({ message: e.message });
