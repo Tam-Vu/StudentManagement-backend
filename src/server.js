@@ -11,7 +11,7 @@ import assignmentRoute from "./routes/assignmentRoute";
 import summaryDetailsRoute from "./routes/summaryDetailsRoute";
 import subjectResultRoute from "./routes/subjectResultRoute";
 import subjectRoute from "./routes/subjectRoute";
-import tuitionsRoute from "./routes/tuitionsRoute"
+import tuitionsRoute from "./routes/tuitionsRoute";
 import cors from "cors";
 require("dotenv").config();
 
@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: "http://localhost:5173",
-    methods: "GET,POST,PUT,DELETE",
+    methods: "GET,POST,PUT,PATCH,DELETE",
     credentials: true,
   })
 );
