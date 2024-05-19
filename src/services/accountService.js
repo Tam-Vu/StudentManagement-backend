@@ -3,6 +3,7 @@ import db from "../models/index";
 import bcrypt from "bcryptjs";
 import { createJWT } from "../middleware/jwtService";
 import { access } from "fs";
+import { group } from "console";
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -141,23 +142,28 @@ const loginService = async (rawUsername, rawPass) => {
         },
       ],
     });
-    user = user.get({ plain: true });
-    console.log("user", user);
     if (user) {
+      user = user.get({ plain: true });
       let isCorrectPass = checkPass(rawPass, user.password);
-      console.log("ISCORRECT", isCorrectPass);
       if (isCorrectPass) {
         let payload = {};
         if (user.teacher !== null) {
           payload = {
-            user: user,
+            id: user.id,
+            role: user.groupId,
             teacherId: user.teacher.id,
             subjectId: user.teacher.subjectId,
           };
+        } else if (user.student !== null) {
+          payload = {
+            id: user.id,
+            role: user.groupId,
+            studentId: user.student.id,
+          };
         } else {
           payload = {
-            user: user,
-            studentId: user.student.id,
+            id: user.id,
+            role: user.groupId,
           };
         }
         let token = createJWT(payload);
