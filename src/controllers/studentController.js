@@ -3,6 +3,7 @@ import studentService from "../services/studentService";
 class StudentController {
   handleCreateNewStudent = async (req, res) => {
     try {
+      // console.log(req.user);
       let studentname = req.body.studentname;
       let birthDate = req.body.birthDate;
       let startDate = req.body.startDate;

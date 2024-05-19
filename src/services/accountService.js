@@ -133,22 +133,42 @@ const loginService = async (rawUsername, rawPass) => {
       include: [
         {
           model: db.students,
+          attribute: ["id"],
         },
         {
           model: db.teachers,
+          attribute: ["subjectId", "id"],
         },
       ],
     });
-    console.log(user);
+    user = user.get({ plain: true });
+    console.log("user", user);
     if (user) {
       let isCorrectPass = checkPass(rawPass, user.password);
       console.log("ISCORRECT", isCorrectPass);
       if (isCorrectPass) {
-        let token = createJWT(user);
+        let payload = {};
+        if (user.teacher !== null) {
+          payload = {
+            user: user,
+            teacherId: user.teacher.id,
+            subjectId: user.teacher.subjectId,
+          };
+        } else {
+          payload = {
+            user: user,
+            studentId: user.student.id,
+          };
+        }
+        let token = createJWT(payload);
         return {
           EM: "success",
           EC: 0,
-          DT: token,
+          DT: {
+            token,
+            payload,
+          },
+          // DT: token,
         };
       } else {
         return {
@@ -174,6 +194,8 @@ const loginService = async (rawUsername, rawPass) => {
   }
 };
 
+const logoutService = () => {};
+
 module.exports = {
   serviceCreateNewAccount,
   getAllUserService,
@@ -181,4 +203,5 @@ module.exports = {
   updateUserService,
   deleteUserService,
   loginService,
+  logoutService,
 };

@@ -1,6 +1,7 @@
 import express from "express";
 import studentController from "../controllers/studentController";
 import summariesController from "../controllers/summariesController";
+import {checkUserJwt} from '../middleware/jwtService'
 const router = express.Router();
 // const studentRouter = express.Router();
 /**
@@ -9,16 +10,10 @@ const router = express.Router();
  */
 //gọi tên hàm từ controller không cần ()
 const studentRouter = (app) => {
-  router.get(
-    "/get-class/:id",
-    summariesController.handleFindAllClassByStudentId
-  );
+  router.get("/get-class/:id",summariesController.handleFindAllClassByStudentId);
   router.get("/:id", studentController.handleFindStudentById);
   router.get("/", summariesController.handleFindAllStudent);
-  router.put(
-    "/update-student/:id/:btcId",
-    studentController.handleUpdateStudent
-  );
+  router.put("/update-student/:id/:btcId",studentController.handleUpdateStudent);
   router.put("/delete-student/:id", studentController.handleDeleteStudent);
   router.post("/create-student", studentController.handleCreateNewStudent);
   // router.get("/student-without-class/:year", studentController.handleFindNonClassStudent);
