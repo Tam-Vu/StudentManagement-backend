@@ -166,7 +166,11 @@ const loginService = async (rawUsername, rawPass) => {
             role: user.groupId,
           };
         }
-        let token = createJWT(payload);
+        let tokenJson = {
+          username: user.username,
+          email: user.email,
+        };
+        let token = createJWT(tokenJson);
         return {
           EM: "success",
           EC: 0,

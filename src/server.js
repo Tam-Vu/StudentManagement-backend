@@ -33,7 +33,6 @@ app.use(cookieParser());
 //     next();
 //   }
 // }
-app.all("*", checkUserJwt);
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -41,7 +40,7 @@ app.use(
     credentials: true,
   })
 );
-
+app.all("*", checkUserJwt);
 GradeRoutes(app);
 AccountRoutes(app);
 studentRouter(app);
