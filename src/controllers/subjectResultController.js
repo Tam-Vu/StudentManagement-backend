@@ -26,5 +26,20 @@ class subjectResult {
             return res.status(500).json({ message: e.message });
         }
     }
+
+    handleFindAllTranscript = async(req, res) => {
+        try {
+            let studentId = req.params.id;
+            let data = await subjectResultSerivce.getDetailsTranscriptByStudentId(studentId);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT
+            })
+        } catch (e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
 }
+// getDetailsTranscriptByStudentId
 module.exports = new subjectResult();

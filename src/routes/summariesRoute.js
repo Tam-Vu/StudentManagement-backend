@@ -8,7 +8,8 @@ const summariesRoute = (app) => {
     router.get("/get-student/:id",summariesController.handleFindAllStudentByClassId);
     // router.get("/get-grade", classController.handleGetAllClassesByGrade);
     // router.get("/", classController.handleGetAllClasses);
-    router.post("/my-transcript", summariesController.handleShowSummariesByStudentId);
+    router.get("/my-transcript/:id", summariesController.handleShowSummariesByStudentId);
+    router.get("/best-student/:year", summariesController.handleShowBestStudentInEachGrade);
   return app.use("/summaries", router);
 };
 export default summariesRoute;
