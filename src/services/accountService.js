@@ -1,7 +1,7 @@
 import { where } from "sequelize";
 import db from "../models/index";
 import bcrypt from "bcryptjs";
-import {createJWT} from '../middleware/jwtService'
+import { createJWT } from "../middleware/jwtService";
 import { access } from "fs";
 import { group } from "console";
 
@@ -14,7 +14,7 @@ const hashUserPassword = (userPass) => {
 
 const checkPass = (inputPass, hashPass) => {
   return bcrypt.compareSync(inputPass, hashPass);
-}
+};
 
 const serviceCreateNewAccount = async (username, password, email, groupId) => {
   let hashPass = hashUserPassword(password);
@@ -125,47 +125,46 @@ const deleteUserService = async (id) => {
   return user.get({ plain: true });
 };
 
-const loginService = async(rawUsername, rawPass) => {
+const loginService = async (rawUsername, rawPass) => {
   try {
     let user = await db.User.findOne({
       where: {
-        username: rawUsername
+        username: rawUsername,
       },
       include: [
         {
           model: db.students,
-          attribute: ['id'],
+          attribute: ["id"],
         },
         {
           model: db.teachers,
-          attribute: ['subjectId', 'id'],
-        }
-      ]
+          attribute: ["subjectId", "id"],
+        },
+      ],
     });
-    if(user) {  
-      user = user.get({plain: true})
+    if (user) {
+      user = user.get({ plain: true });
       let isCorrectPass = checkPass(rawPass, user.password);
       if (isCorrectPass) {
-        let payload = {}
-        if(user.teacher !== null) {
+        let payload = {};
+        if (user.teacher !== null) {
           payload = {
             id: user.id,
             role: user.groupId,
             teacherId: user.teacher.id,
             subjectId: user.teacher.subjectId,
-          }
+          };
         } else if (user.student !== null) {
           payload = {
             id: user.id,
             role: user.groupId,
             studentId: user.student.id,
-          }
-        }
-        else {
+          };
+        } else {
           payload = {
             id: user.id,
             role: user.groupId,
-          }
+          };
         }
         let tokenJson = {
           username: user.username,
@@ -177,7 +176,7 @@ const loginService = async(rawUsername, rawPass) => {
           EC: 0,
           DT: {
             token,
-            payload
+            payload,
           },
           // DT: token,
         };
@@ -194,20 +193,18 @@ const loginService = async(rawUsername, rawPass) => {
         EC: 0,
         DT: "",
       };
-    };
-  } catch(e) {
+    }
+  } catch (e) {
     console.log(e);
     return {
       EM: "server error",
       EC: 1,
       DT: "",
-  };
+    };
   }
-}
+};
 
-const logoutService = () => {
-
-}
+const logoutService = () => {};
 
 module.exports = {
   serviceCreateNewAccount,
@@ -216,5 +213,5 @@ module.exports = {
   updateUserService,
   deleteUserService,
   loginService,
-  logoutService
+  logoutService,
 };
