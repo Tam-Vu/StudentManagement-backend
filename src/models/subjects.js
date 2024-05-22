@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       fourtyFiveMinFactor: DataTypes.INTEGER,
       finalFactor: DataTypes.INTEGER,
       factor: DataTypes.INTEGER,
+      minPassScore: DataTypes.FLOAT,
       isdeleted: DataTypes.INTEGER,
     },
     {
