@@ -46,6 +46,9 @@ module.exports = {
       finalTest: {
         type: Sequelize.FLOAT,
       },
+      minPassScore: {
+        type: Sequelize.FLOAT,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
