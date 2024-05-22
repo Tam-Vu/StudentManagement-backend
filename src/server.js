@@ -26,14 +26,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// const checkUserLogin = (req, res, next) => {
-//   const nonSecurePath = ['/login'];
-//   if (nonSecurePath.includes(req.path)) return next();
-//   if(user) {
-//     next();
-//   }
-// }
-app.all('*', checkUserJwt);
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -41,6 +33,7 @@ app.use(
     credentials: true,
   })
 );
+// app.all('*', checkUserJwt);
 
 GradeRoutes(app);
 AccountRoutes(app);
