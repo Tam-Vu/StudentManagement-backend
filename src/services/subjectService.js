@@ -53,7 +53,7 @@ const findSubjectById = async(subjectId) => {
     }
 }
 
-const createSubject = async(name, fifteenMinFactor, fourtyFiveMinFactor, finalFactor, factor) => {
+const createSubject = async(name, fifteenMinFactor, fourtyFiveMinFactor, finalFactor, factor, minPassScore) => {
     try {
         let checkSubject = await db.subjects.findOne({
             where: {
@@ -72,6 +72,7 @@ const createSubject = async(name, fifteenMinFactor, fourtyFiveMinFactor, finalFa
             fifteenMinFactor: fifteenMinFactor,
             fourtyFiveMinFactor: fourtyFiveMinFactor,
             finalFactor: finalFactor,
+            minPassScore: minPassScore,
             factor: factor,
             isdeleted: 0,
         });
@@ -90,7 +91,7 @@ const createSubject = async(name, fifteenMinFactor, fourtyFiveMinFactor, finalFa
     
 }
 
-const updateSubject = async(subjectId, name, fifteenMinFactor, fourtyFiveMinFactor, finalFactor, factor) => {
+const updateSubject = async(subjectId, name, fifteenMinFactor, fourtyFiveMinFactor, finalFactor, factor, minPassScore) => {
     try {
         let subject = {};
         subject = await db.subjects.findOne({
@@ -106,6 +107,7 @@ const updateSubject = async(subjectId, name, fifteenMinFactor, fourtyFiveMinFact
                 fifteenMinFactor: fifteenMinFactor,
                 fourtyFiveMinFactor: fourtyFiveMinFactor,
                 finalFactor: finalFactor,
+                minPassScore: minPassScore,
                 factor: factor,
             }, {
                 where: {

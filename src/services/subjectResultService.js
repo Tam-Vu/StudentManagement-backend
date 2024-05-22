@@ -103,12 +103,13 @@ const inputScoreService = async (
   });
   let lastTestMinNum = temp3.dataValues.finalFactor;
 
-  let temp4 = await db.params.findOne({
-    where: { paramName: "minPassScore" },
-    attributes: ["paramValue"],
+  let temp4 = await db.subjects.findOne({
+    where: { id: subjectId },
+    attributes: ["minPassScore"],
   });
-  let finalResult = temp4.dataValues.paramValue;
-  console.log("dataValues", finalResult);
+  let finalResult = temp4.dataValues.minPassScore;
+  console.log(finalResult);
+
   let conclude;
   let allCoefficient = 0;
   let totalScore = 0;
