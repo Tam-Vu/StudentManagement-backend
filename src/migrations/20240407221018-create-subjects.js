@@ -25,6 +25,9 @@ module.exports = {
       factor: {
         type: Sequelize.INTEGER,
       },
+      minPassScore: {
+        type: Sequelize.FLOAT,
+      },
       isdeleted: {
         type: Sequelize.INTEGER,
       },
