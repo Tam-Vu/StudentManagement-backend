@@ -2,6 +2,7 @@ import { where } from "sequelize";
 import db, { Sequelize, sequelize } from "../models/index";
 import subjects from "../models/subjects";
 import subjectresults from "../models/subjectresults"
+import middlewareTrigger from "../middleware/trigger"
 const { Op } = require("sequelize");
 
 // Tạo học bạ
@@ -21,7 +22,11 @@ const createSummaryService = async (arrayStudentId, classId) => {
       let res = await db.summaries.create({
         studentId: studentId,
         classId: classId,
+        behaviorpoint: 100,
       });
+
+      await middlewareTrigger.totalStudentInclass(classId);
+
       for (const subject of subjects) {
         await db.subjectresults.create({
           summaryId: res.id,
@@ -33,7 +38,7 @@ const createSummaryService = async (arrayStudentId, classId) => {
     return {
       EM: "success",
       EC: 0,
-      DT: res,
+      DT: "res",
     };
   } catch (e) {
     console.log(e);
@@ -289,8 +294,7 @@ const getDetailsTranscriptByStudentId = async(studentId) => {
       attributes: { exclude: ["createdAt", "updatedAt"] },
       where: {
         studentId: studentId
-      }
-      ,
+      },
       include: [
         {
           model: db.subjectresults,
@@ -301,6 +305,10 @@ const getDetailsTranscriptByStudentId = async(studentId) => {
               attributes: ['subjectname'],
             }
           ]
+        },
+        {
+          model: db.classes,
+          attributes: ['classname'],  
         }
       ]
     })
@@ -319,35 +327,10 @@ const getDetailsTranscriptByStudentId = async(studentId) => {
   }
 } 
 
-const getBestStudentInEachGrade = async(year) => {
-  try {
-    let bestStudentInGrade10 = await sequelize.query(`select * from students a inner join summaries b on 
-    a.id = b.studentId inner join classes c on b.classId = c.id inner join grades d on c.gradeId = d.id where
-    d.gradename = "10" and d.year = 2025 order by b.gpa desc limit 1`, {
-      // replacements:{year},
-      type: sequelize.QueryTypes.SELECT
-    });
-    console.log(bestStudentInGrade10);
-    return {
-      EM: "success",
-      EC: 0,
-      DT: bestStudentInGrade10,
-    }
-  } catch(e) {
-    console.log(e);
-    return {
-      EM: "something wrong with service",
-      EC: 1,
-      DT: "",
-    };
-  }
-}
-
 module.exports = {
   getAllStudentByClassIdService,
   getAllClassByStudentIdService,
   createSummaryService,
   getAllStudentService,
   getDetailsTranscriptByStudentId,
-  getBestStudentInEachGrade,
 };

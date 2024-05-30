@@ -71,6 +71,22 @@ class ClassController {
     });
   }
 
+  handleFindAllClassByTeacher = async(req, res) => {
+    try {
+      let teacherId = req.params.teacherId;
+      await classService.getAllClassesByTeacherId(teacherId)
+      .then((data) => {
+        res.status(200).json({
+          EM: data.EM,
+          ED: data.ED,
+          DT: data.DT,
+        });
+      })
+    } catch(e) {
+      console.log(e);
+      res.status(500).json({ message: e.message });
+    }
+  }
   
 }
 

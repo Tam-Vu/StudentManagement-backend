@@ -117,6 +117,19 @@ class TuitionsController {
     }
   }
 
+  handleFindAllTuitionsOfOneStudent = async(req, res) => {
+    try { 
+      let id = req.params.id;
+      let data = await tuitionsService.findAllTuitionsByStudentId(id);
+      res.status(200).json({
+        EM: data.EM,
+        EC: data.EC,
+        DT: data.DT,
+      });
+    } catch(e) {
+      return res.status(500).json({ message: e.message });
+    }
+  }
 
 }
 

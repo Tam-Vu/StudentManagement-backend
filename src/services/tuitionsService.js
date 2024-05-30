@@ -213,10 +213,33 @@ const paySingleDebt = async(tuitionId, price, month, year, closingdate) => {
     }
 }
 
+const findAllTuitionsByStudentId = async(id) => {
+    try {
+        let data = await db.tuitions.findAll({
+            where: {
+                studentId: id,
+            }
+        });
+        return {
+            EM: "success",
+            EC: 0,
+            DT: data,
+        };
+    } catch(e) {
+        console.log(e);
+        return {
+          EM: "can't find tuitions of this student",
+          EC: 1,
+          DT:"",
+        };
+    }
+}
+
 module.exports = {
     createTuitionByClassId,
     payTuition,
     getAllTuitionsByStudentId,
     getAllTuitionOfStudentInYear,
     paySingleDebt,
+    findAllTuitionsByStudentId,
 }

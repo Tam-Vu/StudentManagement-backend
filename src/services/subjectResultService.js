@@ -1,5 +1,6 @@
 import { FLOAT, where } from "sequelize";
 import db from "../models/index";
+import trigger from "../middleware/trigger"
 
 const findAllSubjectResultService = async(summaryId) => {
     let subjectResults = await db.subjectresults.findAll({
@@ -66,18 +67,25 @@ fourtyFive_1, fourtyFive_2, finalExam, subjectId) => {
         }
     })
     let subjectResultId = subjectResultIdTemp.dataValues.id;
-    let temp1 = await db.subjects.findOne({where:{id:subjectId},attributes: [ 'fifteenMinFactor' ]});
-    let fifteenMinNum = temp1.dataValues.fifteenMinFactor;
+    // let temp1 = await db.subjects.findOne({where:{id:subjectId},attributes: [ 'fifteenMinFactor' ]});
+    // let fifteenMinNum = temp1.dataValues.fifteenMinFactor;
 
-    let temp2 = await db.subjects.findOne({where:{id:subjectId}, attributes: [ 'fourtyFiveMinFactor' ]});
-    let fourtyFiveMinNum = temp2.dataValues.fourtyFiveMinFactor;
+    // let temp2 = await db.subjects.findOne({where:{id:subjectId}, attributes: [ 'fourtyFiveMinFactor' ]});
+    // let fourtyFiveMinNum = temp2.dataValues.fourtyFiveMinFactor;
 
-    let temp3 = await db.subjects.findOne({where:{id:subjectId}, attributes: [ 'finalFactor' ]});
-    let lastTestMinNum = temp3.dataValues.finalFactor;
+    // let temp3 = await db.subjects.findOne({where:{id:subjectId}, attributes: [ 'finalFactor' ]});
+    // let lastTestMinNum = temp3.dataValues.finalFactor;
 
-    let temp4 = await db.subjects.findOne({where:{id:subjectId}, attributes: [ 'minPassScore' ]});
-    let finalResult = temp4.dataValues.minPassScore;
-    console.log(finalResult);
+    // let temp4 = await db.subjects.findOne({where:{id:subjectId}, attributes: [ 'minPassScore' ]});
+    // let finalResult = temp4.dataValues.minPassScore;
+
+    let subjectTemp = await db.subjects.findOne({where:{id:subjectId}});
+    let subject = subjectTemp.get({plain: true});
+    let fifteenMinNum = subject.fifteenMinFactor;
+    let fourtyFiveMinNum = subject.fourtyFiveMinFactor;
+    let lastTestMinNum = subject.finalFactor;
+    let finalResult = subject.fourtyFiveMinFactor;
+
     
     let conclude;
     let allCoefficient = 0;
@@ -110,8 +118,6 @@ fourtyFive_1, fourtyFive_2, finalExam, subjectId) => {
         allCoefficient+=lastTestMinNum;
         totalScore+=lastTestMinNum*finalExam;
     }
-    console.log(totalScore);
-    console.log(allCoefficient);
     let evarage = totalScore/allCoefficient;
     if (evarage >= finalResult) {
         conclude="Đạt";
@@ -142,6 +148,7 @@ fourtyFive_1, fourtyFive_2, finalExam, subjectId) => {
             id: subjectResultId,
         }
     })
+    await trigger.updateGpaFromSubjectResults(summary);
     return {
         EM: "success",
         EC: 0,
