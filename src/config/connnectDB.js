@@ -4,7 +4,7 @@ require("dotenv").config();
 const sequelize = new Sequelize(
   "studentmanagement",
   "root",
-  "Quangtrung13112004$",
+  "12345",
   {
     host: "localhost",
     dialect: "mysql",

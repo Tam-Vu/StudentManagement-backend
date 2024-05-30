@@ -9,6 +9,7 @@ const ClassRoute = (app) => {
   router.get("/get-grade/:gradename/:year",classController.handleGetAllClassesByGrade);
   router.get("/", classController.handleGetAllClasses);
   router.get("/summaries/:id", classController.handleGetAllSummariesByClass);
+  router.get("/teacher/:teacherId", classController.handleFindAllClassByTeacher);
   return app.use("/class", router);
 };
 export default ClassRoute;

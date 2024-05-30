@@ -188,9 +188,45 @@ let data = await db.summaries.findAll({
   }
 }
 
+const getAllClassesByTeacherId = async(teacherId) => {
+  try {
+    let classes = await db.classes.findAll({
+      include:[
+        {
+          model: db.assignments,
+          attributes:['classId', 'classId'],
+          include: [
+            {
+              model: db.teachers,
+              attributes: ['teachername', 'gender', 'id']
+            }
+          ],
+          where: {
+            teacherId: teacherId,
+          }
+        }
+      ],
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    })
+    return {
+      EM: "success.",
+      EC: 0,
+      DT: classes,
+    }
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "find any classes by this teacher",
+      EC: 1,
+      DT:"",
+    };
+  }
+}
+
 module.exports = {
   createNewClassService,
   getAllClassService,
   getAllClassByGradeService,
   getAllStudentSummariesByClassId,
+  getAllClassesByTeacherId,
 }
