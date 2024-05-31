@@ -55,6 +55,7 @@ const inputScoreService = async (
   finalExam,
   subjectId
 ) => {
+  console.log("VAOHAM");
   if (
     fifteen_1 < 0 ||
     fifteen_2 < 0 ||
@@ -78,12 +79,14 @@ const inputScoreService = async (
     },
   });
   let summary = summaryTemp.dataValues.id;
+  console.log("summary", summary);
   let subjectResultIdTemp = await db.subjectresults.findOne({
     where: {
       summaryId: summary,
       subjectId: subjectId,
     },
   });
+  console.log("subjectResultIdTemp", subjectResultIdTemp);
   let subjectResultId = subjectResultIdTemp.dataValues.id;
   let temp1 = await db.subjects.findOne({
     where: { id: subjectId },
