@@ -15,6 +15,9 @@ module.exports = {
       classId: {
         type: Sequelize.INTEGER,
       },
+      subjectId: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
