@@ -2,5 +2,22 @@ Môn học sẽ tự nhập tay, lần lượt gồm: tên, hệ số điểm 15
 
 ------------------------------------------------------------------------------------------------------------
 
-INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
-VALUES ('minPassScore', '5', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO studentmanagement.`params` (paramName, paramValue, paramNote, createdAt, updatedAt) 
+VALUES ('excellentCore', '8', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO studentmanagement.`params` (paramName, paramValue, paramNote, createdAt, updatedAt) 
+VALUES ('excellentDiscipline', '90', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO studentmanagement.`params` (paramName, paramValue, paramNote, createdAt, updatedAt) 
+VALUES ('goodCore', '7', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO studentmanagement.`params` (paramName, paramValue, paramNote, createdAt, updatedAt) 
+VALUES ('goodDiscipline', '80', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO studentmanagement.`params` (paramName, paramValue, paramNote, createdAt, updatedAt) 
+VALUES ('averageCore', '5', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO studentmanagement.`params` (paramName, paramValue, paramNote, createdAt, updatedAt) 
+VALUES ('averageDiscipline', '70', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO studentmanagement.`params` (paramName, paramValue, paramNote, createdAt, updatedAt) 
+VALUES ('badCore', '3', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO studentmanagement.`params` (paramName, paramValue, paramNote, createdAt, updatedAt) 
+VALUES ('badDiscipline', '60', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
