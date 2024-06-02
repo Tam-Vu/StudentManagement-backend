@@ -13,6 +13,8 @@ import subjectResultRoute from "./routes/subjectResultRoute";
 import subjectRoute from "./routes/subjectRoute";
 import tuitionsRoute from "./routes/tuitionsRoute";
 import loginRoute from "./routes/loginRoute";
+import StatisticsRoute from "./routes/statisticsRoute";
+
 import cookieParser from "cookie-parser";
 import { checkUserJwt } from "./middleware/jwtService";
 import cors from "cors";
@@ -46,6 +48,7 @@ subjectResultRoute(app);
 subjectRoute(app);
 tuitionsRoute(app);
 loginRoute(app);
+StatisticsRoute(app);
 Connection();
 app.use((req, res) => {
   return res.send("404 not found");

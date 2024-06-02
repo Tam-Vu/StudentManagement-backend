@@ -1,5 +1,6 @@
 import { FLOAT, where } from "sequelize";
 import db from "../models/index";
+import trigger from "../middleware/trigger";
 
 const findAllSubjectResultService = async (summaryId) => {
   let subjectResults = await db.subjectresults.findAll({
@@ -55,7 +56,6 @@ const inputScoreService = async (
   finalExam,
   subjectId
 ) => {
-  console.log("VAOHAM");
   if (
     fifteen_1 < 0 ||
     fifteen_2 < 0 ||
@@ -79,39 +79,38 @@ const inputScoreService = async (
     },
   });
   let summary = summaryTemp.dataValues.id;
-  console.log("summary", summary);
-  let subjectResultIdTemp = await db.subjectresults.findOne({
-    where: {
-      summaryId: summary,
-      subjectId: subjectId,
-    },
-  });
-  console.log("subjectResultIdTemp", subjectResultIdTemp);
+  console.log("SUMMARY", summary);
+  let subjectResultIdTemp;
+  try {
+    subjectResultIdTemp = await db.subjectresults.findOne({
+      where: {
+        summaryId: summary,
+        subjectId: subjectId,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
   let subjectResultId = subjectResultIdTemp.dataValues.id;
-  let temp1 = await db.subjects.findOne({
-    where: { id: subjectId },
-    attributes: ["fifteenMinFactor"],
-  });
-  let fifteenMinNum = temp1.dataValues.fifteenMinFactor;
+  console.log("SUBJECTREUL", subjectResultId);
+  // let temp1 = await db.subjects.findOne({where:{id:subjectId},attributes: [ 'fifteenMinFactor' ]});
+  // let fifteenMinNum = temp1.dataValues.fifteenMinFactor;
 
-  let temp2 = await db.subjects.findOne({
-    where: { id: subjectId },
-    attributes: ["fourtyFiveMinFactor"],
-  });
-  let fourtyFiveMinNum = temp2.dataValues.fourtyFiveMinFactor;
+  // let temp2 = await db.subjects.findOne({where:{id:subjectId}, attributes: [ 'fourtyFiveMinFactor' ]});
+  // let fourtyFiveMinNum = temp2.dataValues.fourtyFiveMinFactor;
 
-  let temp3 = await db.subjects.findOne({
-    where: { id: subjectId },
-    attributes: ["finalFactor"],
-  });
-  let lastTestMinNum = temp3.dataValues.finalFactor;
+  // let temp3 = await db.subjects.findOne({where:{id:subjectId}, attributes: [ 'finalFactor' ]});
+  // let lastTestMinNum = temp3.dataValues.finalFactor;
 
-  let temp4 = await db.subjects.findOne({
-    where: { id: subjectId },
-    attributes: ["minPassScore"],
-  });
-  let finalResult = temp4.dataValues.minPassScore;
-  console.log(finalResult);
+  // let temp4 = await db.subjects.findOne({where:{id:subjectId}, attributes: [ 'minPassScore' ]});
+  // let finalResult = temp4.dataValues.minPassScore;
+
+  let subjectTemp = await db.subjects.findOne({ where: { id: subjectId } });
+  let subject = subjectTemp.get({ plain: true });
+  let fifteenMinNum = subject.fifteenMinFactor;
+  let fourtyFiveMinNum = subject.fourtyFiveMinFactor;
+  let lastTestMinNum = subject.finalFactor;
+  let finalResult = subject.fourtyFiveMinFactor;
 
   let conclude;
   let allCoefficient = 0;
@@ -144,8 +143,6 @@ const inputScoreService = async (
     allCoefficient += lastTestMinNum;
     totalScore += lastTestMinNum * finalExam;
   }
-  console.log(totalScore);
-  console.log(allCoefficient);
   let evarage = totalScore / allCoefficient;
   if (evarage >= finalResult) {
     conclude = "Đạt";
@@ -176,6 +173,7 @@ const inputScoreService = async (
       id: subjectResultId,
     },
   });
+  await trigger.updateGpaFromSubjectResults(summary);
   return {
     EM: "success",
     EC: 0,

@@ -169,6 +169,61 @@ const getAllClassNotAssignBySubject = async (teacherId, year) => {
     DT: classes,
   };
 };
+
+const getAllTeacherBySubjectName = async(subjectName) => {
+  try {
+    let subjectTemp = await db.subjects.findOne({
+      where: {
+        subjectname: subjectName,
+      }
+    })
+    let subject = subjectTemp.get({plain: true});
+    console.log(subject);
+    let teacher = await db.findAll({
+      where: {
+        subjectId: subject.id,
+      }
+    })
+    return {
+      EM: "success.",
+      EC: 0,
+      DT: teacher,
+    };
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "can't find any teacher!!!",
+      EC: 1,
+      DT: "",
+    };
+  }
+} 
+
+const getAllTeacherForEachSubject = async() => {
+  try {
+    let data = await db.subjects.findAll({
+      attributes:['subjectname', 'id'],
+      include:[
+        {
+          model: db.teacher,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        }
+      ]
+    });
+    return {
+      EM: "success.",
+      EC: 0,
+      DT: data,
+    };
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "wrong subject or this school doesn't have teachers!!!",
+      EC: 1,
+      DT: "",
+    };
+  }
+}
 module.exports = {
   serviceCreateNewTeacher,
   getAllTeacherService,
@@ -176,4 +231,6 @@ module.exports = {
   updateTeacherService,
   deleteTeacherService,
   getAllClassNotAssignBySubject,
+  getAllTeacherBySubjectName,
+  getAllTeacherForEachSubject
 };
