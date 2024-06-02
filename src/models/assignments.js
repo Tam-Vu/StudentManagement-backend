@@ -15,12 +15,16 @@ module.exports = (sequelize, DataTypes) => {
       assignments.belongsTo(models.classes, {
         foreignKey: "classId",
       });
+      assignments.belongsTo(models.subjects, {
+        foreignKey: "subjectId",
+      });
     }
   }
   assignments.init(
     {
       teacherId: DataTypes.INTEGER,
       classId: DataTypes.INTEGER,
+      subjectId: DataTypes.INTEGER
     },
     {
       sequelize,

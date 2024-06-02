@@ -14,6 +14,7 @@ const teacherRouter = (app) => {
   router.put("/delete-teacher/:id", teacherController.handleDeleteTeacher);
   router.post("/create-teacher", teacherController.handleCreateNewTeacher);
   router.post("/class-without-subject-teacher", teacherController.handleFindClassNonSubjectClass);
+  router.get("/subject/:subjectId", teacherController.handleFindAllteacherBySubjectId)
   return app.use("/teacher", router);
 };
 
