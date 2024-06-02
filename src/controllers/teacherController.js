@@ -89,19 +89,19 @@ class teacherController {
   };
 
   handleFindAllteacherBySubjectId = async(req, res) => {
-    try { 
-      let subjectId = req.params.subjectId;
-      await teacherService.getAllTeacherBySubjectId(subjectId)
-      .then((teacher) => {
-        res.status(200).json({
-          EM: teacher.EM,
-          EC: teacher.EC,
-          DT: teacher.DT,
-        });
-      })
-    } catch(e) {
-      return res.status(500).json({ message: e.message });
-    }
+    let subjectId = req.params.subjectId;
+    await teacherService.getAllTeacherBySubjectId(subjectId)
+    .then((teacher) => {
+      res.status(200).json({
+        EM: teacher.EM,
+        EC: teacher.EC,
+        DT: teacher.DT,
+      });
+    })
+    .catch((e) => {
+      console.log(e);
+      res.status(500).json({ message: e.message });
+    });
   }
 }
 module.exports = new teacherController();
