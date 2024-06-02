@@ -44,6 +44,77 @@ const assignTeacherIntoClasses = async(teacherId, classId, subjectId) => {
   }
 }
 
+const getAllAssignmentsInYear = async(year) => {
+  try {
+    let data = await db.assignments.findAll({
+      include:[
+        {
+          model: db.classes,
+          attributes: ['classname', 'total'],
+          include: [
+          {
+            model: db.grades,
+            attributes: ['gradeName'],
+            where:{
+              year: year,
+            }
+          }
+          ]
+        },
+        {
+          model: db.teachers,
+          attributes: ['teacherName']
+        },
+        {
+          model: db.subjects,
+          attributes: ['subjectname']
+        }
+      ],
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    })
+    return {
+      EM: "something wrong with service",
+      EC: 1,
+      DT: data,
+    };
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "something wrong with service",
+      EC: 1,
+      DT: "",
+    };
+  }
+}
+
+const deleteTeacherInAssignment = async(subjectId, classId) => {
+  try {
+    let data = await db.assignments.update({
+      teacherId: null
+    },
+    {
+      where: {
+        classId: classId,
+        subjectId: subjectId
+      }
+    })
+    return {
+      EM: "success",
+      EC: 1,
+      DT: "",
+    }
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "assignment not found",
+      EC: 1,
+      DT: "",
+    };
+  }
+}
+
 module.exports = {
-  assignTeacherIntoClasses
+  assignTeacherIntoClasses,
+  getAllAssignmentsInYear,
+  deleteTeacherInAssignment
 };
