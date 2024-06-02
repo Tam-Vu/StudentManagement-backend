@@ -3,9 +3,10 @@ import assignmentsService from "../services/assignmentsService";
 class assignmentsController {
   handleCreateAssignments = async (req, res) => {
     let teacherId = req.body.teacherId;
-    let classIds = req.body.classId;
+    let classId = req.body.classId;
+    let subjectId = req.body.subjectId;
     try {
-      let data = await assignmentsService.assignTeacherIntoClasses(teacherId, classIds);
+      let data = await assignmentsService.assignTeacherIntoClasses(teacherId, classId, subjectId);
       let userData = {};
       userData = data;
       res.status(200).json({

@@ -2,6 +2,7 @@ import { where } from "sequelize";
 import db, { sequelize } from "../models/index";
 import bcrypt from "bcryptjs";
 import QueryTypes from "sequelize";
+import subjects from "../models/subjects";
 
 const serviceCreateNewTeacher = async (data) => {
   try {
@@ -224,6 +225,36 @@ const getAllTeacherForEachSubject = async() => {
     };
   }
 }
+
+const getAllTeacherBySubjectId = async(subjectId) => {
+  try {
+    let data = await db.teachers.findAll({
+      where: {
+        subjectId: subjectId,
+      },
+      attributes: ['id', 'teachername', 'gender'],
+      include: [
+        {
+          model: db.subjects,
+          attributes: ['subjectname'],
+        }
+      ]
+    })
+    return {
+      EM: "success",
+      EC: 1,
+      DT: data,
+    };
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "teacher not found",
+      EC: 1,
+      DT: "",
+    };
+  }
+} 
+
 module.exports = {
   serviceCreateNewTeacher,
   getAllTeacherService,
@@ -232,5 +263,6 @@ module.exports = {
   deleteTeacherService,
   getAllClassNotAssignBySubject,
   getAllTeacherBySubjectName,
-  getAllTeacherForEachSubject
+  getAllTeacherForEachSubject,
+  getAllTeacherBySubjectId
 };

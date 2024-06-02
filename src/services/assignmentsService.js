@@ -3,29 +3,47 @@ import db, { Sequelize, sequelize } from "../models/index";
 import bcrypt from "bcryptjs";
 const { Op } = require("sequelize");
 
-const assignTeacherIntoClasses = async(teacherId, classIds)=>{
-  let teachersClassAssignment = [];
-  teachersClassAssignment = classIds;
-  // if (teachersClassAssignment.length === 0) {
-  //   return {
-  //     EM: "No Classes Assigned.",
-  //     EC: 1,
-  //     DT: "",
-  //   };
-  // }
-
-  // for (let i of teachersClassAssignment) {
-    await db.assignments.create ({
-      teacherId: teacherId,
-      classId: classIds
+const assignTeacherIntoClasses = async(teacherId, classId, subjectId) => {
+  try {
+    let assignment = await db.assignments.findOne({
+      where: {
+        classId: classId,
+        subjectId: subjectId
+      }
     })
-  // }
+
+    if(assignment === null) {
+      return {
+        EM: "not found this assignment",
+        EC: 1,
+        DT: "",
+      };
+    }
+
+  let data = await db.assignments.update({
+    teacherId: teacherId
+  },
+  {
+    where: {
+      id: assignment.id,
+    }
+  })
   return {
-    EM: "success.",
-    EC: 1,
+    EM: "success",
+    EC: 0,
     DT: "",
   };
+
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "something wrong with service",
+      EC: 1,
+      DT: "",
+    };
+  }
 }
+
 module.exports = {
   assignTeacherIntoClasses
 };

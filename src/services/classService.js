@@ -2,12 +2,7 @@ import { where } from "sequelize";
 import db, { Sequelize, sequelize } from "../models/index";
 import subjects from "../models/subjects";
 
-const createNewClassService = async (
-  classname,
-  total,
-  homeroomTeacher,
-  gradeId
-) => {
+const createNewClassService = async (classname,total,homeroomTeacher,gradeId) => {
   let checkHomeRoomTeacher = {};
   let gradename;
   let getGrade = {};
@@ -88,6 +83,20 @@ const createNewClassService = async (
       homeroomTeacher: homeroomTeacher,
       gradeId: gradeId,
     });
+
+    let subjects = await db.subjects.findAll({
+      where: {
+        isdeleted: 0,
+      }
+    });
+
+    for (const subject of subjects) {
+      await db.assignments.create({
+        classId: data.id,
+        subjectId: subject.id,
+      });
+    }
+
     return {
       EM: "success",
       EC: 0,
