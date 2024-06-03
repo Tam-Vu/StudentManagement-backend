@@ -1,33 +1,62 @@
 import { where } from "sequelize";
 import db, { sequelize } from "../models/index";
-import bcrypt from "bcryptjs";
 import QueryTypes from "sequelize";
-import subjects from "../models/subjects";
+import bcrypt from "bcryptjs";
+
+const salt = bcrypt.genSaltSync(10);
+const hashUserPassword = (userPass) => {
+  let hashPassword = bcrypt.hashSync(userPass, salt);
+  return hashPassword;
+};
+var slug = 1;
 
 const serviceCreateNewTeacher = async (data) => {
   try {
-    if (
-      !data.teachername ||
-      !data.birthDate ||
-      !data.startDate ||
-      !data.gender ||
-      !data.userId ||
-      !data.subjectId
-    ) {
+    if (!data.teachername || !data.birthDate || !data.startDate || !data.gender) {
       return {
         EM: "All fields are required!!!",
         EC: 1,
         DT: [],
       };
     } else {
+      let params = await db.params.findAll({
+        where: {}, raw: true,
+      })
+      function getParamValue(paramName) {
+          for(let param of params) {
+              if(param['paramName'] == paramName) {
+                  return param['paramValue'];
+              }
+          }
+      }
+      let slug = getParamValue("teacherSlug")
+      let userandpass = `giaovien${String(slug).padStart(4,'0')}`
+      let hashPass = hashUserPassword(userandpass);
+      let teacherAccount = await db.User.create({
+        username: userandpass,
+        password: hashPass,
+        // email: email,
+        groupId: 2,
+        isLocked: 0,
+      });
+
       let res = await db.teachers.create({
         teachername: data.teachername,
         birthDate: data.birthDate,
         startDate: data.startDate,
         subjectId: data.subjectId,
         gender: data.gender,
-        userId: data.userId,
+        userId: teacherAccount.id,
       });
+
+      await db.params.update({
+        paramValue: slug + 1,
+      }, {
+        where: {
+          paramName: "teacherSlug"
+        }
+      })
+
       return {
         EM: "success",
         EC: 0,
@@ -46,10 +75,16 @@ const serviceCreateNewTeacher = async (data) => {
 
 const getAllTeacherService = async () => {
   let data = [];
-  console.log("CHAYVAO");
   try {
-    data = await db.teachers.findAll();
-    console.log("DATA", data);
+    data = await db.teachers.findAll({
+      include: [{
+        model: db.User,
+        where: {
+          isLocked: 0,
+        },
+        attributes: [],
+      }]
+    });
     return {
       EM: "success",
       EC: 0,
@@ -83,7 +118,6 @@ const updateTeacherService = async (data, id) => {
         startDate: data.startDate,
         subjectId: data.subjectId,
         gender: data.gender,
-        userId: data.userId,
       });
       return {
         EM: "Update user succeeds",
@@ -237,12 +271,19 @@ const getAllTeacherBySubjectId = async(subjectId) => {
         {
           model: db.subjects,
           attributes: ['subjectname'],
+        },
+        {
+          model: db.User,
+          where: {
+            isLocked: 0
+          },
+          attributes: [],
         }
       ]
     })
     return {
       EM: "success",
-      EC: 1,
+      EC: 0,
       DT: data,
     };
   } catch(e) {

@@ -20,7 +20,6 @@ import { checkUserJwt } from "./middleware/jwtService";
 import cors from "cors";
 // import jwtAction from '../middleware/jwtService';
 require("dotenv").config();
-
 const PORT = process.env.PORT || 8080;
 
 const app = express();

@@ -1,28 +1,84 @@
 import { where } from "sequelize";
 import db, { sequelize } from "../models/index";
-import bcrypt from "bcryptjs";
-import summaries from "../models/summaries";
 const excelJs = require('exceljs')
 const fs = require('fs');
 const { Op } = require('sequelize');
+import bcrypt from "bcryptjs";
+import accountService from "../services/accountService"
+import { initializeApp } from "firebase/app";
+import { getStorage, ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { getFirestore } from "firebase/firestore";
+import multer from "multer";
+import config from "../config/firebasestorage"
 
+const app = initializeApp(config.firebaseConfig);
+const storage = getStorage();
 
-const serviceCreateNewStudent = async (studentname, birthDate, startDate, gender, address, parentId, tuitionId, userId ) => {
+const salt = bcrypt.genSaltSync(10);
+const hashUserPassword = (userPass) => {
+  let hashPassword = bcrypt.hashSync(userPass, salt);
+  return hashPassword;
+};
+
+const serviceCreateNewStudent = async (file ,studentname, birthDate, startDate, gender, address, email) => {
   try {
+    let params = await db.params.findAll({
+      where: {}, raw: true,
+    })
+    function getParamValue(paramName) {
+        for(let param of params) {
+            if(param['paramName'] == paramName) {
+                return param['paramValue'];
+            }
+        }
+    }
+    let slug = getParamValue("studentSlug")
+
+    let userandpass = `hocsinh${String(getParamValue("term"))}${String(slug).padStart(4,'0')}`
+    let hashPass = hashUserPassword(userandpass);
+    const storageRef = ref(storage, `image/${file.originalname}`);
+    const metadata = {
+      contentType: file.mimetype,
+    };
+    const snapshot = await uploadBytesResumable(storageRef, file.buffer, metadata);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+
+    let studentAccount = await db.User.create({
+      username: userandpass,
+      password: hashPass,
+      email: email,
+      image: downloadURL,
+      groupId: 4,
+      isLocked: 0,
+    });
+
+    // let studentAccount = await accountService.serviceCreateNewAccount(userandpass, userandpass, email, 4);
+    // console.log(studentAccount);
+
     let data = await db.students.create({
       studentname: studentname,
       birthDate: birthDate,
       startDate: startDate,
       gender: gender,
       address: address,
-      userId: userId,
+      userId: studentAccount.id,
       statusinyear: 0,
     });
+
+    await db.params.update({
+      paramValue: slug + 1,
+    }, {
+      where: {
+        paramName: "studentSlug"
+      }
+    })
+
     return {
       EM: "success",
       EC: 0,
-      DT: data,
+      DT: "data",
     };
+
   } catch (e) {
     console.log(e);
     return {
@@ -53,6 +109,12 @@ const getAllStudentService = async (gradeId, year) => {
             },
           },
         },
+        {
+          model: db.User,
+          where: {
+            isLocked: 0,
+          }
+        }
       ],
     });
     return {

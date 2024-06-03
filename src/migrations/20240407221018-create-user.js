@@ -24,6 +24,9 @@ module.exports = {
       isLocked: {
         type: Sequelize.INTEGER,
       },
+      image: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
