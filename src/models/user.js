@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING,
       groupId: DataTypes.INTEGER,
       isLocked: DataTypes.INTEGER,
+      image: DataTypes.STRING,
     },
     {
       sequelize,

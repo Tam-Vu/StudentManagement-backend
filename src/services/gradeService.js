@@ -1,6 +1,8 @@
 import { where } from "sequelize";
 import db from "../models/index";
 import { FORCE } from "sequelize/lib/index-hints";
+
+globalThis.yearBegin;
 const createNewYearGrade = async (newYear) => {
   try {
     await db.students.update({
@@ -24,6 +26,24 @@ const createNewYearGrade = async (newYear) => {
         year: newYear,
       },
     ]);
+
+    await db.params.update({
+      paramValue: newYear,
+    }, 
+    {
+      where: {
+        paramName: "term",
+      }
+    });
+    await db.params.update({
+      paramValue: 1,
+    }, 
+    {
+      where: {
+        paramName: "studentSlug",
+      }
+    });
+
     return {
       EM: "success",
       EC: 0,

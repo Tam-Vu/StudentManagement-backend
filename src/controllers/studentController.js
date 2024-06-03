@@ -9,8 +9,8 @@ class StudentController {
       let startDate = req.body.startDate;
       let gender = req.body.gender;
       let address = req.body.address;
-      let userId = req.body.userId;
-      let user = await studentService.serviceCreateNewStudent( studentname, birthDate, startDate, gender, address, userId);
+      let email = req.body.email;
+      let user = await studentService.serviceCreateNewStudent(req.file ,studentname, birthDate, startDate, gender, address, email);
       res.status(200).json({
         EM: user.EM,
         EC: user.EC,
@@ -77,7 +77,6 @@ class StudentController {
   handleFindStudentByClassname = async (req, res) => {
     try {
       let classname = req.query.classname;
-      console.log("Hello: " + typeof classname);
       let data = await studentService.getStudentByClassnameService(classname);
       let userData = {};
       userData = data;
