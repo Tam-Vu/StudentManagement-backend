@@ -10,7 +10,15 @@ class StudentController {
       let gender = req.body.gender;
       let address = req.body.address;
       let email = req.body.email;
-      let user = await studentService.serviceCreateNewStudent(req.file ,studentname, birthDate, startDate, gender, address, email);
+      let user = await studentService.serviceCreateNewStudent(
+        req.file,
+        studentname,
+        birthDate,
+        startDate,
+        gender,
+        address,
+        email
+      );
       res.status(200).json({
         EM: user.EM,
         EC: user.EC,
@@ -22,9 +30,8 @@ class StudentController {
   };
   handleFindAllStudent = async (req, res) => {
     try {
-      const gradeId = req.query.gradeId || "";
-      const year = req.query.year || "";
-      await studentService.getAllStudentService(gradeId, year)
+      await studentService
+        .getAllStudentService()
         .then((data) => {
           res.status(200).json({
             EM: data.EM,
@@ -56,7 +63,11 @@ class StudentController {
     try {
       let id = req.params.id;
       let belongtoclassId = req.params.btcId;
-      let updatedAccount = await studentService.updateStudentService( req.body, id, belongtoclassId);
+      let updatedAccount = await studentService.updateStudentService(
+        req.body,
+        id,
+        belongtoclassId
+      );
       res.status(200).json({
         EM: updatedAccount.EM,
         EC: updatedAccount.EC,
@@ -89,8 +100,8 @@ class StudentController {
       return res.status(500).json({ message: e.message });
     }
   };
-  
-  handleFindNonClassStudent = async(req, res) => {
+
+  handleFindNonClassStudent = async (req, res) => {
     try {
       let year = req.params.year;
       console.log(year);
@@ -101,32 +112,33 @@ class StudentController {
         EM: studentData.EM,
         EC: studentData.EC,
         DT: studentData.DT,
-      })
-    } catch(e) {
-      return res.status(500).json({message: e.message});
+      });
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
     }
-  }
+  };
 
-  handleFindAllNonClassStudentByClassId = async(req, res) => {
+  handleFindAllNonClassStudentByClassId = async (req, res) => {
     try {
       let classId = req.params.id;
       let year = req.params.year;
-      console.log(classId)
-      await studentService.getAllNonClassStudentByClassId(classId)
-      .then((data) => {
-        res.status(200).json({
-          EM: data.EM,
-          EC: data.EC,
-          DT: data.DT,
+      console.log(classId);
+      await studentService
+        .getAllNonClassStudentByClassId(classId)
+        .then((data) => {
+          res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT,
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+          res.status(500).json({ message: err.message });
         });
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).json({ message: err.message });
-      });
-    } catch(e) {
-      return res.status(500).json({message: e.message});
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
     }
-  }
+  };
 }
 module.exports = new StudentController();

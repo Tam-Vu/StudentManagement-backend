@@ -1,15 +1,20 @@
 import { where } from "sequelize";
 import db, { sequelize } from "../models/index";
-const excelJs = require('exceljs')
-const fs = require('fs');
-const { Op } = require('sequelize');
+const excelJs = require("exceljs");
+const fs = require("fs");
+const { Op } = require("sequelize");
 import bcrypt from "bcryptjs";
-import accountService from "../services/accountService"
+import accountService from "../services/accountService";
 import { initializeApp } from "firebase/app";
-import { getStorage, ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  getDownloadURL,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 import multer from "multer";
-import config from "../config/firebasestorage"
+import config from "../config/firebasestorage";
 
 const app = initializeApp(config.firebaseConfig);
 const storage = getStorage();
@@ -20,27 +25,42 @@ const hashUserPassword = (userPass) => {
   return hashPassword;
 };
 
-const serviceCreateNewStudent = async (file ,studentname, birthDate, startDate, gender, address, email) => {
+const serviceCreateNewStudent = async (
+  file,
+  studentname,
+  birthDate,
+  startDate,
+  gender,
+  address,
+  email
+) => {
   try {
     let params = await db.params.findAll({
-      where: {}, raw: true,
-    })
+      where: {},
+      raw: true,
+    });
     function getParamValue(paramName) {
-        for(let param of params) {
-            if(param['paramName'] == paramName) {
-                return param['paramValue'];
-            }
+      for (let param of params) {
+        if (param["paramName"] == paramName) {
+          return param["paramValue"];
         }
+      }
     }
-    let slug = getParamValue("studentSlug")
+    let slug = getParamValue("studentSlug");
 
-    let userandpass = `hocsinh${String(getParamValue("term"))}${String(slug).padStart(4,'0')}`
+    let userandpass = `hocsinh${String(getParamValue("term"))}${String(
+      slug
+    ).padStart(4, "0")}`;
     let hashPass = hashUserPassword(userandpass);
     const storageRef = ref(storage, `image/${file.originalname}`);
     const metadata = {
       contentType: file.mimetype,
     };
-    const snapshot = await uploadBytesResumable(storageRef, file.buffer, metadata);
+    const snapshot = await uploadBytesResumable(
+      storageRef,
+      file.buffer,
+      metadata
+    );
     const downloadURL = await getDownloadURL(snapshot.ref);
 
     let studentAccount = await db.User.create({
@@ -65,20 +85,22 @@ const serviceCreateNewStudent = async (file ,studentname, birthDate, startDate, 
       statusinyear: 0,
     });
 
-    await db.params.update({
-      paramValue: slug + 1,
-    }, {
-      where: {
-        paramName: "studentSlug"
+    await db.params.update(
+      {
+        paramValue: slug + 1,
+      },
+      {
+        where: {
+          paramName: "studentSlug",
+        },
       }
-    })
+    );
 
     return {
       EM: "success",
       EC: 0,
-      DT: "data",
+      DT: data,
     };
-
   } catch (e) {
     console.log(e);
     return {
@@ -92,31 +114,7 @@ const serviceCreateNewStudent = async (file ,studentname, birthDate, startDate, 
 const getAllStudentService = async (gradeId, year) => {
   let data = [];
   try {
-    data = await db.students.findAll({
-      include: [
-        {
-          model: db.classes,
-          attributes: ["classname"],
-          where: {
-            gradeId: {
-              include: {
-                model: db.grades,
-                where: {
-                  id: gradeId,
-                  year: year,
-                },
-              },
-            },
-          },
-        },
-        {
-          model: db.User,
-          where: {
-            isLocked: 0,
-          }
-        }
-      ],
-    });
+    data = await db.students.findAll();
     return {
       EM: "success",
       EC: 0,
@@ -286,7 +284,7 @@ const getStudentByClassnameService = async (classname) => {
   }
 };
 
-//lấy học sinh chưa có lớp trong năm học đang chọn 
+//lấy học sinh chưa có lớp trong năm học đang chọn
 // const getAllNonClassStudentByYear = async(year) => {
 //   try{
 //     let studentsInThisYear = await db.students.findAll({
@@ -333,21 +331,24 @@ const getStudentByClassnameService = async (classname) => {
 //   }
 // }
 
-//lấy học sinh chưa có lớp trong năm học đang chọn 
-const getAllNonClassStudentByYear = async(year) => {
-  try{
-    let studentsInThisYear = await sequelize.query(`select * from students where students.id not in 
+//lấy học sinh chưa có lớp trong năm học đang chọn
+const getAllNonClassStudentByYear = async (year) => {
+  try {
+    let studentsInThisYear = await sequelize.query(
+      `select * from students where students.id not in 
     (select distinct students.id from students left join summaries on students.id = summaries.studentId left join classes 
-    on classes.id = summaries.classId left join grades on classes.gradeId = grades.id where grades.year = :year)`, {
-      replacements:{year},
-      type: sequelize.QueryTypes.SELECT
-    })
-  return {
-    EM: "success",
-    EC: 0,
-    DT: studentsInThisYear,
-  };
-  }catch(e) {
+    on classes.id = summaries.classId left join grades on classes.gradeId = grades.id where grades.year = :year)`,
+      {
+        replacements: { year },
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+    return {
+      EM: "success",
+      EC: 0,
+      DT: studentsInThisYear,
+    };
+  } catch (e) {
     console.log(e);
     return {
       EM: "not found",
@@ -355,13 +356,13 @@ const getAllNonClassStudentByYear = async(year) => {
       DT: "",
     };
   }
-}
+};
 
-const getAllNonClassStudentByClassId = async(classId) => {
+const getAllNonClassStudentByClassId = async (classId) => {
   try {
     let freeStudentsInThisYear = [];
     let classNameTemp = await db.classes.findByPk(classId);
-    if(classNameTemp == null) {
+    if (classNameTemp == null) {
       return {
         EM: "not found class",
         EC: 1,
@@ -369,45 +370,52 @@ const getAllNonClassStudentByClassId = async(classId) => {
       };
     }
     let yearTemp = await db.grades.findOne({
-      attributes:['year'],
-      include:[
+      attributes: ["year"],
+      include: [
         {
           model: db.classes,
           where: {
             id: classId,
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
     let year = yearTemp.dataValues.year;
     let className = classNameTemp.dataValues.classname;
     //lấy học sinh chưa có lớp 10: tức là chưa có bất kì học bạ nào đạt
-    if(className.startsWith("10")) {
-      freeStudentsInThisYear = await sequelize.query(`select distinct s.* from students s
+    if (className.startsWith("10")) {
+      freeStudentsInThisYear = await sequelize.query(
+        `select distinct s.* from students s
       left join summaries su on s.id = su.studentId where su.studentId is null or not exists
-      (select 1 from summaries where studentId = s.id and title <> 'yếu') and s.statusinyear = 0`, {
-        replacements:{year},
-        type: sequelize.QueryTypes.SELECT
-      })
+      (select 1 from summaries where studentId = s.id and title <> 'yếu') and s.statusinyear = 0`,
+        {
+          replacements: { year },
+          type: sequelize.QueryTypes.SELECT,
+        }
+      );
     }
 
     //lấy học sinh chưa có lớp 10: tức là có 1 học bạ đạt
-    else if(className.startsWith("11")) {
-      freeStudentsInThisYear = await sequelize.query(`select distinct s.* from students s
+    else if (className.startsWith("11")) {
+      freeStudentsInThisYear = await sequelize.query(
+        `select distinct s.* from students s
       join summaries su on s.id = su.studentId where su.title <> 'yếu'
-      group by s.id having count(*) = 1 and s.statusinyear = 0`, {
-        replacements:{year},
-        type: sequelize.QueryTypes.SELECT
-      })
-    }
-
-    else if(className.startsWith("12")) {
-      freeStudentsInThisYear = await sequelize.query(`select distinct s.* from students s
+      group by s.id having count(*) = 1 and s.statusinyear = 0`,
+        {
+          replacements: { year },
+          type: sequelize.QueryTypes.SELECT,
+        }
+      );
+    } else if (className.startsWith("12")) {
+      freeStudentsInThisYear = await sequelize.query(
+        `select distinct s.* from students s
       join summaries su on s.id = su.studentId where su.title <> 'yếu'
-      group by s.id having count(*) = 2 s.statusinyear = 0`, {
-        replacements:{year},
-        type: sequelize.QueryTypes.SELECT
-      })
+      group by s.id having count(*) = 2 s.statusinyear = 0`,
+        {
+          replacements: { year },
+          type: sequelize.QueryTypes.SELECT,
+        }
+      );
     }
     return {
       EM: "success",
@@ -422,7 +430,7 @@ const getAllNonClassStudentByClassId = async(classId) => {
       DT: "",
     };
   }
-}
+};
 
 module.exports = {
   serviceCreateNewStudent,
@@ -432,5 +440,5 @@ module.exports = {
   deleteStudentService,
   getStudentByClassnameService,
   getAllNonClassStudentByYear,
-  getAllNonClassStudentByClassId
+  getAllNonClassStudentByClassId,
 };
