@@ -1,33 +1,31 @@
+//20240407221018-create-schoolreportdetails
 "use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("subjects", {
+    await queryInterface.createTable("schoolreports", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      subjectname: {
-        type: Sequelize.STRING,
-      },
-      finalFactor: {
-        type: Sequelize.INTEGER,
-      },
-      fourtyFiveMinFactor: {
-        type: Sequelize.INTEGER,
-      },
-      fifteenMinFactor: {
-        type: Sequelize.INTEGER,
-      },
-      factor: {
-        type: Sequelize.INTEGER,
-      },
-      minPassScore: {
+      concludecore: {
         type: Sequelize.FLOAT,
       },
-      isdeleted: {
+      concludetitle: {
+        type: Sequelize.STRING,
+      },
+      concludebehaviorpoint: {
+        type: Sequelize.INTEGER,
+      },
+      concludediscipline: {
+        type: Sequelize.STRING,
+      },
+      studentId: {
+        type: Sequelize.INTEGER,
+      },
+      classId: {
         type: Sequelize.INTEGER,
       },
       createdAt: {
@@ -41,6 +39,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("subjects");
+    await queryInterface.dropTable("schoolreports");
   },
 };

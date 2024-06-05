@@ -5,21 +5,21 @@ const { Op } = require("sequelize");
 
 const getBestStudentInEachGrade = async(year) => {
     try {
-      let bestStudentInGrade10 = await sequelize.query(`select a.id, a.studentname, b.gpa, c.classname from students a inner join summaries b on 
+      let bestStudentInGrade10 = await sequelize.query(`select a.id, a.studentname, b.concludecore, c.classname from students a inner join schoolreports b on 
       a.id = b.studentId inner join classes c on b.classId = c.id inner join grades d on c.gradeId = d.id where
-      d.gradename = "10" and d.year = :year order by b.gpa desc limit 10`, {
+      d.gradename = "10" and d.year = :year order by b.concludecore desc limit 1`, {
         replacements:{year},
         type: sequelize.QueryTypes.SELECT
       });
-      let bestStudentInGrade11 = await sequelize.query(`select a.id, a.studentname, b.gpa, c.classname from students a inner join summaries b on 
+      let bestStudentInGrade11 = await sequelize.query(`select a.id, a.studentname, b.concludecore, c.classname from students a inner join schoolreports b on 
       a.id = b.studentId inner join classes c on b.classId = c.id inner join grades d on c.gradeId = d.id where
-      d.gradename = "11" and d.year = :year order by b.gpa desc limit 10`, {
+      d.gradename = "11" and d.year = :year order by b.concludecore desc limit 1`, {
         replacements:{year},
         type: sequelize.QueryTypes.SELECT
       });
-      let bestStudentInGrade12 = await sequelize.query(`select a.id, a.studentname, b.gpa, c.classname from students a inner join summaries b on 
+      let bestStudentInGrade12 = await sequelize.query(`select a.id, a.studentname, b.concludecore, c.classname from students a inner join schoolreports b on 
       a.id = b.studentId inner join classes c on b.classId = c.id inner join grades d on c.gradeId = d.id where
-      d.gradename = "12" and d.year = :year order by b.gpa desc limit 10`, {
+      d.gradename = "12" and d.year = :year order by b.concludecore desc limit 1`, {
         replacements:{year},
         type: sequelize.QueryTypes.SELECT
       });
@@ -45,33 +45,37 @@ const getBestStudentInEachGrade = async(year) => {
 const getExcellentStudentInEachGrade = async(year) => {
     try {
       let countExcellentStudentInGrade10 = await sequelize.query(`
-      SELECT count(summaries.studentId) as NumberHSG, grades.total as NumberHSTotal, grades.gradename as grade
-      FROM summaries 
-      JOIN classes ON summaries.classId = classes.id 
-      JOIN grades ON classes.gradeId = grades.id 
-      WHERE grades.gradename = '10' AND summaries.title = 'giỏi'
-      GROUP BY grades.total, grades.gradename
+      SELECT COALESCE(COUNT(schoolreports.studentId), 0) AS NumberHSG, grades.total AS NumberHSTotal, grades.gradename AS grade
+      FROM grades 
+      LEFT JOIN classes ON grades.id = classes.gradeId 
+      LEFT JOIN schoolreports ON classes.id = schoolreports.classId 
+      AND schoolreports.concludetitle = 'giỏi'
+      WHERE grades.gradename = '10'
+      GROUP BY 
+      grades.total, grades.gradename;
       `, {
         replacements:{year},
         type: sequelize.QueryTypes.SELECT
       });
       let countExcellentStudentInGrade11 = await sequelize.query(`
-      SELECT count(summaries.studentId) as NumberHSG, grades.total as NumberHSTotal, grades.gradename as grade
-      FROM summaries 
-      JOIN classes ON summaries.classId = classes.id 
-      JOIN grades ON classes.gradeId = grades.id 
-      WHERE grades.gradename = '11' AND summaries.title = 'giỏi'
-      GROUP BY grades.total, grades.gradename
+      SELECT COALESCE(COUNT(schoolreports.studentId), 0) AS NumberHSG, grades.total AS NumberHSTotal, grades.gradename AS grade
+      FROM grades 
+      LEFT JOIN classes ON grades.id = classes.gradeId 
+      LEFT JOIN schoolreports ON classes.id = schoolreports.classId 
+      AND schoolreports.concludetitle = 'giỏi'
+      WHERE grades.gradename = '11'
+      GROUP BY 
+      grades.total, grades.gradename;
       `, {
         replacements:{year},
         type: sequelize.QueryTypes.SELECT
       });
       let countExcellentStudentInGrade12 = await sequelize.query(`
-      SELECT COALESCE(COUNT(summaries.studentId), 0) AS NumberHSG, grades.total AS NumberHSTotal, grades.gradename AS grade
+      SELECT COALESCE(COUNT(schoolreports.studentId), 0) AS NumberHSG, grades.total AS NumberHSTotal, grades.gradename AS grade
       FROM grades 
       LEFT JOIN classes ON grades.id = classes.gradeId 
-      LEFT JOIN summaries ON classes.id = summaries.classId 
-      AND summaries.title = 'giỏi'
+      LEFT JOIN schoolreports ON classes.id = schoolreports.classId 
+      AND schoolreports.concludetitle = 'giỏi'
       WHERE grades.gradename = '12'
       GROUP BY 
       grades.total, grades.gradename;
@@ -104,12 +108,12 @@ const compareNumOfStudentInTwoYears = async(year) => {
     let lastlastyear = lastyear - 1;
     let NumOfStudentByTitleInThisYear = await sequelize.query(`
     SELECT 
-    SUM(CASE WHEN title = 'giỏi' THEN 1 ELSE 0 END) AS NumberHSG,
-    SUM(CASE WHEN title = 'khá' THEN 1 ELSE 0 END) AS NumberHSK,
-    SUM(CASE WHEN title = 'trung bình' THEN 1 ELSE 0 END) AS NumberHSTB,
-    SUM(CASE WHEN title = 'yếu' THEN 1 ELSE 0 END) AS NumberHSY
-    FROM summaries 
-    JOIN classes ON summaries.classId = classes.id 
+    SUM(CASE WHEN concludetitle = 'giỏi' THEN 1 ELSE 0 END) AS NumberHSG,
+    SUM(CASE WHEN concludetitle = 'khá' THEN 1 ELSE 0 END) AS NumberHSK,
+    SUM(CASE WHEN concludetitle = 'trung bình' THEN 1 ELSE 0 END) AS NumberHSTB,
+    SUM(CASE WHEN concludetitle = 'yếu' THEN 1 ELSE 0 END) AS NumberHSY
+    FROM schoolreports
+    JOIN classes ON schoolreports.classId = classes.id 
     JOIN grades ON classes.gradeId = grades.id 
     WHERE grades.year = :year;
       `, {
@@ -119,12 +123,12 @@ const compareNumOfStudentInTwoYears = async(year) => {
 
       let NumOfStudentByTitleInLastYear = await sequelize.query(`
       SELECT 
-      SUM(CASE WHEN title = 'giỏi' THEN 1 ELSE 0 END) AS NumberHSG,
-      SUM(CASE WHEN title = 'khá' THEN 1 ELSE 0 END) AS NumberHSK,
-      SUM(CASE WHEN title = 'trung bình' THEN 1 ELSE 0 END) AS NumberHSTB,
-      SUM(CASE WHEN title = 'yếu' THEN 1 ELSE 0 END) AS NumberHSY
-      FROM summaries 
-      JOIN classes ON summaries.classId = classes.id 
+      SUM(CASE WHEN concludetitle = 'giỏi' THEN 1 ELSE 0 END) AS NumberHSG,
+      SUM(CASE WHEN concludetitle = 'khá' THEN 1 ELSE 0 END) AS NumberHSK,
+      SUM(CASE WHEN concludetitle = 'trung bình' THEN 1 ELSE 0 END) AS NumberHSTB,
+      SUM(CASE WHEN concludetitle = 'yếu' THEN 1 ELSE 0 END) AS NumberHSY
+      FROM schoolreports 
+      JOIN classes ON schoolreports.classId = classes.id 
       JOIN grades ON classes.gradeId = grades.id 
       WHERE grades.year = :lastyear;
       `, {
@@ -133,12 +137,12 @@ const compareNumOfStudentInTwoYears = async(year) => {
       });
       let NumOfStudentByTitleInLastLastYear = await sequelize.query(`
       SELECT 
-      SUM(CASE WHEN title = 'giỏi' THEN 1 ELSE 0 END) AS NumberHSG,
-      SUM(CASE WHEN title = 'khá' THEN 1 ELSE 0 END) AS NumberHSK,
-      SUM(CASE WHEN title = 'trung bình' THEN 1 ELSE 0 END) AS NumberHSTB,
-      SUM(CASE WHEN title = 'yếu' THEN 1 ELSE 0 END) AS NumberHSY
-      FROM summaries 
-      JOIN classes ON summaries.classId = classes.id 
+      SUM(CASE WHEN concludetitle = 'giỏi' THEN 1 ELSE 0 END) AS NumberHSG,
+      SUM(CASE WHEN concludetitle = 'khá' THEN 1 ELSE 0 END) AS NumberHSK,
+      SUM(CASE WHEN concludetitle = 'trung bình' THEN 1 ELSE 0 END) AS NumberHSTB,
+      SUM(CASE WHEN concludetitle = 'yếu' THEN 1 ELSE 0 END) AS NumberHSY
+      FROM schoolreports 
+      JOIN classes ON schoolreports.classId = classes.id 
       JOIN grades ON classes.gradeId = grades.id 
       WHERE grades.year = :lastlastyear;
       `, {
@@ -184,11 +188,11 @@ const compareNumOfStudentInTwoYears = async(year) => {
 
 const getTopTenBestStudents = async(year) => {
   try {
-    let bestStudents = await sequelize.query(`select a.id, a.studentname, b.gpa, c.classname from students a 
-    inner join summaries b on a.id = b.studentId 
+    let bestStudents = await sequelize.query(`select a.id, a.studentname, b.concludecore, c.classname from students a 
+    inner join schoolreports b on a.id = b.studentId 
     inner join classes c on b.classId = c.id 
     inner join grades d on c.gradeId = d.id 
-    where d.year = :year order by b.gpa desc limit 10`, {
+    where d.year = :year order by b.concludecore desc limit 10`, {
       replacements:{year},
       type: sequelize.QueryTypes.SELECT
     });
@@ -209,8 +213,8 @@ const getTopTenBestStudents = async(year) => {
 
 const compareGpaOfOneStudent = async(id) => {
   try {
-    let allGpa = await sequelize.query(`select a.studentname, b.gpa, c.classname from students a 
-    inner join summaries b on a.id = b.studentId 
+    let allGpa = await sequelize.query(`select a.studentname, b.concludecore, c.classname from students a 
+    inner join schoolreports b on a.id = b.studentId 
     inner join classes c on b.classId = c.id  
     where a.id = :id order by classId DESC`, {
       replacements:{id},
@@ -233,12 +237,12 @@ const compareGpaOfOneStudent = async(id) => {
 
 const countAllStudentSortByTitle = async(year) => {
   try {
-    let allStudents = await sequelize.query(`select a.title, count(a.studentId) as NumberHS
-    from summaries a
+    let allStudents = await sequelize.query(`select a.concludetitle, count(a.studentId) as NumberHS
+    from schoolreports a
     join classes b on a.classId = b.id
     join grades c on b.gradeId = c.id
     where c.year = :year
-    group by a.title`, {
+    group by a.concludetitle`, {
       replacements:{year},
       type: sequelize.QueryTypes.SELECT
     });

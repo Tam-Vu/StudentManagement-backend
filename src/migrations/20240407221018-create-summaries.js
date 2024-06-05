@@ -16,19 +16,16 @@ module.exports = {
       title: {
         type: Sequelize.STRING,
       },
-      teachercomment: {
-        type: Sequelize.STRING,
-      },
       behaviorpoint: {
         type: Sequelize.INTEGER,
       },
       discipline: {
         type: Sequelize.STRING,
       },
-      studentId: {
+      term: {
         type: Sequelize.INTEGER,
       },
-      classId: {
+      schoolreportId: {
         type: Sequelize.INTEGER,
       },
       createdAt: {

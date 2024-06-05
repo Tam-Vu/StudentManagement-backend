@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       averageScore: DataTypes.FLOAT,
       result: DataTypes.STRING,
-      teachercomment: DataTypes.STRING,
       summaryId: DataTypes.INTEGER,
       subjectId: DataTypes.INTEGER, 
       fifteenMinExam_1: DataTypes.FLOAT,

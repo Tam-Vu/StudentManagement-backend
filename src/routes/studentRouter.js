@@ -1,6 +1,7 @@
 import express from "express";
 import studentController from "../controllers/studentController";
 import summariesController from "../controllers/summariesController";
+import schoolreportController from "../controllers/schoolreportController";
 import { checkUserJwt } from "../middleware/jwtService";
 const router = express.Router();
 const multer = require("multer");
@@ -14,10 +15,10 @@ const upload = multer();
 const studentRouter = (app) => {
   router.get(
     "/get-class/:id",
-    summariesController.handleFindAllClassByStudentId
+    schoolreportController.handleFindAllClassByStudentId
   );
   router.get("/:id", studentController.handleFindStudentById);
-  router.get("/", summariesController.handleFindAllStudent);
+  router.get("/", studentController.handleFindAllStudent);
   router.put(
     "/update-student/:id/:btcId",
     studentController.handleUpdateStudent

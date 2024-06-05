@@ -12,16 +12,11 @@ module.exports = (sequelize, DataTypes) => {
       summaries.hasMany(models.summariesdetails, {
         foreignKey: "summaryId",
       });
-
       summaries.hasMany(models.subjectresults, {
         foreignKey: "summaryId",
       });
-
-      summaries.belongsTo(models.students, {
-        foreignKey: "studentId",
-      });
-      summaries.belongsTo(models.classes, {
-        foreignKey: "classId",
+      summaries.belongsTo(models.schoolreports, {
+        foreignKey: "schoolreportId",
       });
     }
   }
@@ -29,11 +24,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       gpa: DataTypes.FLOAT,
       title: DataTypes.STRING,
-      teachercomment: DataTypes.STRING,
       behaviorpoint: DataTypes.INTEGER,
       discipline: DataTypes.STRING,
-      classId: DataTypes.INTEGER,
-      studentId: DataTypes.INTEGER,
+      term: DataTypes.INTEGER,
     },
     {
       sequelize,
