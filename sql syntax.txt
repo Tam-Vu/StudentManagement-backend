@@ -1,6 +1,52 @@
 Môn học sẽ tự nhập tay, lần lượt gồm: tên, hệ số điểm 15p, hệ số điểm 45p, hệ số điểm cuối kì, hệ số điểm của môn 
 
 ------------------------------------------------------------------------------------------------------------
+select * from subjectresults
+select * from summaries
+select * from subjects
+select * from tuitions
+select * from users
+select * from subjectresults
+select * from students
+select * from teachers
+select * from classes
+select * from grades
+select * from subjects
+select * from assignments
+select * from params
+select * from schoolreports
 
 INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
-VALUES ('minPassScore', '5', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+VALUES ('excellentCore', '8', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('excellentDiscipline', '90', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('goodCore', '7', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('goodDiscipline', '80', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('averageCore', '5', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('averageDiscipline', '70', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('badCore', '3', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('badDiscipline', '60', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('teacherSlug', '1', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('studentSlug', '1', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('term', '2024', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('typeterm', '1', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+
+    

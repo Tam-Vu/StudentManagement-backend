@@ -3,46 +3,46 @@ import db from "../models/index";
 import trigger from "../middleware/trigger"
 import { raw } from "body-parser";
 
-const findAllSubjectResultService = async(summaryId) => {
-    let subjectResults = await db.subjectresults.findAll({
-        where: {
-            summaryId: summaryId,
-        }
-    })
-    if(subjectResults == null){
-        return {
-            EM: "Academic transcript not found",
-            EC: 1,
-            DT: [],
-        };
-    }
+const findAllSubjectResultService = async (summaryId) => {
+  let subjectResults = await db.subjectresults.findAll({
+    where: {
+      summaryId: summaryId,
+    },
+  });
+  if (subjectResults == null) {
     return {
-        EM: "success",
-        EC: "0",
-        DT: subjectResults
-    }
-}
+      EM: "Academic transcript not found",
+      EC: 1,
+      DT: [],
+    };
+  }
+  return {
+    EM: "success",
+    EC: "0",
+    DT: subjectResults,
+  };
+};
 
-const findSubjectResultBySubjectService = async(summaryId, subjectId) => {
-    let subjectResult = await db.subjectresults.findAll({
-        where: {
-            summaryId: summaryId,
-            subjectId: subjectId
-        }
-    })
-    if(subjectResult == null){
-        return {
-            EM: "Academic transcript not found or no record of this subject in academic transcript.",
-            EC: 1,
-            DT: [],
-        };
-    }
+const findSubjectResultBySubjectService = async (summaryId, subjectId) => {
+  let subjectResult = await db.subjectresults.findAll({
+    where: {
+      summaryId: summaryId,
+      subjectId: subjectId,
+    },
+  });
+  if (subjectResult == null) {
     return {
-        EM: "success",
-        EC: 0,
-        DT: subjectResult
-    }
-}
+      EM: "Academic transcript not found or no record of this subject in academic transcript.",
+      EC: 1,
+      DT: [],
+    };
+  }
+  return {
+    EM: "success",
+    EC: 0,
+    DT: subjectResult,
+  };
+};
 
 const inputScoreService = async(classId, studentId, teacherComment, fifteen_1, fifteen_2, fifteen_3, fifteen_4,
 fourtyFive_1, fourtyFive_2, finalExam, subjectId) => {
@@ -88,85 +88,84 @@ fourtyFive_1, fourtyFive_2, finalExam, subjectId) => {
     })
     let subjectResultId = subjectResultIdTemp.dataValues.id;
 
-    let subjectTemp = await db.subjects.findOne({where:{id:subjectId}});
-    let subject = subjectTemp.get({plain: true});
-    let fifteenMinNum = subject.fifteenMinFactor;
-    let fourtyFiveMinNum = subject.fourtyFiveMinFactor;
-    let lastTestMinNum = subject.finalFactor;
-    let finalResult = subject.fourtyFiveMinFactor;
+  let subjectTemp = await db.subjects.findOne({ where: { id: subjectId } });
+  let subject = subjectTemp.get({ plain: true });
+  let fifteenMinNum = subject.fifteenMinFactor;
+  let fourtyFiveMinNum = subject.fourtyFiveMinFactor;
+  let lastTestMinNum = subject.finalFactor;
+  let finalResult = subject.fourtyFiveMinFactor;
 
-    
-    let conclude;
-    let allCoefficient = 0;
-    let totalScore = 0;
-    if(fifteen_1 !== null) {
-        allCoefficient+=fifteenMinNum;
-        totalScore += fifteenMinNum*fifteen_1;
+  let conclude;
+  let allCoefficient = 0;
+  let totalScore = 0;
+  if (fifteen_1 !== null) {
+    allCoefficient += fifteenMinNum;
+    totalScore += fifteenMinNum * fifteen_1;
+  }
+  if (fifteen_2 !== null) {
+    allCoefficient += fifteenMinNum;
+    totalScore += fifteenMinNum * fifteen_2;
+  }
+  if (fifteen_3 !== null) {
+    allCoefficient += fifteenMinNum;
+    totalScore += fifteenMinNum * fifteen_3;
+  }
+  if (fifteen_4 !== null) {
+    allCoefficient += fifteenMinNum;
+    totalScore += fifteenMinNum * fifteen_4;
+  }
+  if (fourtyFive_1 !== null) {
+    allCoefficient += fourtyFiveMinNum;
+    totalScore += fourtyFiveMinNum * fourtyFive_1;
+  }
+  if (fourtyFive_2 !== null) {
+    allCoefficient += fourtyFiveMinNum;
+    totalScore += fourtyFiveMinNum * fourtyFive_2;
+  }
+  if (finalExam !== null) {
+    allCoefficient += lastTestMinNum;
+    totalScore += lastTestMinNum * finalExam;
+  }
+  let evarage = totalScore / allCoefficient;
+  if (evarage >= finalResult) {
+    conclude = "Đạt";
+  } else {
+    conclude = "Không đạt";
+  }
+  await db.subjectresults.update(
+    {
+      fifteenMinExam_1: fifteen_1,
+      fifteenMinExam_2: fifteen_2,
+      fifteenMinExam_3: fifteen_3,
+      fifteenMinExam_4: fifteen_4,
+      fortyFiveMinExam_1: fourtyFive_1,
+      fortyFiveMinExam_2: fourtyFive_2,
+      finalTest: finalExam,
+      teachercomment: teacherComment,
+      averageScore: evarage.toFixed(2),
+      result: conclude,
+    },
+    {
+      where: {
+        id: subjectResultId,
+      },
     }
-    if(fifteen_2 !== null) {
-        allCoefficient+=fifteenMinNum;
-        totalScore += fifteenMinNum*fifteen_2;
-    }
-    if(fifteen_3 !== null) {
-        allCoefficient+=fifteenMinNum;
-        totalScore += fifteenMinNum*fifteen_3;
-    }
-    if(fifteen_4 !== null) {
-        allCoefficient+=fifteenMinNum;
-        totalScore+=fifteenMinNum*fifteen_4;
-    }
-    if(fourtyFive_1 !== null) {
-        allCoefficient+=fourtyFiveMinNum;
-        totalScore+=fourtyFiveMinNum*fourtyFive_1;
-    }
-    if(fourtyFive_2 !== null) {
-        allCoefficient+=fourtyFiveMinNum;
-        totalScore+=fourtyFiveMinNum*fourtyFive_2;
-    }
-    if (finalExam !== null) {
-        allCoefficient+=lastTestMinNum;
-        totalScore+=lastTestMinNum*finalExam;
-    }
-    let evarage = totalScore/allCoefficient;
-    if (evarage >= finalResult) {
-        conclude="Đạt";
-    } else {
-        conclude="Không đạt"
-    }
-    await db.subjectresults.update(
-        {   
-            fifteenMinExam_1: fifteen_1,
-            fifteenMinExam_2: fifteen_2,
-            fifteenMinExam_3: fifteen_3,
-            fifteenMinExam_4: fifteen_4,
-            fortyFiveMinExam_1: fourtyFive_1,
-            fortyFiveMinExam_2: fourtyFive_2,
-            finalTest: finalExam,
-            teachercomment: teacherComment,
-            averageScore: evarage.toFixed(2),
-            result: conclude,
-        },
-        {
-            where: {
-                id: subjectResultId,
-            }
-        }   
-    )
-    let data = await db.subjectresults.findOne({
-        where: {
-            id: subjectResultId,
-        }
-    })
-    await trigger.updateGpaFromSubjectResults(summary);
-    return {
-        EM: "success",
-        EC: 0,
-        DT: data
-    }
-}
+  );
+  let data = await db.subjectresults.findOne({
+    where: {
+      id: subjectResultId,
+    },
+  });
+  await trigger.updateGpaFromSubjectResults(summary);
+  return {
+    EM: "success",
+    EC: 0,
+    DT: data,
+  };
+};
 
 module.exports = {
-    findAllSubjectResultService,
-    inputScoreService,
-    findSubjectResultBySubjectService,
-}
+  findAllSubjectResultService,
+  inputScoreService,
+  findSubjectResultBySubjectService,
+};
