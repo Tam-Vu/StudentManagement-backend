@@ -1,4 +1,3 @@
-//20240407221018-create-summaries
 "use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {

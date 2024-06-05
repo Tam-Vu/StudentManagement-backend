@@ -5,7 +5,7 @@ import { raw } from "body-parser";
 const { Op, where } = require("sequelize");
 
 const totalStudentInclass = async(classId) => {
-    const count = await db.summaries.count({
+    const count = await db.schoolreports.count({
         where: {
             classId: classId
         }
@@ -74,6 +74,23 @@ const updateGpaFromSubjectResults = async(summaryId) => {
         }
     })
     await updateTitleOfStudent(summaryId);
+
+    let summary = await db.summaries.findOne({
+        where: {
+            id: summaryId
+        },
+        raw: true,
+        attributes: ['schoolreportId'],
+    });
+    
+    let schoolreport = await db.schoolreports.findOne({
+        where: {
+            id: summary['schoolreportId'],
+        },
+        raw: true,
+        attributes: ['id'],
+    })
+    await updateTitleSchoolreport(schoolreport['id']);
 }
 
 const updateBehavior = async(summaryId) => {
@@ -83,7 +100,6 @@ const updateBehavior = async(summaryId) => {
         },
         raw: true,
     })
-    console.log(badBehaviorPoint);
 
     let sumBadBehaviorPoint = 0;
 
@@ -100,6 +116,23 @@ const updateBehavior = async(summaryId) => {
         }
     })
     await updateTitleOfStudent(summaryId);
+
+    let summary = await db.summaries.findOne({
+        where: {
+            id: summaryId
+        },
+        raw: true,
+        attributes: ['schoolreportId'],
+    });
+    
+    let schoolreport = await db.findOne({
+        where: {
+            id: summary['schoolreportId'],
+        },
+        raw: true,
+        attributes: ['id'],
+    })
+    await updateTitleSchoolreport(schoolreport['id']);
 }
 
 const updateTitleOfStudent = async(summaryId) => {
@@ -135,8 +168,6 @@ const updateTitleOfStudent = async(summaryId) => {
     else {
         title = "yếu";
     }
-    console.log(getParamValue("excellentCore"), getParamValue("excellentDiscipline"))
-    console.log(title);
     await db.summaries.update({
         title: title,
     },
@@ -147,8 +178,89 @@ const updateTitleOfStudent = async(summaryId) => {
     })
 }
 
+const updateTitleSchoolreport = async(schoolreportId) => {
+    let summaries = await db.summaries.findAll({
+        where: {
+            schoolreportId: schoolreportId,
+        },
+        attributes: ['gpa', 'behaviorpoint'],
+        raw: true
+    });
+
+    let total1 = 0;
+    let gpatotal = 0;
+
+    let total2 = 0;
+    let behaviortotal = 0;
+    for(let summary of summaries) {
+        if(summary['gpa'] !== null) {
+            total1 += 1;
+            gpatotal += summary['gpa'];
+        }
+        if(summary['behaviorpoint'] !== null) {
+            total2 += 1;
+            behaviortotal += summary['behaviorpoint'];
+        }
+    }
+    let lastcore = gpatotal/total1;
+    let lastbehavior = behaviortotal/total2;
+
+    await db.schoolreports.update({
+        concludecore: lastcore.toFixed(2),
+        concludebehaviorpoint: lastbehavior.toFixed(2),
+    },
+    {
+        where: {
+            id: schoolreportId,
+        }
+    })
+
+    let params = await db.params.findAll({
+        where: {}, raw: true,
+    })
+    function getParamValue(paramName) {
+        for(let param of params) {
+            if(param['paramName'] == paramName) {
+                return param['paramValue'];
+            }
+        }
+    }
+
+    let schoolreport = await db.schoolreports.findOne({
+        where: {
+            id: schoolreportId,
+        }, 
+        attributes: ['concludecore', 'concludebehaviorpoint'],
+        raw: true,
+    })
+
+    let title;
+    if(schoolreport['concludecore'] >= getParamValue("excellentCore") && schoolreport['concludebehaviorpoint'] >= getParamValue("excellentDiscipline")) {
+        title = "giỏi";
+    }
+    else if(schoolreport['concludecore'] >= getParamValue("goodCore") && schoolreport['concludebehaviorpoint'] >= getParamValue("goodDiscipline")) {
+        title = "khá";
+    }
+    else if(schoolreport['concludecore'] >= getParamValue("averageCore") && schoolreport['concludebehaviorpoint'] >= getParamValue("averageDiscipline")) {
+        title = "trung bình";
+    }
+    else {
+        title = "yếu";
+    }
+
+    await db.schoolreports.update({
+        concludetitle: title,
+    },
+    {
+        where: {
+            id: schoolreportId
+        }
+    })
+}
+
 module.exports = {
     totalStudentInclass,
     updateGpaFromSubjectResults,
     updateBehavior,
+    updateTitleSchoolreport
 }

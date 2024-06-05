@@ -1,31 +1,32 @@
+//20240407221018-create-schoolreportdetails
 "use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Users", {
+    await queryInterface.createTable("schoolreports", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      username: {
+      concludecore: {
+        type: Sequelize.FLOAT,
+      },
+      concludetitle: {
         type: Sequelize.STRING,
       },
-      password: {
-        type: Sequelize.STRING,
-      },
-      email: {
-        type: Sequelize.STRING,
-      },
-      groupId: {
+      concludebehaviorpoint: {
         type: Sequelize.INTEGER,
       },
-      isLocked: {
+      concludediscipline: {
+        type: Sequelize.STRING,
+      },
+      studentId: {
         type: Sequelize.INTEGER,
       },
-      image: {
-        type: Sequelize.STRING,
+      classId: {
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
@@ -38,6 +39,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Users");
+    await queryInterface.dropTable("schoolreports");
   },
 };

@@ -1,6 +1,7 @@
 import { FLOAT, where } from "sequelize";
 import db from "../models/index";
 import trigger from "../middleware/trigger"
+import { raw } from "body-parser";
 
 const findAllSubjectResultService = async(summaryId) => {
     let subjectResults = await db.subjectresults.findAll({
@@ -52,13 +53,32 @@ fourtyFive_1, fourtyFive_2, finalExam, subjectId) => {
             DT: [],
         };
     }
-    let summaryTemp = await db.summaries.findOne({
+
+    let schoolreport = await db.schoolreports.findOne({
         attributes: ['id'],
         where: {
             studentId: studentId,
             classId: classId,
+        },
+        raw: true,
+    })
+
+    let term = await db.params.findOne({
+        where: {
+            paramName: "typeterm"
+        },
+        attributes: ['paramValue'],
+        raw: true,
+    })
+
+    let summaryTemp = await db.summaries.findOne({
+        attributes: ['id'],
+        where: {
+            schoolreportId: schoolreport['id'],
+            term: term['paramValue']
         }
     })
+
     let summary = summaryTemp.dataValues.id;
     let subjectResultIdTemp = await db.subjectresults.findOne({
         where: {
@@ -67,17 +87,6 @@ fourtyFive_1, fourtyFive_2, finalExam, subjectId) => {
         }
     })
     let subjectResultId = subjectResultIdTemp.dataValues.id;
-    // let temp1 = await db.subjects.findOne({where:{id:subjectId},attributes: [ 'fifteenMinFactor' ]});
-    // let fifteenMinNum = temp1.dataValues.fifteenMinFactor;
-
-    // let temp2 = await db.subjects.findOne({where:{id:subjectId}, attributes: [ 'fourtyFiveMinFactor' ]});
-    // let fourtyFiveMinNum = temp2.dataValues.fourtyFiveMinFactor;
-
-    // let temp3 = await db.subjects.findOne({where:{id:subjectId}, attributes: [ 'finalFactor' ]});
-    // let lastTestMinNum = temp3.dataValues.finalFactor;
-
-    // let temp4 = await db.subjects.findOne({where:{id:subjectId}, attributes: [ 'minPassScore' ]});
-    // let finalResult = temp4.dataValues.minPassScore;
 
     let subjectTemp = await db.subjects.findOne({where:{id:subjectId}});
     let subject = subjectTemp.get({plain: true});
