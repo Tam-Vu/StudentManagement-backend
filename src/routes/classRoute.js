@@ -5,7 +5,6 @@ const router = express.Router();
 
 const ClassRoute = (app) => {
   router.post("/create-class", classController.handleCreateNewClass);
-  router.get("/get-student/:id",summariesController.handleFindAllStudentByClassId);
   router.get("/get-grade/:gradename/:year",classController.handleGetAllClassesByGrade);
   router.get("/", classController.handleGetAllClasses);
   router.get("/summaries/:id", classController.handleGetAllSummariesByClass);

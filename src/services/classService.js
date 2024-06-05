@@ -167,21 +167,21 @@ const getAllClassByGradeService = async (gradename, year) => {
 
 const getAllStudentSummariesByClassId = async(classId) => {
   try {
-let data = await db.summaries.findAll({
-  include: [
-    {
-      model: db.students,
-      attributes: ['studentname']
-    },
-    {
-      model: db.classes,
-      attributes:['classname'],
-      where: {
-        id: classId
-      }
-    }
-  ]
-})
+    let data = await db.schoolreports.findAll({
+      include: [
+        {
+          model: db.students,
+          attributes: ['studentname']
+        },
+        {
+          model: db.classes,
+          attributes: ['classname'],
+          where: {
+            id: classId
+          }
+        }
+      ]
+    })
     return {
       EM: "success",
       EC: 0,  
@@ -190,7 +190,7 @@ let data = await db.summaries.findAll({
   } catch (e) {
     console.log(e);
     return {
-      EM: "can't find any summaries",
+      EM: "can't find student",
       EC: 1,
       DT:"",
     };

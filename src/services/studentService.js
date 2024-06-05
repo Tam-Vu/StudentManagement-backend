@@ -76,7 +76,7 @@ const serviceCreateNewStudent = async (file ,studentname, birthDate, startDate, 
     return {
       EM: "success",
       EC: 0,
-      DT: "data",
+      DT: data,
     };
 
   } catch (e) {
@@ -94,21 +94,6 @@ const getAllStudentService = async (gradeId, year) => {
   try {
     data = await db.students.findAll({
       include: [
-        {
-          model: db.classes,
-          attributes: ["classname"],
-          where: {
-            gradeId: {
-              include: {
-                model: db.grades,
-                where: {
-                  id: gradeId,
-                  year: year,
-                },
-              },
-            },
-          },
-        },
         {
           model: db.User,
           where: {
@@ -287,58 +272,11 @@ const getStudentByClassnameService = async (classname) => {
 };
 
 //lấy học sinh chưa có lớp trong năm học đang chọn 
-// const getAllNonClassStudentByYear = async(year) => {
-//   try{
-//     let studentsInThisYear = await db.students.findAll({
-//       // where:{
-
-//       // },
-//       include: [
-//         {
-//           model: db.summaries,
-//           // where: {
-//           //   studentId: db.sequelize.col("students.id"),
-//           // },
-//           attributes: { exclude: ["createdAt", "updatedAt"] },
-//           include: [
-//             {
-//               model: db.classes,
-//               attributes: { exclude: ["createdAt", "updatedAt"] },
-//               include: [
-//                 {
-//                   model: db.grades,
-//                   attributes: {exclude: ["createdAt","updatedAt"]},
-//                   where: {
-//                     year: year,
-//                   }
-//                 }
-//               ]
-//             }
-//           ]
-//         }
-//       ],
-//     })
-//   return {
-//     EM: "success",
-//     EC: 0,
-//     DT: studentsInThisYear,
-//   };
-//   }catch(e) {
-//     console.log(e);
-//     return {
-//       EM: "not found",
-//       EC: 1,
-//       DT: "",
-//     };
-//   }
-// }
-
-//lấy học sinh chưa có lớp trong năm học đang chọn 
 const getAllNonClassStudentByYear = async(year) => {
   try{
     let studentsInThisYear = await sequelize.query(`select * from students where students.id not in 
-    (select distinct students.id from students left join summaries on students.id = summaries.studentId left join classes 
-    on classes.id = summaries.classId left join grades on classes.gradeId = grades.id where grades.year = :year)`, {
+    (select distinct students.id from students left join schoolreports on students.id = schoolreports.studentId left join classes 
+    on classes.id = schoolreports.classId left join grades on classes.gradeId = grades.id where grades.year = :year)`, {
       replacements:{year},
       type: sequelize.QueryTypes.SELECT
     })
@@ -384,8 +322,8 @@ const getAllNonClassStudentByClassId = async(classId) => {
     //lấy học sinh chưa có lớp 10: tức là chưa có bất kì học bạ nào đạt
     if(className.startsWith("10")) {
       freeStudentsInThisYear = await sequelize.query(`select distinct s.* from students s
-      left join summaries su on s.id = su.studentId where su.studentId is null or not exists
-      (select 1 from summaries where studentId = s.id and title <> 'yếu') and s.statusinyear = 0`, {
+      left join schoolreports sr on s.id = sr.studentId where sr.studentId is null or not exists
+      (select 1 from schoolreports where studentId = s.id and concludetitle <> 'yếu') and s.statusinyear = 0`, {
         replacements:{year},
         type: sequelize.QueryTypes.SELECT
       })
@@ -394,7 +332,7 @@ const getAllNonClassStudentByClassId = async(classId) => {
     //lấy học sinh chưa có lớp 10: tức là có 1 học bạ đạt
     else if(className.startsWith("11")) {
       freeStudentsInThisYear = await sequelize.query(`select distinct s.* from students s
-      join summaries su on s.id = su.studentId where su.title <> 'yếu'
+      join schoolreports sr on s.id = sr.studentId where sr.concludetitle <> 'yếu'
       group by s.id having count(*) = 1 and s.statusinyear = 0`, {
         replacements:{year},
         type: sequelize.QueryTypes.SELECT
@@ -403,7 +341,7 @@ const getAllNonClassStudentByClassId = async(classId) => {
 
     else if(className.startsWith("12")) {
       freeStudentsInThisYear = await sequelize.query(`select distinct s.* from students s
-      join summaries su on s.id = su.studentId where su.title <> 'yếu'
+      join schoolreports sr on s.id = sr.studentId where sr.concludetitle <> 'yếu'
       group by s.id having count(*) = 2 s.statusinyear = 0`, {
         replacements:{year},
         type: sequelize.QueryTypes.SELECT

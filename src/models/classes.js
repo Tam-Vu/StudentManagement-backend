@@ -15,11 +15,8 @@ module.exports = (sequelize, DataTypes) => {
       classes.belongsTo(models.grades, {
         foreignKey: "gradeId",
       });
-      classes.hasMany(models.summaries, {
+      classes.hasMany(models.schoolreports, {
         foreignKey: "classId",
-      });
-      classes.belongsTo(models.teachers, {
-        foreignKey: "homeroomTeacher",
       });
     }
   }
@@ -27,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       classname: DataTypes.STRING,
       total: DataTypes.INTEGER,
-      homeroomTeacher: DataTypes.INTEGER,
       gradeId: DataTypes.INTEGER,
     },
     {
