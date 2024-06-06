@@ -153,11 +153,11 @@ const getSummariesByTerm = async(studentId, grade, term) => {
       where: {
         studentId: studentId,
       },
-      attributes: { exclude: ["createdAt", "updatedAt"] },
+      attributes: { exclude: ["createdAt", "updatedAt", "classId", "studentId"] },
       include: [
         {
           model: db.classes,
-          attributes: [],
+          attributes: ['classname'],
           include: [
             {
               model: db.grades,
