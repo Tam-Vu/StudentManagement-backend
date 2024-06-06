@@ -56,7 +56,7 @@ const serviceCreateNewStudent = async (
       slug
     ).padStart(4, "0")}`;
     let hashPass = hashUserPassword(userandpass);
-    const downloadURL = null;
+    let downloadURL = null;
     if (file != null) {
       const storageRef = ref(storage, `image/${file.originalname}`);
       const metadata = {
@@ -125,11 +125,11 @@ const getAllStudentService = async () => {
       include: [
         {
           model: db.students,
-          attributes: ["studentname", "gender"],
+          attributes: ["id", "studentname", "gender"],
           include: [
             {
               model: db.User,
-              attributes: ["username"],
+              attributes: ["username", "image", "email"],
             },
           ],
         },

@@ -61,7 +61,9 @@ class SchoolreportController {
   handleFindAllStudentByClassId = async (req, res) => {
     try {
       const classId = req.params.id;
-      let data = await summariesService.getAllStudentByClassIdService(classId);
+      let data = await schoolreportService.getAllStudentByClassIdService(
+        classId
+      );
       let userData = {};
       userData = data;
       res.status(200).json({
@@ -77,7 +79,7 @@ class SchoolreportController {
   handleShowSchoolreportByStudentId = async (req, res) => {
     try {
       let id = req.params.id;
-      await summariesService
+      await schoolreportService
         .getDetailsTranscriptByStudentId(id)
         .then((data) => {
           res.status(200).json({
