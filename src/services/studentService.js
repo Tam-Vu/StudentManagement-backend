@@ -121,41 +121,31 @@ const serviceCreateNewStudent = async (
 const getAllStudentService = async () => {
   let data = [];
   try {
-    data = await db.students.findAll({
+    data = await db.schoolreports.findAll({
       include: [
         {
-          model: db.User,
-          where: {
-            isLocked: 0,
-          },
-          attributes: ["username"],
-        },
-        {
-          model: db.schoolreports,
-          required: false,
-          where: {
-            createdAt: {
-              [Op.ne]: null,
-            },
-          },
-          separate: true,
-          limit: 1,
-          order: [["createdAt", "DESC"]],
-          attributes: ["classId"],
+          model: db.students,
+          attributes: ["studentname", "gender"],
           include: [
             {
-              model: db.classes,
-              attributes: ["classname"],
-              include: [
-                {
-                  model: db.grades,
-                  attributes: ["gradename", "year"],
-                },
-              ],
+              model: db.User,
+              attributes: ["username"],
+            },
+          ],
+        },
+        {
+          model: db.classes,
+          attributes: ["classname"],
+          include: [
+            {
+              model: db.grades,
+              attributes: ["gradename", "year"],
             },
           ],
         },
       ],
+      attributes: [],
+      order: [[{ model: db.students }, "studentname", "ASC"]],
     });
     return {
       EM: "success",
