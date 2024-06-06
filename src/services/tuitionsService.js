@@ -8,7 +8,7 @@ const createTuitionByClassId = async(classId, price, month, year, closingdate) =
             attributes: ['id'],
             include: [
                 {
-                    model: db.summaries,
+                    model: db.schoolreports,
                     attributes: { exclude: ["createdAt", "updatedAt"] },
                     where: {
                         classId: classId,
@@ -142,7 +142,7 @@ const getAllTuitionOfStudentInYear = async(year) => {
                     model: db.students,
                     include: [
                         {
-                            model: db.summaries,
+                            model: db.schoolreports,
                             include: [
                                 {
                                     model: db.classes,
@@ -151,13 +151,17 @@ const getAllTuitionOfStudentInYear = async(year) => {
                                             model: db.grades,
                                             where: {
                                                 year: year
-                                            }
+                                            },
+                                            attributes: ['year', 'gradename']
                                         }
                                     ],
+                                    attributes: ['classname']
                                 }
-                            ]
+                            ],
+                            attributes: ['classId']
                         }
-                    ]
+                    ],
+                    attributes: ['studentname']
                 },
             ],
             where: {

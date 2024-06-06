@@ -31,7 +31,6 @@ const serviceCreateNewAccount = async (username, password, email, groupId) => {
     }
 }
 
-
 module.exports = {
     createAccount,
 }
