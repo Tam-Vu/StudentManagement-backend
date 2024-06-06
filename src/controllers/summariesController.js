@@ -22,19 +22,5 @@ class summariesController {
       return res.status(500).json({ message: e.message });
     }
   };
-
-  handleShowBestStudentInEachGrade = async(req, res) => {
-    try {
-      let year = req.params.year;
-      let data = await summariesService.getBestStudentInEachGrade(year);
-      res.status(200).json({
-        EM: data.EM,
-        EC: data.EC,
-        DT: data.DT,
-      });
-    } catch(e) {
-      return res.status(500).json({ message: e.message });
-    }
-  }
 }
 module.exports = new summariesController();

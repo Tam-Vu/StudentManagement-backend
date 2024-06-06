@@ -97,7 +97,7 @@ const getAllClassByStudentIdService = async (studentId) => {
       return {
         EM: "success",
         EC: 0,
-        DT: "res",
+        DT: "",
       };
     } catch (e) {
       console.log(e);

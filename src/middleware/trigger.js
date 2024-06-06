@@ -1,7 +1,6 @@
 
 import AsyncQueue from "sequelize/lib/dialects/mssql/async-queue";
 import db, { Sequelize, sequelize } from "../models/index";
-import { raw } from "body-parser";
 const { Op, where } = require("sequelize");
 
 const totalStudentInclass = async(classId) => {
@@ -258,9 +257,20 @@ const updateTitleSchoolreport = async(schoolreportId) => {
     })
 }
 
+const findParamsByName = async(paramName) => {
+    let param = await db.params.findOne({
+        where: {
+            paramName: paramName,
+        },
+        raw: true,
+    })
+    return param['paramValue']
+}
+
 module.exports = {
     totalStudentInclass,
     updateGpaFromSubjectResults,
     updateBehavior,
-    updateTitleSchoolreport
+    updateTitleSchoolreport,
+    findParamsByName
 }
