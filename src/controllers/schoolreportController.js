@@ -48,12 +48,10 @@ class SchoolreportController {
         arrayStudentId,
         classId
       );
-      let userData = {};
-      userData = data;
       res.status(200).json({
-        EM: res.EM,
-        EC: res.EC,
-        DT: res.DT,
+        EM: data.EM,
+        EC: data.EC,
+        DT: data.DT,
       });
     } catch (e) {
       return res.status(500).json({ message: e.message });
@@ -79,7 +77,7 @@ class SchoolreportController {
   handleShowSchoolreportByStudentId = async (req, res) => {
     try {
       let id = req.params.id;
-      await schoolreportService
+      await summariesService
         .getDetailsTranscriptByStudentId(id)
         .then((data) => {
           res.status(200).json({

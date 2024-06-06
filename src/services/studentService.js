@@ -46,22 +46,29 @@ const serviceCreateNewStudent = async (
         }
       }
     }
-    let slug = getParamValue("studentSlug");
 
+    let maxAge = getParamValue("maxage");
+    let minAge = getParamValue("minage");
+    const today = new Date();
+
+    let slug = getParamValue("studentSlug");
     let userandpass = `hocsinh${String(getParamValue("term"))}${String(
       slug
     ).padStart(4, "0")}`;
     let hashPass = hashUserPassword(userandpass);
-    const storageRef = ref(storage, `image/${file.originalname}`);
-    const metadata = {
-      contentType: file.mimetype,
-    };
-    const snapshot = await uploadBytesResumable(
-      storageRef,
-      file.buffer,
-      metadata
-    );
-    const downloadURL = await getDownloadURL(snapshot.ref);
+    const downloadURL = null;
+    if (file != null) {
+      const storageRef = ref(storage, `image/${file.originalname}`);
+      const metadata = {
+        contentType: file.mimetype,
+      };
+      const snapshot = await uploadBytesResumable(
+        storageRef,
+        file.buffer,
+        metadata
+      );
+      downloadURL = await getDownloadURL(snapshot.ref);
+    }
 
     let studentAccount = await db.User.create({
       username: userandpass,
@@ -111,7 +118,7 @@ const serviceCreateNewStudent = async (
   }
 };
 
-const getAllStudentService = async (gradeId, year) => {
+const getAllStudentService = async () => {
   let data = [];
   try {
     data = await db.students.findAll({
@@ -121,6 +128,32 @@ const getAllStudentService = async (gradeId, year) => {
           where: {
             isLocked: 0,
           },
+          attributes: ["username"],
+        },
+        {
+          model: db.schoolreports,
+          required: false,
+          where: {
+            createdAt: {
+              [Op.ne]: null,
+            },
+          },
+          separate: true,
+          limit: 1,
+          order: [["createdAt", "DESC"]],
+          attributes: ["classId"],
+          include: [
+            {
+              model: db.classes,
+              attributes: ["classname"],
+              include: [
+                {
+                  model: db.grades,
+                  attributes: ["gradename", "year"],
+                },
+              ],
+            },
+          ],
         },
       ],
     });

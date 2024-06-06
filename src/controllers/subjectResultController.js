@@ -36,5 +36,26 @@ class subjectResult {
       return res.status(500).json({ message: e.message });
     }
   };
+
+  handleImportSoreByExcel = async (req, res) => {
+    try {
+      let filepath = req.file.path;
+      console.log(filepath);
+      let classId = req.body.classId;
+      let subjectId = req.body.subjectId;
+      let data = await subjectResultService.importScoreByExcel(
+        filepath,
+        classId,
+        subjectId
+      );
+      return res.status(200).json({
+        EM: data.EM,
+        EC: data.EC,
+        DT: data.DT,
+      });
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
+    }
+  };
 }
 module.exports = new subjectResult();
