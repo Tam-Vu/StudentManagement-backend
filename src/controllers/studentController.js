@@ -10,7 +10,7 @@ class StudentController {
       let gender = req.body.gender;
       let address = req.body.address;
       let email = req.body.email;
-      let user = await studentService.serviceCreateNewStudent(req.file ,studentname, birthDate, startDate, gender, address, email);
+      let user = await studentService.serviceCreateNewStudent(req.file, studentname, birthDate, startDate, gender, address, email);
       res.status(200).json({
         EM: user.EM,
         EC: user.EC,
