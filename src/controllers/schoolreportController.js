@@ -23,7 +23,7 @@ class SchoolreportController {
       const searchFilter = req.query.searchFilter || "";
       const gradename = req.query.gradename || "";
       const year = req.query.year || "";
-      let data = await summariesService.getAllStudentService(
+      let data = await schoolreportService.getAllStudentService(
         searchFilter,
         gradename,
         year

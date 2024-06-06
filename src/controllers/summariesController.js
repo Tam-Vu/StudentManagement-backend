@@ -20,5 +20,21 @@ class summariesController {
       return res.status(500).json({ message: e.message });
     }
   };
+
+  handleGetSummariesByTerm = async(req, res) => {
+    let studentId = req.params.id;
+    let gradename = req.params.gradename;
+    let term = req.params.term;
+    try {
+      let data = await summariesService.getSummariesByTerm(studentId, gradename, term);
+      res.status(200).json({
+        EM: data.EM,
+        EC: data.EC,
+        DT: data.DT,
+      });
+    } catch(e) {
+      return res.status(500).json({ message: e.message });
+    }
+  }
 }
 module.exports = new summariesController();

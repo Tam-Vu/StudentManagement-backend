@@ -7,6 +7,7 @@ const summariesRoute = (app) => {
   router.post("/add-student/:id",schoolreportController.handleCreateSchoolreport);
   router.get("/get-student/:id",schoolreportController.handleFindAllStudentByClassId);
   router.get("/my-transcript/:id", schoolreportController.handleShowSchoolreportByStudentId);
+  router.get("/:id/:gradename/:term", summariesController.handleGetSummariesByTerm);
   return app.use("/summaries", router);
 };
 export default summariesRoute;

@@ -156,12 +156,16 @@ const getAllTuitionOfStudentInYear = async (year) => {
                       where: {
                         year: year,
                       },
+                      attributes: ["year", "gradename"],
                     },
                   ],
+                  attributes: ["classname"],
                 },
               ],
+              attributes: ["classId"],
             },
           ],
+          attributes: ["studentname"],
         },
       ],
       where: {

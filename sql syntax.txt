@@ -48,5 +48,4 @@ VALUES ('term', '2024', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
 VALUES ('typeterm', '1', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-
     

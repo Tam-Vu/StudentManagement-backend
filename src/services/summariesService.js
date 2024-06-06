@@ -8,13 +8,181 @@ const { Op } = require("sequelize");
 const getAllStudentService = async (gradeId, year) => {
   let data = [];
   try {
-    data = await db.students.findAll({
+    if (gradename != "" && year == "") {
+      data = await db.summaries.findAll({
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          {
+            model: db.classes,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            include: {
+              model: db.grades,
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+              where: {
+                gradename: gradename,
+              },
+            },
+            where: {
+              // classname: { [Op.like]: `%${searchFilter}%` },
+            },
+          },
+          {
+            model: db.students,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            where: {
+              studentname: { [Op.like]: `%${searchFilter}%` },
+            },
+          },
+        ],
+      });
+      return {
+        EM: "success",
+        EC: 0,
+        DT: data,
+      };
+    } else if (year != "" && gradename == "") {
+      data = await db.summaries.findAll({
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          {
+            model: db.classes,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            include: {
+              model: db.grades,
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+              where: {
+                year: year,
+              },
+            },
+            where: {
+              // classname: { [Op.like]: `%${searchFilter}%` },
+            },
+          },
+          {
+            model: db.students,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            where: {
+              studentname: { [Op.like]: `%${searchFilter}%` },
+            },
+          },
+        ],
+      });
+      return {
+        EM: "success",
+        EC: 0,
+        DT: data,
+      };
+    } else if (year != "" && gradename != "") {
+      data = await db.summaries.findAll({
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          {
+            model: db.classes,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            where: {
+              // classname: { [Op.like]: `%${searchFilter}%` },
+            },
+            include: {
+              model: db.grades,
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+              where: {
+                gradename: gradename,
+                year: year,
+              },
+            },
+          },
+          {
+            model: db.students,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            where: {
+              studentname: { [Op.like]: `%${searchFilter}%` },
+            },
+          },
+        ],
+      });
+      return {
+        EM: "success",
+        EC: 0,
+        DT: data,
+      };
+    } else if (year == "" && gradename == "") {
+      data = await db.summaries.findAll({
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          {
+            model: db.classes,
+            attributes: { exclude: ["createdAt", "updatedAt", "id"] },
+            where: {
+              id: Sequelize.col("summaries.classId"),
+            },
+            include: {
+              model: db.grades,
+              attributes: { exclude: ["createdAt", "updatedAt", "id"] },
+            },
+          },
+          {
+            model: db.students,
+            attributes: { exclude: ["createdAt", "updatedAt", "id"] },
+            where: {
+              id: Sequelize.col("summaries.studentId"),
+              studentname: { [Op.like]: `%${searchFilter}%` },
+            },
+          },
+        ],
+      });
+    }
+    return {
+      EM: "success",
+      EC: 0,
+      DT: data,
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      EM: "something wrong with service",
+      EC: 1,
+      DT: "",
+    };
+  }
+};
+
+const getSummariesByTerm = async (studentId, grade, term) => {
+  try {
+    let data = await db.schoolreports.findAll({
+      where: {
+        studentId: studentId,
+      },
+      attributes: { exclude: ["createdAt", "updatedAt"] },
       include: [
         {
-          model: db.User,
+          model: db.classes,
+          attributes: [],
+          include: [
+            {
+              model: db.grades,
+              where: {
+                gradename: grade,
+              },
+              attributes: ["gradename", "year"],
+            },
+          ],
+        },
+        {
+          model: db.summaries,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
           where: {
-            isLocked: 0,
+            term: term,
           },
+        },
+        {
+          model: db.students,
+          attributes: ["studentname", "gender"],
+          include: [
+            {
+              model: db.User,
+              attributes: ["username", "email", "image"],
+            },
+          ],
         },
       ],
     });
@@ -26,13 +194,14 @@ const getAllStudentService = async (gradeId, year) => {
   } catch (e) {
     console.log(e);
     return {
-      EM: "something wrong with service",
-      EC: 0,
-      DT: data,
+      EM: "summary not found",
+      EC: 1,
+      DT: "",
     };
   }
 };
 
 module.exports = {
   getAllStudentService,
+  getSummariesByTerm,
 };
