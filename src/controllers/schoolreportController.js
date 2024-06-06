@@ -21,7 +21,7 @@ class SchoolreportController {
       const searchFilter = req.query.searchFilter || "";
       const gradename = req.query.gradename || "";
       const year = req.query.year || "";
-      let data = await summariesService.getAllStudentService(
+      let data = await schoolreportService.getAllStudentService(
         searchFilter,
         gradename,
         year
@@ -56,7 +56,7 @@ class SchoolreportController {
   handleFindAllStudentByClassId = async (req, res) => {
     try {
       const classId = req.params.id;
-      let data = await summariesService.getAllStudentByClassIdService(
+      let data = await schoolreportService.getAllStudentByClassIdService(
         classId
       );
       let userData = {};
@@ -74,7 +74,7 @@ class SchoolreportController {
   handleShowSchoolreportByStudentId = async(req, res) => {
     try {
       let id = req.params.id;
-      await summariesService.getDetailsTranscriptByStudentId(id)
+      await schoolreportService.getDetailsTranscriptByStudentId(id)
       .then((data) => {
         res.status(200).json({
           EM: data.EM,

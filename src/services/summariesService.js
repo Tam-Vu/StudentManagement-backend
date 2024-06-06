@@ -131,12 +131,12 @@ const getAllStudentService = async (searchFilter, gradename, year) => {
           },
         ],
       });
+      }
       return {
         EM: "success",
         EC: 0,
         DT: data,
       };
-    }
   } catch (e) {
     console.log(e);
     return {
@@ -147,6 +147,62 @@ const getAllStudentService = async (searchFilter, gradename, year) => {
   }
 };
 
+const getSummariesByTerm = async(studentId, grade, term) => {
+  try {
+    let data = await db.schoolreports.findAll({
+      where: {
+        studentId: studentId,
+      },
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      include: [
+        {
+          model: db.classes,
+          attributes: [],
+          include: [
+            {
+              model: db.grades,
+              where: {
+                gradename: grade,
+              },
+              attributes: ['gradename', 'year'],
+            }
+          ]
+        },
+        {
+          model: db.summaries,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+          where: {
+            term: term
+          }
+        },
+        {
+          model: db.students,
+          attributes: ['studentname', 'gender'],
+          include: [
+            {
+              model: db.User,
+              attributes: ['username', 'email', 'image']
+            }
+          ]
+        }
+      ]
+    })
+    return {
+      EM: "success",
+      EC: 0,
+      DT: data,
+    };
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "summary not found",
+      EC: 1,
+      DT: "",
+    };
+  }
+}
+
 module.exports = {
   getAllStudentService,
+  getSummariesByTerm
 };
