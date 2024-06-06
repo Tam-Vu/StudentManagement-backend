@@ -158,40 +158,105 @@ const getAllStudentByClassIdService = async (classId) => {
     }
 };
 
-const getDetailsTranscriptByStudentId = async(studentId) => {
+const getDetailsTranscriptByStudentId = async(studentId, gradename) => {
     try {
-      let data = await db.schoolreports.findAll({
-        attributes: { exclude: ["createdAt", "updatedAt"] },
+      let schoolReports = await db.schoolreports.findAll({
+        attributes: ["concludecore", "concludetitle", "concludebehaviorpoint"],
         where: {
           studentId: studentId
         },
         include: [
-            {
-                model: db.summaries,
-                attributes: { exclude: ["createdAt", "updatedAt", "id"] },
+          {
+            model: db.summaries,
+            attributes: ['gpa', 'title', 'behaviorpoint', 'term'],
+            include: [
+              {
+                model: db.subjectresults,
+                attributes: ['averageScore', 'result'],
                 include: [
-                    {
-                        model: db.subjectresults,
-                        attributes: { exclude: ["createdAt", "updatedAt", "id"] },
-                        include: [
-                        {
-                            model: db.subjects,
-                            attributes: ['subjectname'],
-                        }
-                        ]
-                    },
+                  {
+                    model: db.subjects,
+                    attributes: ['subjectname'],
+                  }
                 ]
-            },
-            {
-                model: db.classes,
-                attributes: ['classname'],  
-            }
+              },
+            ]
+          },
+          {
+            model: db.classes,
+            attributes: ['classname'],
+            include: [
+              {
+                model: db.grades,
+                attributes: ['gradename'],
+              }
+            ]
+          }
         ]
-      })
+      });
+  
+      let subjectMap = {};
+      let gradename = '';
+      let classname = '';
+  
+      schoolReports.forEach(report => {
+        if (report.class && report.class.grade) {
+          gradename = report.class.grade.gradename;
+          classname = report.class.classname;
+        }
+        report.summaries.forEach(summary => {
+          summary.subjectresults.forEach(result => {
+            let subjectName = result.subject.subjectname;
+  
+            if (!subjectMap[subjectName]) {
+              subjectMap[subjectName] = {
+                term1: null,
+                term2: null,
+                annualAverageScore: null
+              };
+            }
+  
+            if (result.averageScore !== null) {
+              if (summary.term === 1) {
+                subjectMap[subjectName].term1 = result.averageScore;
+              } else if (summary.term === 2) {
+                subjectMap[subjectName].term2 = result.averageScore;
+              }
+            }
+          });
+        });
+      });
+  
+      let annualAverageScores = Object.keys(subjectMap).map(subjectName => {
+        let subjectData = subjectMap[subjectName];
+        let term1Avg = subjectData.term1;
+        let term2Avg = subjectData.term2;
+        let annualAvg = null;
+  
+        if (term1Avg !== null && term2Avg !== null) {
+          annualAvg = ((term1Avg + term2Avg) / 2).toFixed(2);
+        } else if (term1Avg !== null) {
+          annualAvg = term1Avg.toFixed(2);
+        } else if (term2Avg !== null) {
+          annualAvg = term2Avg.toFixed(2);
+        }
+  
+        return {
+          subjectname: subjectName,
+          term1AverageScore: term1Avg !== null ? term1Avg.toFixed(2) : null,
+          term2AverageScore: term2Avg !== null ? term2Avg.toFixed(2) : null,
+          annualAverageScore: annualAvg
+        };
+      });
+
       return {
         EM: "success",
         EC: 0,
-        DT: data,
+        DT: {
+          gradename: gradename,
+          classname: classname,
+          subjects: annualAverageScores
+        }
       };
     } catch(e) {
       console.log(e);
