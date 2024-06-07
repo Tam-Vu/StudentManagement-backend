@@ -18,28 +18,6 @@ class SchoolreportController {
     }
   };
 
-  handleFindAllStudent = async (req, res) => {
-    try {
-      const searchFilter = req.query.searchFilter || "";
-      const gradename = req.query.gradename || "";
-      const year = req.query.year || "";
-      let data = await schoolreportService.getAllStudentService(
-        searchFilter,
-        gradename,
-        year
-      );
-      let userData = {};
-      userData = data;
-      res.status(200).json({
-        EM: userData.EM,
-        EC: userData.EC,
-        DT: userData.DT,
-      });
-    } catch (e) {
-      return res.status(500).json({ message: e.message });
-    }
-  };
-
   handleCreateSchoolreport = async (req, res) => {
     try {
       let arrayStudentId = req.body.data;
@@ -79,8 +57,9 @@ class SchoolreportController {
   handleShowSchoolreportByStudentId = async (req, res) => {
     try {
       let id = req.params.id;
+      let gradename = req.params.gradename;
       await schoolreportService
-        .getDetailsTranscriptByStudentId(id)
+        .getDetailsTranscriptByStudentId(id, gradename)
         .then((data) => {
           res.status(200).json({
             EM: data.EM,
