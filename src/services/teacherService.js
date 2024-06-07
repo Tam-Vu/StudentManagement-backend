@@ -2,15 +2,25 @@ import { where } from "sequelize";
 import db, { sequelize } from "../models/index";
 import QueryTypes from "sequelize";
 import bcrypt from "bcryptjs";
+import { initializeApp } from "firebase/app";
+import {
+  getStorage,
+  ref,
+  getDownloadURL,
+  uploadBytesResumable,
+} from "firebase/storage";
+import config from "../config/firebasestorage";
+
+const app = initializeApp(config.firebaseConfig);
+const storage = getStorage();
 
 const salt = bcrypt.genSaltSync(10);
 const hashUserPassword = (userPass) => {
   let hashPassword = bcrypt.hashSync(userPass, salt);
   return hashPassword;
 };
-var slug = 1;
 
-const serviceCreateNewTeacher = async (data) => {
+const serviceCreateNewTeacher = async (data, image) => {
   try {
     if (
       !data.teachername ||
@@ -35,13 +45,41 @@ const serviceCreateNewTeacher = async (data) => {
           }
         }
       }
+
+      let checkemail = await db.User.findOne({
+        where: {
+          email: data.email,
+        },
+      });
+      if (checkemail) {
+        return {
+          EM: "this email is already used",
+          EC: 1,
+          DT: "",
+        };
+      }
       let slug = getParamValue("teacherSlug");
       let userandpass = `giaovien${String(slug).padStart(4, "0")}`;
       let hashPass = hashUserPassword(userandpass);
+
+      let downloadURL = null;
+      if (image != null) {
+        const storageRef = ref(storage, `image/${image.originalname}`);
+        const metadata = {
+          contentType: image.mimetype,
+        };
+        const snapshot = await uploadBytesResumable(
+          storageRef,
+          image.buffer,
+          metadata
+        );
+        downloadURL = await getDownloadURL(snapshot.ref);
+      }
       let teacherAccount = await db.User.create({
         username: userandpass,
         password: hashPass,
-        // email: email,
+        email: data.email,
+        image: downloadURL,
         groupId: 2,
         isLocked: 0,
       });
@@ -89,14 +127,14 @@ const getAllTeacherService = async () => {
       include: [
         {
           model: db.User,
-          attributes: ["username", "email", "image"],
           where: {
             isLocked: 0,
           },
+          attributes: ["image", "username"],
         },
         {
-          model: db.classes,
-          attributes: { exclude: ["createdAt", "updatedAt"] },
+          model: db.subjects,
+          attributes: ["subjectname"],
         },
       ],
     });
@@ -116,9 +154,36 @@ const getAllTeacherService = async () => {
 };
 
 const getTeacherByIdService = async (id) => {
-  let data = {};
-  data = await db.teachers.findByPk(id);
-  return data.get({ plain: true });
+  try {
+    let data = await db.teachers.findOne({
+      where: {
+        id: id,
+      },
+      include: [
+        {
+          model: db.User,
+          attributes: ["image", "username"],
+        },
+        {
+          model: db.subjects,
+          attributes: ["subjectname"],
+        },
+      ],
+      attributes: ["teachername", "gender", "startDate"],
+    });
+    return {
+      EM: "success",
+      EC: 0,
+      DT: data,
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      EM: "something wrong with service",
+      EC: 0,
+      DT: "",
+    };
+  }
 };
 
 const updateTeacherService = async (data, id) => {
@@ -168,8 +233,6 @@ const deleteTeacherService = async (id) => {
     });
     if (teacher) {
       let user = teacher.User;
-      console.log(teacher);
-      console.log(user);
       await user.update({
         isLocked: 1,
       });
