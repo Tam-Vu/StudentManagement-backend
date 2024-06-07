@@ -2,8 +2,9 @@ import teacherService from "../services/teacherService";
 //thêm các hàm xủ lý ở đây
 class teacherController {
   handleCreateNewTeacher = async (req, res) => {
+    let image = req.file;
     try {
-      let user = await teacherService.serviceCreateNewTeacher(req.body);
+      let user = await teacherService.serviceCreateNewTeacher(req.body, image);
       res.status(200).json({
         EM: user.EM,
         EC: user.EC,
@@ -14,7 +15,6 @@ class teacherController {
     }
   };
   handleFindAllTeacher = async (req, res) => {
-    console.log("TEACHER");
     try {
       await teacherService
         .getAllTeacherService()

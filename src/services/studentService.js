@@ -1,14 +1,8 @@
 import { where } from "sequelize";
 import db, { sequelize } from "../models/index";
-const excelJs = require('exceljs')
-const fs = require('fs');
-const { Op } = require('sequelize');
 import bcrypt from "bcryptjs";
-import accountService from "../services/accountService"
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import { getFirestore } from "firebase/firestore";
-import multer from "multer";
 import config from "../config/firebasestorage"
 
 const app = initializeApp(config.firebaseConfig);
@@ -31,6 +25,19 @@ const serviceCreateNewStudent = async (file ,studentname, birthDate, startDate, 
                 return param['paramValue'];
             }
         }
+    }
+
+    let checkemail = await db.User.findOne({
+      where: {
+        email: email,
+      }
+    })
+    if(checkemail) {
+      return {
+        EM: "this email is already used",
+        EC: 1,
+        DT: "",
+      }
     }
 
     let maxAge = getParamValue("maxage");
