@@ -47,7 +47,27 @@ const assignTeacherIntoClasses = async (teacherId, classId, subjectId) => {
 
 const getAllAssignmentsInYear = async (year) => {
   try {
+    let classes = await db.classes.findAll({
+      attributes: ['gradeId'],
+      include: [
+        {
+          model: db.grades,
+          where: {
+            year: year,
+          }
+        }
+      ]
+    });
+    if(classes.length == 0) {
+      return {
+        EM: "there is no class to assign in this year",
+        EC: 1,
+        DT: "",
+      }
+    } 
+
     let data = await db.assignments.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
       include: [
         {
           model: db.classes,
@@ -71,7 +91,6 @@ const getAllAssignmentsInYear = async (year) => {
           attributes: ["subjectname"],
         },
       ],
-      attributes: { exclude: ["createdAt", "updatedAt"] },
     });
     return {
       EM: "success",

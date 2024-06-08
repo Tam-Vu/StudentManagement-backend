@@ -56,6 +56,13 @@ const getAllClassByStudentIdService = async (studentId) => {
           isdeleted: 0,
         }
       });
+      if(subjects.length == 0) {
+        return {
+          EM: "there is no subject to study",
+          EC: 1,
+          DT: [],
+        }
+      }
       arrayStudentId.forEach(async(studentId) => {        
         await db.students.update({
           statusinyear: 1,

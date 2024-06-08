@@ -4,10 +4,23 @@ import db, { Sequelize, sequelize } from "../models/index";
 const { Op, where } = require("sequelize");
 
 const totalStudentInclass = async(classId) => {
-    const count = await db.schoolreports.count({
-        where: {
-            classId: classId
-        }
+    const count = await db.students.count({
+        include: [
+            {
+                model: db.schoolreports,
+                attributes: ['classId', 'studentId'],
+                where: {
+                    classId: classId,
+                }
+            },
+            {
+                model: db.User,
+                attributes: [],
+                where: {
+                    isLocked: 0,
+                }
+            }
+        ]
     });
     await db.classes.update({
         total: count,
