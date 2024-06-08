@@ -14,8 +14,19 @@ class subjectResult {
     let subjectId = req.body.subjectId;
     let finalExam = req.body.finalExam;
     try {
-      let data = await subjectResultService.inputScoreService(classId, studentId, teacherComment, 
-        fifteen_1, fifteen_2, fifteen_3, fifteen_4, fourtyFive_1, fourtyFive_2, finalExam, subjectId);
+      let data = await subjectResultService.inputScoreService(
+        classId,
+        studentId,
+        teacherComment,
+        fifteen_1,
+        fifteen_2,
+        fifteen_3,
+        fifteen_4,
+        fourtyFive_1,
+        fourtyFive_2,
+        finalExam,
+        subjectId
+      );
       return res.status(200).json({
         EM: data.EM,
         EC: data.EC,
@@ -24,23 +35,27 @@ class subjectResult {
     } catch (e) {
       return res.status(500).json({ message: e.message });
     }
-  }
+  };
 
-  handleImportSoreByExcel = async(req, res) => {
+  handleImportSoreByExcel = async (req, res) => {
     try {
       let filepath = req.file.path;
       console.log(filepath);
       let classId = req.body.classId;
       let subjectId = req.body.subjectId;
-      let data = await subjectResultService.importScoreByExcel(filepath, classId, subjectId)
+      let data = await subjectResultService.importScoreByExcel(
+        filepath,
+        classId,
+        subjectId
+      );
       return res.status(200).json({
         EM: data.EM,
         EC: data.EC,
         DT: data.DT,
       });
-    } catch(e) {
+    } catch (e) {
       return res.status(500).json({ message: e.message });
     }
-  }
+  };
 }
 module.exports = new subjectResult();

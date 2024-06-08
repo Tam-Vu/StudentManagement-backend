@@ -1,10 +1,9 @@
 import { FLOAT, where } from "sequelize";
 import db from "../models/index";
-import trigger from "../middleware/trigger"
+import trigger from "../middleware/trigger";
 import { raw } from "body-parser";
 import csv from "csv-parser";
 import fs from "fs";
-
 
 const findAllSubjectResultService = async (summaryId) => {
   let subjectResults = await db.subjectresults.findAll({
@@ -47,16 +46,34 @@ const findSubjectResultBySubjectService = async (summaryId, subjectId) => {
   };
 };
 
-const inputScoreService = async(classId, studentId, teacherComment, fifteen_1, fifteen_2, fifteen_3, fifteen_4,
-fourtyFive_1, fourtyFive_2, finalExam, subjectId) => {
-  if (fifteen_1 < 0 || fifteen_2 < 0 || fifteen_3 < 0 || fifteen_4 < 0 || fourtyFive_1 < 0 || fourtyFive_2 < 0 || finalExam < 0) {
-      return {
-          EM: "the score must be greater than 0.",
-          EC: 1,
-          DT: [],
-      };
+const inputScoreService = async (
+  classId,
+  studentId,
+  teacherComment,
+  fifteen_1,
+  fifteen_2,
+  fifteen_3,
+  fifteen_4,
+  fourtyFive_1,
+  fourtyFive_2,
+  finalExam,
+  subjectId
+) => {
+  if (
+    fifteen_1 < 0 ||
+    fifteen_2 < 0 ||
+    fifteen_3 < 0 ||
+    fifteen_4 < 0 ||
+    fourtyFive_1 < 0 ||
+    fourtyFive_2 < 0 ||
+    finalExam < 0
+  ) {
+    return {
+      EM: "the score must be greater than 0.",
+      EC: 1,
+      DT: [],
+    };
   }
-
   let schoolreport = await db.schoolreports.findOne({
       attributes: ['id'],
       where: {
@@ -81,14 +98,14 @@ fourtyFive_1, fourtyFive_2, finalExam, subjectId) => {
           term: term['paramValue']
       }
   })
-  console.log(summary);
   let summary = summaryTemp.dataValues.id;
+  console.log("SUMMARY", summary);
   let subjectResultIdTemp = await db.subjectresults.findOne({
-      where: {
-          summaryId: summary,
-          subjectId: subjectId,
-      }
-  })
+    where: {
+      summaryId: summary,
+      subjectId: subjectId,
+    },
+  });
   let subjectResultId = subjectResultIdTemp.dataValues.id;
 
   let subjectTemp = await db.subjects.findOne({ where: { id: subjectId } });
@@ -167,55 +184,55 @@ fourtyFive_1, fourtyFive_2, finalExam, subjectId) => {
   };
 };
 
-const importScoreByExcel = async(filepath, classId, subjectId) => {
-  if(filepath === null) {
+const importScoreByExcel = async (filepath, classId, subjectId) => {
+  if (filepath === null) {
     return {
       EM: "not found file",
       EC: 1,
-      DT: '',
+      DT: "",
     };
   }
 
   let term = await db.params.findOne({
     where: {
-        paramName: "typeterm"
+      paramName: "typeterm",
     },
-    attributes: ['paramValue'],
+    attributes: ["paramValue"],
     raw: true,
-  })
+  });
 
-  let fileContent = await fs.promises.readFile(filepath, 'utf8');
-  let lines = fileContent.split('\n');
+  let fileContent = await fs.promises.readFile(filepath, "utf8");
+  let lines = fileContent.split("\n");
   console.log(lines.length);
   let dataLines = lines.slice(2, lines.length);
   let success = false; // Biến cờ
-  for(line of dataLines) {
+  for (line of dataLines) {
     try {
-      const columns = line.split(',');
+      const columns = line.split(",");
       let schoolreport = await db.schoolreports.findOne({
-        attributes: ['id'],
+        attributes: ["id"],
         where: {
           studentId: columns[0],
           classId: classId,
         },
         raw: true,
-      })
+      });
 
       let summaryTemp = await db.summaries.findOne({
-        attributes: ['id'],
+        attributes: ["id"],
         where: {
-            schoolreportId: schoolreport['id'],
-            term: term['paramValue']
-        }
-      })
+          schoolreportId: schoolreport["id"],
+          term: term["paramValue"],
+        },
+      });
 
       let summary = summaryTemp.dataValues.id;
       let subjectResultIdTemp = await db.subjectresults.findOne({
-          where: {
-              summaryId: summary,
-              subjectId: subjectId,
-          }
-      })
+        where: {
+          summaryId: summary,
+          subjectId: subjectId,
+        },
+      });
       let subjectResultId = subjectResultIdTemp.dataValues.id;
 
       let subjectTemp = await db.subjects.findOne({ where: { id: subjectId } });
@@ -293,7 +310,7 @@ const importScoreByExcel = async(filepath, classId, subjectId) => {
         DT: "",
       };
       success = true;
-    } catch(e) {
+    } catch (e) {
       console.log(e);
       return {
         EM: "fomat file wrong",
@@ -302,23 +319,25 @@ const importScoreByExcel = async(filepath, classId, subjectId) => {
       };
     }
   }
-  if (success) { // Nếu lặp hoàn thành thành công, trả về kết quả thành công
+  if (success) {
+    // Nếu lặp hoàn thành thành công, trả về kết quả thành công
     return {
       EM: "success",
       EC: 0,
       DT: "",
     };
-  } else { // Nếu không có bất kỳ lần lặp nào hoàn thành thành công
+  } else {
+    // Nếu không có bất kỳ lần lặp nào hoàn thành thành công
     return {
       EM: "no successful import",
       EC: 1,
       DT: "",
     };
   }
-}
+};
 module.exports = {
   findAllSubjectResultService,
   inputScoreService,
   findSubjectResultBySubjectService,
-  importScoreByExcel
+  importScoreByExcel,
 };

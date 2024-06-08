@@ -2,7 +2,12 @@ import { where } from "sequelize";
 import db, { Sequelize, sequelize } from "../models/index";
 import subjects from "../models/subjects";
 
-const createNewClassService = async (classname,total,homeroomTeacher,gradeId) => {
+const createNewClassService = async (
+  classname,
+  total,
+  homeroomTeacher,
+  gradeId
+) => {
   let checkHomeRoomTeacher = {};
   let gradename;
   let getGrade = {};
@@ -87,7 +92,7 @@ const createNewClassService = async (classname,total,homeroomTeacher,gradeId) =>
     let subjects = await db.subjects.findAll({
       where: {
         isdeleted: 0,
-      }
+      },
     });
 
     for (const subject of subjects) {
@@ -165,26 +170,32 @@ const getAllClassByGradeService = async (gradename, year) => {
   }
 };
 
-const getAllStudentSummariesByClassId = async(classId) => {
+const getAllStudentSummariesByClassId = async (classId) => {
   try {
     let data = await db.schoolreports.findAll({
       include: [
         {
           model: db.students,
-          attributes: ['studentname', 'gender']
+          attributes: ["studentname", "gender"],
+          include: [
+            {
+              model: db.User,
+              attributes: ["username", "image", "email"],
+            },
+          ],
         },
         {
           model: db.classes,
-          attributes: ['classname'],
+          attributes: ["classname"],
           where: {
-            id: classId
-          }
-        }
-      ]
-    })
+            id: classId,
+          },
+        },
+      ],
+    });
     return {
       EM: "success",
-      EC: 0,  
+      EC: 0,
       DT: data,
     };
   } catch (e) {
@@ -192,45 +203,45 @@ const getAllStudentSummariesByClassId = async(classId) => {
     return {
       EM: "can't find student",
       EC: 1,
-      DT:"",
+      DT: "",
     };
   }
-}
+};
 
-const getAllClassesByTeacherId = async(teacherId) => {
+const getAllClassesByTeacherId = async (teacherId) => {
   try {
     let classes = await db.classes.findAll({
-      include:[
+      include: [
         {
           model: db.assignments,
-          attributes:['classId', 'classId'],
+          attributes: ["classId", "classId"],
           include: [
             {
               model: db.teachers,
-              attributes: ['teachername', 'gender', 'id']
-            }
+              attributes: ["teachername", "gender", "id"],
+            },
           ],
           where: {
             teacherId: teacherId,
-          }
-        }
+          },
+        },
       ],
       attributes: { exclude: ["createdAt", "updatedAt"] },
-    })
+    });
     return {
       EM: "success.",
       EC: 0,
       DT: classes,
-    }
-  } catch(e) {
+    };
+  } catch (e) {
     console.log(e);
     return {
       EM: "find any classes by this teacher",
       EC: 1,
-      DT:"",
+      DT: "",
     };
   }
-}
+};
 
 module.exports = {
   createNewClassService,
@@ -238,4 +249,4 @@ module.exports = {
   getAllClassByGradeService,
   getAllStudentSummariesByClassId,
   getAllClassesByTeacherId,
-}
+};

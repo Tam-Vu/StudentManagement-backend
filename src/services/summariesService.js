@@ -1,13 +1,12 @@
 import { where } from "sequelize";
 import db, { Sequelize, sequelize } from "../models/index";
 import subjects from "../models/subjects";
-import subjectresults from "../models/subjectresults"
-import middlewareTrigger from "../middleware/trigger"
+import subjectresults from "../models/subjectresults";
+import middlewareTrigger from "../middleware/trigger";
 const { Op } = require("sequelize");
 
-const getAllStudentService = async (searchFilter, gradename, year) => {
+const getAllStudentService = async (gradeId, year) => {
   let data = [];
-  console.log("SEARCHFILTER: " + searchFilter);
   try {
     if (gradename != "" && year == "") {
       data = await db.summaries.findAll({
@@ -131,12 +130,12 @@ const getAllStudentService = async (searchFilter, gradename, year) => {
           },
         ],
       });
-      }
-      return {
-        EM: "success",
-        EC: 0,
-        DT: data,
-      };
+    }
+    return {
+      EM: "success",
+      EC: 0,
+      DT: data,
+    };
   } catch (e) {
     console.log(e);
     return {
@@ -147,7 +146,7 @@ const getAllStudentService = async (searchFilter, gradename, year) => {
   }
 };
 
-const getSummariesByTerm = async(studentId, grade, term) => {
+const getSummariesByTerm = async (studentId, grade, term) => {
   try {
     let data = await db.schoolreports.findOne({
       where: {
@@ -172,39 +171,43 @@ const getSummariesByTerm = async(studentId, grade, term) => {
           model: db.summaries,
           attributes: { exclude: ["createdAt", "updatedAt"] },
           where: {
-            term: term
+            term: term,
           },
           include: [
-              {
-                model: db.subjectresults,
-                attributes: { exclude: ["createdAt", "updatedAt", "summaryId", "subjectId"] },
-                include: [
-                  {
-                    model: db.subjects,
-                    attributes: ['subjectname']
-                  }
-                ]
-              }
-          ]
+            {
+              model: db.subjectresults,
+              attributes: {
+                exclude: ["createdAt", "updatedAt", "summaryId", "subjectId"],
+              },
+              include: [
+                {
+                  model: db.subjects,
+                  attributes: ["subjectname"],
+                },
+              ],
+            },
+          ],
         },
         {
           model: db.students,
-          attributes: ['studentname', 'gender'],
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
           include: [
             {
               model: db.User,
-              attributes: ['username', 'email', 'image']
-            }
-          ]
-        }
-      ]
-    })
+              attributes: ["username", "email", "image"],
+            },
+          ],
+        },
+      ],
+    });
     return {
       EM: "success",
       EC: 0,
       DT: data,
     };
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     return {
       EM: "summary not found",
@@ -212,9 +215,9 @@ const getSummariesByTerm = async(studentId, grade, term) => {
       DT: "",
     };
   }
-}
+};
 
 module.exports = {
   getAllStudentService,
-  getSummariesByTerm
+  getSummariesByTerm,
 };

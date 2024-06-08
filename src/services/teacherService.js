@@ -3,8 +3,13 @@ import db, { sequelize } from "../models/index";
 import QueryTypes from "sequelize";
 import bcrypt from "bcryptjs";
 import { initializeApp } from "firebase/app";
-import { getStorage, ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import config from "../config/firebasestorage"
+import {
+  getStorage,
+  ref,
+  getDownloadURL,
+  uploadBytesResumable,
+} from "firebase/storage";
+import config from "../config/firebasestorage";
 
 const app = initializeApp(config.firebaseConfig);
 const storage = getStorage();
@@ -17,7 +22,12 @@ const hashUserPassword = (userPass) => {
 
 const serviceCreateNewTeacher = async (data, image) => {
   try {
-    if (!data.teachername || !data.birthDate || !data.startDate || !data.gender) {
+    if (
+      !data.teachername ||
+      !data.birthDate ||
+      !data.startDate ||
+      !data.gender
+    ) {
       return {
         EM: "All fields are required!!!",
         EC: 1,
@@ -25,42 +35,47 @@ const serviceCreateNewTeacher = async (data, image) => {
       };
     } else {
       let params = await db.params.findAll({
-        where: {}, raw: true,
-      })
+        where: {},
+        raw: true,
+      });
       function getParamValue(paramName) {
-          for(let param of params) {
-              if(param['paramName'] == paramName) {
-                  return param['paramValue'];
-              }
+        for (let param of params) {
+          if (param["paramName"] == paramName) {
+            return param["paramValue"];
           }
+        }
       }
 
       let checkemail = await db.User.findOne({
         where: {
           email: data.email,
-        }
-      })
-      if(checkemail) {
+        },
+      });
+      if (checkemail) {
         return {
           EM: "this email is already used",
           EC: 1,
           DT: "",
-        }
+        };
       }
-      let slug = getParamValue("teacherSlug")
-      let userandpass = `giaovien${String(slug).padStart(4,'0')}`
+      let slug = getParamValue("teacherSlug");
+      let userandpass = `giaovien${String(slug).padStart(4, "0")}`;
       let hashPass = hashUserPassword(userandpass);
-      
+
       let downloadURL = null;
-      if(image != null) {
+      if (image != null) {
         const storageRef = ref(storage, `image/${image.originalname}`);
         const metadata = {
           contentType: image.mimetype,
-          };
-          const snapshot = await uploadBytesResumable(storageRef, image.buffer, metadata);
-          downloadURL = await getDownloadURL(snapshot.ref);
+        };
+        const snapshot = await uploadBytesResumable(
+          storageRef,
+          image.buffer,
+          metadata
+        );
+        downloadURL = await getDownloadURL(snapshot.ref);
       }
-        let teacherAccount = await db.User.create({
+      let teacherAccount = await db.User.create({
         username: userandpass,
         password: hashPass,
         email: data.email,
@@ -78,13 +93,16 @@ const serviceCreateNewTeacher = async (data, image) => {
         userId: teacherAccount.id,
       });
 
-      await db.params.update({
-        paramValue: slug + 1,
-      }, {
-        where: {
-          paramName: "teacherSlug"
+      await db.params.update(
+        {
+          paramValue: slug + 1,
+        },
+        {
+          where: {
+            paramName: "teacherSlug",
+          },
         }
-      })
+      );
 
       return {
         EM: "success",
@@ -108,17 +126,17 @@ const getAllTeacherService = async () => {
     data = await db.teachers.findAll({
       include: [
         {
-        model: db.User,
-        where: {
-          isLocked: 0,
-        },
-        attributes: ['image', 'username'],
+          model: db.User,
+          where: {
+            isLocked: 0,
+          },
+          attributes: ["image", "username"],
         },
         {
           model: db.subjects,
-          attributes:['subjectname'],
-        }
-    ]
+          attributes: ["subjectname"],
+        },
+      ],
     });
     return {
       EM: "success",
@@ -144,21 +162,21 @@ const getTeacherByIdService = async (id) => {
       include: [
         {
           model: db.User,
-          attributes: ['image', 'username'],
+          attributes: ["image", "username"],
         },
         {
           model: db.subjects,
-          attributes:['subjectname'],
-        }
+          attributes: ["subjectname"],
+        },
       ],
-      attributes: ['teachername', 'gender', 'startDate'],
+      attributes: ["teachername", "gender", "startDate"],
     });
     return {
       EM: "success",
       EC: 0,
       DT: data,
     };
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     return {
       EM: "something wrong with service",
@@ -265,26 +283,26 @@ const getAllClassNotAssignBySubject = async (teacherId, year) => {
   };
 };
 
-const getAllTeacherBySubjectName = async(subjectName) => {
+const getAllTeacherBySubjectName = async (subjectName) => {
   try {
     let subjectTemp = await db.subjects.findOne({
       where: {
         subjectname: subjectName,
-      }
-    })
-    let subject = subjectTemp.get({plain: true});
+      },
+    });
+    let subject = subjectTemp.get({ plain: true });
     console.log(subject);
     let teacher = await db.findAll({
       where: {
         subjectId: subject.id,
-      }
-    })
+      },
+    });
     return {
       EM: "success.",
       EC: 0,
       DT: teacher,
     };
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     return {
       EM: "can't find any teacher!!!",
@@ -292,25 +310,25 @@ const getAllTeacherBySubjectName = async(subjectName) => {
       DT: "",
     };
   }
-} 
+};
 
-const getAllTeacherForEachSubject = async() => {
+const getAllTeacherForEachSubject = async () => {
   try {
     let data = await db.subjects.findAll({
-      attributes:['subjectname', 'id'],
-      include:[
+      attributes: ["subjectname", "id"],
+      include: [
         {
           model: db.teacher,
           attributes: { exclude: ["createdAt", "updatedAt"] },
-        }
-      ]
+        },
+      ],
     });
     return {
       EM: "success.",
       EC: 0,
       DT: data,
     };
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     return {
       EM: "wrong subject or this school doesn't have teachers!!!",
@@ -318,35 +336,35 @@ const getAllTeacherForEachSubject = async() => {
       DT: "",
     };
   }
-}
+};
 
-const getAllTeacherBySubjectId = async(subjectId) => {
+const getAllTeacherBySubjectId = async (subjectId) => {
   try {
     let data = await db.teachers.findAll({
       where: {
         subjectId: subjectId,
       },
-      attributes: ['id', 'teachername', 'gender'],
+      attributes: ["id", "teachername", "gender"],
       include: [
         {
           model: db.subjects,
-          attributes: ['subjectname'],
+          attributes: ["subjectname"],
         },
         {
           model: db.User,
           where: {
-            isLocked: 0
+            isLocked: 0,
           },
           attributes: [],
-        }
-      ]
-    })
+        },
+      ],
+    });
     return {
       EM: "success",
       EC: 0,
       DT: data,
     };
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     return {
       EM: "teacher not found",
@@ -354,7 +372,7 @@ const getAllTeacherBySubjectId = async(subjectId) => {
       DT: "",
     };
   }
-} 
+};
 
 module.exports = {
   serviceCreateNewTeacher,
@@ -365,5 +383,5 @@ module.exports = {
   getAllClassNotAssignBySubject,
   getAllTeacherBySubjectName,
   getAllTeacherForEachSubject,
-  getAllTeacherBySubjectId
+  getAllTeacherBySubjectId,
 };
