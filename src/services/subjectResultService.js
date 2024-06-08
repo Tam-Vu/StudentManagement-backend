@@ -75,30 +75,29 @@ const inputScoreService = async (
     };
   }
   let schoolreport = await db.schoolreports.findOne({
-    attributes: ["id"],
-    where: {
-      studentId: studentId,
-      classId: classId,
-    },
-    raw: true,
-  });
-
+      attributes: ['id'],
+      where: {
+          studentId: studentId,
+          classId: classId,
+      },
+      raw: true,
+  })
+  console.log(schoolreport);
   let term = await db.params.findOne({
-    where: {
-      paramName: "typeterm",
-    },
-    attributes: ["paramValue"],
-    raw: true,
-  });
-  console.log("TERM", term, schoolreport);
+      where: {
+          paramName: "typeterm"
+      },
+      attributes: ['paramValue'],
+      raw: true,
+  })
+  console.log(term);
   let summaryTemp = await db.summaries.findOne({
-    attributes: ["id"],
-    where: {
-      schoolreportId: schoolreport["id"],
-      term: term["paramValue"],
-    },
-  });
-
+      attributes: ['id'],
+      where: {
+          schoolreportId: schoolreport['id'],
+          term: term['paramValue']
+      }
+  })
   let summary = summaryTemp.dataValues.id;
   console.log("SUMMARY", summary);
   let subjectResultIdTemp = await db.subjectresults.findOne({

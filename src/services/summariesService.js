@@ -148,25 +148,23 @@ const getAllStudentService = async (gradeId, year) => {
 
 const getSummariesByTerm = async (studentId, grade, term) => {
   try {
-    let data = await db.schoolreports.findAll({
+    let data = await db.schoolreports.findOne({
       where: {
         studentId: studentId,
       },
-      attributes: {
-        exclude: ["createdAt", "updatedAt", "classId", "studentId"],
-      },
+      attributes: { exclude: ["createdAt", "updatedAt"] },
       include: [
         {
           model: db.classes,
-          attributes: ["classname"],
+          attributes: ['classname', 'gradeId'],
           include: [
             {
               model: db.grades,
               where: {
                 gradename: grade,
               },
-              attributes: ["gradename", "year"],
-            },
+              attributes: ['gradename', 'year'],
+            }
           ],
         },
         {
