@@ -50,7 +50,7 @@ const getExcellentStudentInEachGrade = async(year) => {
       LEFT JOIN classes ON grades.id = classes.gradeId 
       LEFT JOIN schoolreports ON classes.id = schoolreports.classId 
       AND schoolreports.concludetitle = 'giỏi'
-      WHERE grades.gradename = '10'
+      WHERE grades.gradename = '10' AND grades.year = :year
       GROUP BY 
       grades.total, grades.gradename;
       `, {
@@ -63,7 +63,7 @@ const getExcellentStudentInEachGrade = async(year) => {
       LEFT JOIN classes ON grades.id = classes.gradeId 
       LEFT JOIN schoolreports ON classes.id = schoolreports.classId 
       AND schoolreports.concludetitle = 'giỏi'
-      WHERE grades.gradename = '11'
+      WHERE grades.gradename = '11'AND grades.year = :year
       GROUP BY 
       grades.total, grades.gradename;
       `, {
@@ -76,7 +76,7 @@ const getExcellentStudentInEachGrade = async(year) => {
       LEFT JOIN classes ON grades.id = classes.gradeId 
       LEFT JOIN schoolreports ON classes.id = schoolreports.classId 
       AND schoolreports.concludetitle = 'giỏi'
-      WHERE grades.gradename = '12'
+      WHERE grades.gradename = '12'AND grades.year = :year
       GROUP BY 
       grades.total, grades.gradename;
       `, {

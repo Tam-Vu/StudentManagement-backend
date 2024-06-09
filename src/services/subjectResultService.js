@@ -82,7 +82,6 @@ const inputScoreService = async (
       },
       raw: true,
   })
-  console.log(schoolreport);
   let term = await db.params.findOne({
       where: {
           paramName: "typeterm"
@@ -90,7 +89,6 @@ const inputScoreService = async (
       attributes: ['paramValue'],
       raw: true,
   })
-  console.log(term);
   let summaryTemp = await db.summaries.findOne({
       attributes: ['id'],
       where: {
