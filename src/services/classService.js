@@ -176,7 +176,7 @@ const getAllStudentSummariesByClassId = async (classId) => {
       include: [
         {
           model: db.students,
-          attributes: ["studentname", "gender"],
+          attributes: { exclude: ["createdAt", "updatedAt"] },
           include: [
             {
               model: db.User,
