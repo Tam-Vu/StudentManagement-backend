@@ -1,9 +1,11 @@
-import schoolreportService from "../services/schoolreportService"
+import schoolreportService from "../services/schoolreportService";
 class SchoolreportController {
   handleFindAllClassByStudentId = async (req, res) => {
     try {
       const studentId = req.params.id;
-      let data = await schoolreportService.getAllClassByStudentIdService(studentId);
+      let data = await schoolreportService.getAllClassByStudentIdService(
+        studentId
+      );
       let userData = {};
       userData = data;
       res.status(200).json({
@@ -20,7 +22,10 @@ class SchoolreportController {
     try {
       let arrayStudentId = req.body.data;
       let classId = req.params.id;
-      let data = await schoolreportService.createSchoolreportService(arrayStudentId, classId);
+      let data = await schoolreportService.createSchoolreportService(
+        arrayStudentId,
+        classId
+      );
       res.status(200).json({
         EM: data.EM,
         EC: data.EC,
@@ -49,26 +54,27 @@ class SchoolreportController {
     }
   };
 
-  handleShowSchoolreportByStudentId = async(req, res) => {
+  handleShowSchoolreportByStudentId = async (req, res) => {
     try {
       let id = req.params.id;
       let gradename = req.params.gradename;
-      await schoolreportService.getDetailsTranscriptByStudentId(id, gradename)
-      .then((data) => {
-        res.status(200).json({
-          EM: data.EM,
-          EC: data.EC,
-          DT: data.DT,
+      await schoolreportService
+        .getDetailsTranscriptByStudentId(id, gradename)
+        .then((data) => {
+          res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT,
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+          res.status(500).json({ message: e.message });
         });
-      })
-      .catch((e) => {
-        console.log(e);
-        res.status(500).json({ message: e.message });
-      });
-    } catch(e) {
+    } catch (e) {
       return res.status(500).json({ message: e.message });
     }
-  }
+  };
 }
 
 module.exports = new SchoolreportController();
