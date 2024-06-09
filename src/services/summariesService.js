@@ -149,7 +149,7 @@ const getAllStudentService = async (searchFilter, gradename, year) => {
 
 const getSummariesByTerm = async(studentId, grade, term) => {
   try {
-    let data = await db.schoolreports.findOne({
+    let data = await db.schoolreports.findAll({
       where: {
         studentId: studentId,
       },
@@ -157,10 +157,12 @@ const getSummariesByTerm = async(studentId, grade, term) => {
       include: [
         {
           model: db.classes,
+          required: false,
           attributes: ['classname', 'gradeId'],
           include: [
             {
               model: db.grades,
+              required: false,
               where: {
                 gradename: grade,
               },
@@ -199,11 +201,20 @@ const getSummariesByTerm = async(studentId, grade, term) => {
         }
       ]
     })
+
+    if(data === null) {
+      return {
+        EM: "this student doest belong to this grade",
+        EC: 1,
+        DT: '',
+      };
+    }
     return {
       EM: "success",
       EC: 0,
       DT: data,
     };
+  
   } catch(e) {
     console.log(e);
     return {
