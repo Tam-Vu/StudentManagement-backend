@@ -127,20 +127,23 @@ const serviceCreateNewStudent = async (
 
 const getAllStudentService = async () => {
   try {
-    let students = await db.students.findAll({
+    let data = await db.students.findAll({
       attributes: { exclude: ["createdAt", "updatedAt"] },
       include: [
         {
           model: db.schoolreports,
           attributes: ["concludecore"],
+          required: false,
           include: [
             {
               model: db.classes,
               attributes: ["classname"],
+              required: false,
               include: [
                 {
                   model: db.grades,
                   attributes: ["gradename", "year"],
+                  required: false,
                 },
               ],
             },
@@ -156,26 +159,94 @@ const getAllStudentService = async () => {
         },
       ],
     });
-    let data = [];
-    students.forEach((student) => {
-      student.schoolreports.forEach((report) => {
-        data.push({
-          id: student.id,
-          studentname: student.studentname,
-          gender: student.gender,
-          concludecore: report.concludecore,
-          class: report.class.classname,
-          grade: report.class.grade.gradename,
-          year: report.class.grade.year,
-          User: student.User,
-        });
+    const transformData = (data) => {
+      // Initialize an empty array to hold the transformed data
+      let transformedData = [];
+    
+      // Loop through each student in the original data
+      data.forEach(student => {
+        if (student.schoolreports.length > 0) {
+          // If the student has schoolreports, create a separate entry for each one
+          student.schoolreports.forEach(report => {
+            transformedData.push({
+              id: student.id,
+              studentname: student.studentname,
+              birthDate: student.birthDate,
+              startDate: student.startDate,
+              gender: student.gender,
+              address: student.address,
+              userId: student.userId,
+              statusinyear: student.statusinyear,
+              concludecore: report.concludecore,
+              classname: report.class ? report.class.classname : null,
+              gradename: report.class && report.class.grade ? report.class.grade.gradename : null,
+              year: report.class && report.class.grade ? report.class.grade.year : null,
+              username: student.User.username,
+              email: student.User.email,
+              image: student.User.image
+            });
+          });
+        } else {
+          // If the student has no schoolreports, create a single entry with null values for report-related fields
+          transformedData.push({
+            id: student.id,
+            studentname: student.studentname,
+            birthDate: student.birthDate,
+            startDate: student.startDate,
+            gender: student.gender,
+            address: student.address,
+            userId: student.userId,
+            statusinyear: student.statusinyear,
+            concludecore: null,
+            classname: null,
+            gradename: null,
+            year: null,
+            username: student.User.username,
+            email: student.User.email,
+            image: student.User.image
+          });
+        }
       });
-    });
-
+    
+      return transformedData;
+    };
+    let transformedData = transformData(data);
+    
+    // let data = [];
+    // students.forEach((student) => {
+    //   student.schoolreports.forEach((report) => {
+        // if (student.schoolreports && student.schoolreports.length > 0) {
+        //   student.schoolreports.forEach((report) => {
+        //     data.push({
+        //       id: student.id,
+        //       studentname: student.studentname,
+        //       gender: student.gender,
+        //       concludecore: report.concludecore,
+        //       class: report.class ? report.class.classname : null,
+        //       grade: report.class && report.class.grade ? report.class.grade.gradename : null,
+        //       year: report.class && report.class.grade ? report.class.grade.year : null,
+        //       User: student.User,
+        //     });
+        //   });
+        // } else {
+        //   // Nếu không có schoolreports
+        //   data.push({
+        //     id: student.id,
+        //     studentname: student.studentname,
+        //     gender: student.gender,
+        //     concludecore: null,
+        //     class: null,
+        //     grade: null,
+        //     year: null,
+        //     User: student.User,
+        //   });
+        // }
+    //   });
+    // });
     return {
       EM: "success",
       EC: 0,
-      DT: data,
+      DT: transformedData,
     };
   } catch (e) {
     console.log(e);
