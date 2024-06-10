@@ -10,15 +10,7 @@ class StudentController {
       let gender = req.body.gender;
       let address = req.body.address;
       let email = req.body.email;
-      let user = await studentService.serviceCreateNewStudent(
-        req.file,
-        studentname,
-        birthDate,
-        startDate,
-        gender,
-        address,
-        email
-      );
+      let user = await studentService.serviceCreateNewStudent(req.file, studentname, birthDate, startDate, gender, address, email);
       res.status(200).json({
         EM: user.EM,
         EC: user.EC,
@@ -140,5 +132,19 @@ class StudentController {
       return res.status(500).json({ message: e.message });
     }
   };
+
+  handleFindAllStudentInYear = async(req, res) => {
+    let year = req.params.year;
+    try {
+      let data = await studentService.getAllStudentByYear(year);
+      res.status(200).json({
+        EM: data.EM,
+        EC: data.EC,
+        DT: data.DT,
+      });
+    } catch(e) {
+      return res.status(500).json({ message: e.message });
+    }
+  }
 }
 module.exports = new StudentController();

@@ -11,7 +11,6 @@ const getAllClassByStudentIdService = async (studentId) => {
           id: studentId,
         },
       });
-      console.log(checkStudentId);
       if (checkStudentId.length === 0) {
         return {
           EM: "No student found",
@@ -275,9 +274,51 @@ const getDetailsTranscriptByStudentId = async(studentId, gradename) => {
     }
 } 
 
+const deleteSchoolreportsService = async(studentId, classId) => {
+  try {
+    await db.schoolreports.destroy({
+      where: {
+        studentId: studentId,
+        classId: classId,
+      },
+      include: [
+        {
+          model: db.summaries,
+          include: [
+            {
+              model: db.subjectresults,
+            }
+          ]
+        }
+      ]
+    });
+    await middlewareTrigger.totalStudentInclass(classId);
+    await db.students.update({
+      statusinyear: 0,
+    }, {
+      where: {
+        id: studentId,
+      }
+    })
+    return {
+      EM: "success",
+      EC: 0,
+      DT: "",
+    };
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "something wrong with service",
+      EC: 1,
+      DT: "",
+    };
+  }
+}
+
   module.exports = {
     getAllClassByStudentIdService,
     createSchoolreportService,
     getAllStudentByClassIdService,
-    getDetailsTranscriptByStudentId
+    getDetailsTranscriptByStudentId,
+    deleteSchoolreportsService
   }

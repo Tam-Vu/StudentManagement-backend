@@ -75,6 +75,21 @@ class SchoolreportController {
       return res.status(500).json({ message: e.message });
     }
   };
+
+  handleDeleteSchoolreport = async(req, res) => {
+    let studentId = req.params.studentId;
+    let classId = req.params.classId;
+    try {
+      let data = await schoolreportService.deleteSchoolreportsService(studentId, classId);
+      res.status(200).json({
+        EM: data.EM,
+        EC: data.EC,
+        DT: data.DT,
+      });
+    } catch(e) {
+      return res.status(500).json({ message: e.message });
+    }
+  }
 }
 
 module.exports = new SchoolreportController();

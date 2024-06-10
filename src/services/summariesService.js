@@ -217,6 +217,7 @@ const getSummariesByTerm = async (studentId, grade, term) => {
   }
 };
 
+
 module.exports = {
   getAllStudentService,
   getSummariesByTerm,

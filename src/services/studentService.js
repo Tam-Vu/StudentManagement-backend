@@ -148,7 +148,11 @@ const getAllStudentService = async () => {
         },
         {
           model: db.User,
+          required: true,
           attributes: ["username", "email", "image"],
+          where: {
+            isLocked: 0
+          }
         },
       ],
     });
@@ -266,7 +270,6 @@ const deleteStudentService = async (id) => {
       await user.update({
         isLocked: 1,
       });
-
       
       return {
         EM: "Delete Succeed!!!",
@@ -307,13 +310,23 @@ const getStudentByClassnameService = async (classname) => {
       };
     }
     data = await db.students.findAll({
-      include: {
-        model: db.classes,
-        where: {
-          classname: classname,
+      include: [
+        {
+          model: db.classes,
+          where: {
+            classname: classname,
+          },
+          attributes: { exclude: ["createdAt", "updatedAt"] },
         },
-        attributes: { exclude: ["createdAt", "updatedAt"] },
-      },
+        {
+          model: db.User,
+          required: true,
+          attributes: ['username', 'email', 'image'],
+          where: {
+            isLocked: 0
+          }
+        }
+      ]
     });
     return {
       EM: "success",
@@ -385,8 +398,13 @@ const getAllNonClassStudentByClassId = async (classId) => {
     if (className.startsWith("10")) {
       freeStudentsInThisYear = await sequelize.query(
         `select distinct s.* from students s
-      left join schoolreports sr on s.id = sr.studentId where sr.studentId is null or not exists
-      (select 1 from schoolreports where studentId = s.id and concludetitle <> 'yếu') and s.statusinyear = 0`,
+      left join schoolreports sr 
+      on s.id = sr.studentId 
+      inner join users u 
+      on s.userId = u.id
+      where u.isLocked = "0"
+      and (sr.studentId is null or not exists
+      (select 1 from schoolreports where studentId = s.id and concludetitle <> 'yếu')) and s.statusinyear = 0`,
         {
           replacements: { year },
           type: sequelize.QueryTypes.SELECT,
@@ -398,7 +416,12 @@ const getAllNonClassStudentByClassId = async (classId) => {
     else if (className.startsWith("11")) {
       freeStudentsInThisYear = await sequelize.query(
         `select distinct s.* from students s
-      join schoolreports sr on s.id = sr.studentId where sr.concludetitle <> 'yếu'
+      left join schoolreports sr 
+      on s.id = sr.studentId 
+      inner join users u 
+      on s.userId = u.id
+      where u.isLocked = "0"
+      and sr.concludetitle <> 'yếu'
       group by s.id having count(*) = 1 and s.statusinyear = 0`,
         {
           replacements: { year },
@@ -408,8 +431,14 @@ const getAllNonClassStudentByClassId = async (classId) => {
     } else if (className.startsWith("12")) {
       freeStudentsInThisYear = await sequelize.query(
         `select distinct s.* from students s
-      join schoolreports sr on s.id = sr.studentId where sr.concludetitle <> 'yếu'
-      group by s.id having count(*) = 2 s.statusinyear = 0`,
+      left join schoolreports sr 
+      on s.id = sr.studentId 
+      inner join users u 
+      on s.userId = u.id
+      where u.isLocked = "0"
+      and sr.concludetitle <> 'yếu'
+      group by s.id having count(*) = 2 
+      and s.statusinyear = 0`,
         {
           replacements: { year },
           type: sequelize.QueryTypes.SELECT,
@@ -431,6 +460,55 @@ const getAllNonClassStudentByClassId = async (classId) => {
   }
 };
 
+const getAllStudentByYear = async(year) => {
+  try {
+    let data = await db.students.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt", "statusinyear", "userId"] },
+      include:[
+        {
+          required: true,
+          model: db.User,
+          attributes: ['username', 'image', 'email'],
+          where: {
+            isLocked: 0,
+          }
+        },
+        {
+          model: db.schoolreports,
+          attributes: ["classId"],
+          required: true,
+          include: [
+            {
+              model: db.classes,
+              attributes: ['classname'],
+              required: true,
+              include: [
+                {
+                  model: db.grades,
+                  attributes: ['gradename', 'year'],
+                  required: true,
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    })
+    return {
+      EM: "success",
+      EC: 0,
+      DT: data,
+    };
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "not found",
+      EC: 1,
+      DT: "",
+    };
+  }
+}
+
 module.exports = {
   serviceCreateNewStudent,
   getAllStudentService,
@@ -440,4 +518,5 @@ module.exports = {
   getStudentByClassnameService,
   getAllNonClassStudentByYear,
   getAllNonClassStudentByClassId,
+  getAllStudentByYear
 };
