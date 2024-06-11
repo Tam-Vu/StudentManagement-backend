@@ -261,6 +261,78 @@ const countAllStudentSortByTitle = async(year) => {
   }
 } 
 
+const compareGpaToClass = async(studentId, year, term) => {
+  try {
+    let data = await sequelize.query(`
+      SELECT 
+    student_scores.subjectId,
+    student_scores.subjectname,
+    student_scores.studentAverageScore,
+    class_scores.classAverageScore
+FROM (
+    SELECT 
+        sb.id AS subjectId,
+        sb.subjectname,
+        sr.averageScore AS studentAverageScore
+    FROM 
+        subjects sb
+        JOIN subjectresults sr ON sb.id = sr.subjectId
+        JOIN summaries su ON sr.summaryId = su.id
+        JOIN schoolreports sc ON su.schoolreportId = sc.id
+    WHERE 
+        sc.studentId = :studentId
+        AND su.term = :term
+        AND sc.classId IN (
+            SELECT c.id
+            FROM classes c
+            JOIN grades g ON c.gradeId = g.id
+            WHERE g.year = :year
+        )
+) AS student_scores
+JOIN (
+    SELECT 
+        sb.id AS subjectId,
+        sb.subjectname,
+       ROUND(AVG(sr.averageScore), 2) AS classAverageScore
+    FROM 
+        subjects sb
+        JOIN subjectresults sr ON sb.id = sr.subjectId
+        JOIN summaries su ON sr.summaryId = su.id
+        JOIN schoolreports sc ON su.schoolreportId = sc.id
+        JOIN classes c ON sc.classId = c.id
+        JOIN grades g ON c.gradeId = g.id
+    WHERE 
+        sc.classId = (
+            SELECT classId
+            FROM schoolreports
+            WHERE studentId = :studentId
+            LIMIT 1
+        )
+        AND su.term = :term
+        AND g.year = :year
+    GROUP BY 
+        sb.id,
+        sb.subjectname
+) AS class_scores 
+ON student_scores.subjectId = class_scores.subjectId;
+`, {
+  replacements:{studentId, year, term},
+  type: sequelize.QueryTypes.SELECT
+},)
+return {
+  EM: "success",
+  EC: 0,
+  DT: data,
+}
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "something wrong with service",
+      EC: 1,
+      DT: "",
+    };
+  }
+}
 
   module.exports = {
     getBestStudentInEachGrade,
@@ -269,4 +341,5 @@ const countAllStudentSortByTitle = async(year) => {
     countAllStudentSortByTitle,
     getTopTenBestStudents,
     compareGpaOfOneStudent,
+    compareGpaToClass
   }
