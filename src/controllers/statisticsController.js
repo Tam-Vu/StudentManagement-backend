@@ -92,6 +92,23 @@ class StatisticsController {
             res.status(500).json({ message: e.message });
         }
     }
+
+    handleCompareGpaStudentToClass = async(req, res) => {
+        let student = req.params.id;
+        let term = req.params.term;
+        let year = req.params.year;
+        try {
+            let data = await statisticsService.compareGpaToClass(student, year, term);
+            res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT,
+              });
+        } catch(e) {
+            console.log(e);
+            res.status(500).json({ message: e.message });
+        }
+    }
 }
 
 module.exports = new StatisticsController();
