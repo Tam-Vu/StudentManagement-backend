@@ -181,9 +181,11 @@ const getAllStudentService = async () => {
               classname: report.class ? report.class.classname : null,
               gradename: report.class && report.class.grade ? report.class.grade.gradename : null,
               year: report.class && report.class.grade ? report.class.grade.year : null,
-              username: student.User.username,
-              email: student.User.email,
-              image: student.User.image
+              User: {
+                username: student.User.username,
+                email: student.User.email,
+                image: student.User.image
+              }
             });
           });
         } else {
@@ -201,9 +203,11 @@ const getAllStudentService = async () => {
             classname: null,
             gradename: null,
             year: null,
-            username: student.User.username,
-            email: student.User.email,
-            image: student.User.image
+            User: {
+              username: student.User.username,
+              email: student.User.email,
+              image: student.User.image
+            }
           });
         }
       });
