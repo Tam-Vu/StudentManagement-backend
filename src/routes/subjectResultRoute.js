@@ -6,7 +6,7 @@ const upload = multer({ dest: 'uploads/' });
 
 const subjectResultRoute = (app) => {
     router.post("/input-subject-result", subjectResultController.handleInputPoint);
-    // router.post("/import-excel-of-score", upload.single('file'), subjectResultController.handleImportSoreByExcel)
+    router.post("/import-excel-of-score", subjectResultController.handleImportSoreByExcel)
     return app.use("/subject-result", router);
 }
 export default subjectResultRoute;
