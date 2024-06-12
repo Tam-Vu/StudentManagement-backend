@@ -195,6 +195,13 @@ const importScoreByExcel = async (data) => {
       attributes: ["paramValue"],
       raw: true,
     });
+
+    let subjectTemp = await db.subjects.findOne({ where: { id: data[0].subjectId } });
+    let subject = subjectTemp.get({ plain: true });
+    let fifteenMinNum = subject.fifteenMinFactor;
+    let fourtyFiveMinNum = subject.fourtyFiveMinFactor;
+    let lastTestMinNum = subject.finalFactor;
+    let finalResult = subject.fourtyFiveMinFactor;
   
     for(let singleData of data) {
       let schoolreport = await db.schoolreports.findOne({
@@ -217,17 +224,10 @@ const importScoreByExcel = async (data) => {
       let subjectResultIdTemp = await db.subjectresults.findOne({
         where: {
           summaryId: summary,
-          subjectId: data[0].subjectId,
+          subjectId: subject.id,
         },
       });
       let subjectResultId = subjectResultIdTemp.dataValues.id;
-  
-      let subjectTemp = await db.subjects.findOne({ where: { id: data[0].subjectId } });
-      let subject = subjectTemp.get({ plain: true });
-      let fifteenMinNum = subject.fifteenMinFactor;
-      let fourtyFiveMinNum = subject.fourtyFiveMinFactor;
-      let lastTestMinNum = subject.finalFactor;
-      let finalResult = subject.fourtyFiveMinFactor;
     
       let conclude;
       let allCoefficient = 0;
