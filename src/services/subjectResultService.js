@@ -26,7 +26,7 @@ const findAllSubjectResultService = async (summaryId) => {
     };
   } catch(e) {
     return {
-      EM: "can't delete subject",
+      EM: "can't find any subject result",
       EC: 1,
       DT: "",
     };
@@ -55,7 +55,7 @@ const findSubjectResultBySubjectService = async (summaryId, subjectId) => {
     };
   } catch(e) {
     return {
-      EM: "can't delete subject",
+      EM: "can't find any subject result",
       EC: 1,
       DT: "",
     };
@@ -186,7 +186,7 @@ const inputScoreService = async ( classId, studentId, teacherComment, fifteen_1,
   }
 };
 
-const importScoreByExcel = async (data) => {
+const importScoreByExcel = async(data) => {
   try {
     let term = await db.params.findOne({
       where: {
@@ -195,7 +195,6 @@ const importScoreByExcel = async (data) => {
       attributes: ["paramValue"],
       raw: true,
     });
-
     let subjectTemp = await db.subjects.findOne({ where: { id: data[0].subjectId } });
     let subject = subjectTemp.get({ plain: true });
     let fifteenMinNum = subject.fifteenMinFactor;
@@ -228,7 +227,7 @@ const importScoreByExcel = async (data) => {
         },
       });
       let subjectResultId = subjectResultIdTemp.dataValues.id;
-    
+      
       let conclude;
       let allCoefficient = 0;
       let totalScore = 0;
@@ -275,7 +274,7 @@ const importScoreByExcel = async (data) => {
           fortyFiveMinExam_1: singleData.fourtyFive_1,
           fortyFiveMinExam_2: singleData.fourtyFive_2,
           finalTest: singleData.finalExam,
-          teachercomment: teacherComment,
+          teachercomment: singleData.teacherComment,
           averageScore: evarage.toFixed(2),
           result: conclude,
         },
@@ -294,7 +293,7 @@ const importScoreByExcel = async (data) => {
     };
   } catch(e) {
     return {
-      EM: "can't delete subject",
+      EM: "can't import score",
       EC: 1,
       DT: "",
     };
