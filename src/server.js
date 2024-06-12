@@ -33,6 +33,7 @@ app.use(
     credentials: true,
   })
 );
+
 // app.all('*', checkUserJwt);
 
 GradeRoutes(app);
