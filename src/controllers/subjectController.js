@@ -61,7 +61,8 @@ class SubjectController {
             let fourtyFiveMinFactor = req.body.fourtyFiveMinFactor;
             let finalFactor = req.body.finalFactor;
             let factor = req.body.factor;
-            let updatedSubject = await subjectService.updateSubject(id ,subjectName, fifteenMinFactor, fourtyFiveMinFactor, finalFactor, factor);
+            let minPassScore = req.body.minPassScore;
+            let updatedSubject = await subjectService.updateSubject(id ,subjectName, fifteenMinFactor, fourtyFiveMinFactor, finalFactor, factor, minPassScore);
             res.status(200).json({
                 EM: updatedSubject.EM,
                 EC: updatedSubject.EC,
