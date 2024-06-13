@@ -24,7 +24,7 @@ const findAllSubjectResultService = async (summaryId) => {
       EC: "0",
       DT: subjectResults,
     };
-  } catch(e) {
+  } catch (e) {
     return {
       EM: "can't delete subject",
       EC: 1,
@@ -53,7 +53,7 @@ const findSubjectResultBySubjectService = async (summaryId, subjectId) => {
       EC: 0,
       DT: subjectResult,
     };
-  } catch(e) {
+  } catch (e) {
     return {
       EM: "can't delete subject",
       EC: 1,
@@ -62,10 +62,29 @@ const findSubjectResultBySubjectService = async (summaryId, subjectId) => {
   }
 };
 
-const inputScoreService = async ( classId, studentId, teacherComment, fifteen_1, fifteen_2, fifteen_3, 
-  fifteen_4, fourtyFive_1, fourtyFive_2, finalExam, subjectId) => {
+const inputScoreService = async (
+  classId,
+  studentId,
+  teacherComment,
+  fifteen_1,
+  fifteen_2,
+  fifteen_3,
+  fifteen_4,
+  fourtyFive_1,
+  fourtyFive_2,
+  finalExam,
+  subjectId
+) => {
   try {
-    if ( fifteen_1 < 0 || fifteen_2 < 0 || fifteen_3 < 0 || fifteen_4 < 0 || fourtyFive_1 < 0 || fourtyFive_2 < 0 || finalExam < 0) {
+    if (
+      fifteen_1 < 0 ||
+      fifteen_2 < 0 ||
+      fifteen_3 < 0 ||
+      fifteen_4 < 0 ||
+      fourtyFive_1 < 0 ||
+      fourtyFive_2 < 0 ||
+      finalExam < 0
+    ) {
       return {
         EM: "the score must be greater than 0.",
         EC: 1,
@@ -73,27 +92,27 @@ const inputScoreService = async ( classId, studentId, teacherComment, fifteen_1,
       };
     }
     let schoolreport = await db.schoolreports.findOne({
-        attributes: ['id'],
-        where: {
-            studentId: studentId,
-            classId: classId,
-        },
-        raw: true,
-    })
+      attributes: ["id"],
+      where: {
+        studentId: studentId,
+        classId: classId,
+      },
+      raw: true,
+    });
     let term = await db.params.findOne({
-        where: {
-            paramName: "typeterm"
-        },
-        attributes: ['paramValue'],
-        raw: true,
-    })
+      where: {
+        paramName: "typeterm",
+      },
+      attributes: ["paramValue"],
+      raw: true,
+    });
     let summaryTemp = await db.summaries.findOne({
-        attributes: ['id'],
-        where: {
-            schoolreportId: schoolreport['id'],
-            term: term['paramValue']
-        }
-    })
+      attributes: ["id"],
+      where: {
+        schoolreportId: schoolreport["id"],
+        term: term["paramValue"],
+      },
+    });
     let summary = summaryTemp.dataValues.id;
     let subjectResultIdTemp = await db.subjectresults.findOne({
       where: {
@@ -177,7 +196,7 @@ const inputScoreService = async ( classId, studentId, teacherComment, fifteen_1,
       EC: 0,
       DT: data,
     };
-  } catch(e) {
+  } catch (e) {
     return {
       EM: "can't import score",
       EC: 1,
@@ -196,30 +215,32 @@ const importScoreByExcel = async (data) => {
       raw: true,
     });
 
-    let subjectTemp = await db.subjects.findOne({ where: { id: data[0].subjectId } });
+    let subjectTemp = await db.subjects.findOne({
+      where: { id: data[0].subjectId },
+    });
     let subject = subjectTemp.get({ plain: true });
     let fifteenMinNum = subject.fifteenMinFactor;
     let fourtyFiveMinNum = subject.fourtyFiveMinFactor;
     let lastTestMinNum = subject.finalFactor;
     let finalResult = subject.fourtyFiveMinFactor;
-  
-    for(let singleData of data) {
+
+    for (let singleData of data) {
       let schoolreport = await db.schoolreports.findOne({
-        attributes: ['id'],
+        attributes: ["id"],
         where: {
-            studentId: singleData.studentId,
-            classId: singleData.classId,
+          studentId: singleData.studentId,
+          classId: singleData.classId,
         },
         raw: true,
-      })
-  
+      });
+
       let summaryTemp = await db.summaries.findOne({
-        attributes: ['id'],
+        attributes: ["id"],
         where: {
-            schoolreportId: schoolreport['id'],
-            term: term['paramValue']
-        }
-      })
+          schoolreportId: schoolreport["id"],
+          term: term["paramValue"],
+        },
+      });
       let summary = summaryTemp.dataValues.id;
       let subjectResultIdTemp = await db.subjectresults.findOne({
         where: {
@@ -228,7 +249,7 @@ const importScoreByExcel = async (data) => {
         },
       });
       let subjectResultId = subjectResultIdTemp.dataValues.id;
-    
+
       let conclude;
       let allCoefficient = 0;
       let totalScore = 0;
@@ -275,7 +296,7 @@ const importScoreByExcel = async (data) => {
           fortyFiveMinExam_1: singleData.fourtyFive_1,
           fortyFiveMinExam_2: singleData.fourtyFive_2,
           finalTest: singleData.finalExam,
-          teachercomment: teacherComment,
+          teachercomment: singleData.teacherComment,
           averageScore: evarage.toFixed(2),
           result: conclude,
         },
@@ -292,7 +313,7 @@ const importScoreByExcel = async (data) => {
       EC: 0,
       DT: "",
     };
-  } catch(e) {
+  } catch (e) {
     return {
       EM: "can't delete subject",
       EC: 1,
