@@ -1,13 +1,9 @@
 import { where } from "sequelize";
 import db, { Sequelize, sequelize } from "../models/index";
 import subjects from "../models/subjects";
+import availableFunc from "../middleware/availableFunction"
 
-const createNewClassService = async (
-  classname,
-  total,
-  homeroomTeacher,
-  gradeId
-) => {
+const createNewClassService = async (classname, total, homeroomTeacher, gradeId) => {
   let checkHomeRoomTeacher = {};
   let gradename;
   let getGrade = {};
@@ -17,11 +13,19 @@ const createNewClassService = async (
       id: gradeId,
     },
   });
-  console.log("Grade name: " + getGrade.gradename);
-
   gradename = getGrade.gradename;
 
   if (gradename == 10) {
+    let countClass = await availableFunc.countClassInGrade(gradeId);
+    let maxClass = await availableFunc.findParamsByName("maxtenthclasses");
+    console.log(countClass, maxClass);
+    if (countClass == maxClass) {
+      return {
+        EM: "this grade is full of classes!!!",
+        EC: 1,
+        DT: "",
+      };
+    }
     if (!classname.startsWith("10")) {
       return {
         EM: "your Class don't match with your grade!!!",
@@ -30,6 +34,15 @@ const createNewClassService = async (
       };
     }
   } else if (gradename == 11) {
+    let countClass = await availableFunc.countClassInGrade(gradeId);
+    let maxClass = await availableFunc.findParamsByName("maxeleventhclasses");
+    if (countClass == maxClass) {
+      return {
+        EM: "this grade is full of classes!!!",
+        EC: 1,
+        DT: "",
+      };
+    }
     if (!classname.startsWith("11")) {
       return {
         EM: "your Class don't match with your grade!!!",
@@ -38,6 +51,15 @@ const createNewClassService = async (
       };
     }
   } else {
+    let countClass = await availableFunc.countClassInGrade(gradeId);
+    let maxClass = await availableFunc.findParamsByName("maxtwelfthclasses");
+    if (countClass == maxClass) {
+      return {
+        EM: "this grade is full of classes!!!",
+        EC: 1,
+        DT: "",
+      };
+    }
     if (!classname.startsWith("12")) {
       return {
         EM: "your Class don't match with your grade!!!",

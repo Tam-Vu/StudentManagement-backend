@@ -2,53 +2,44 @@ import { where } from "sequelize";
 import db, { Sequelize, sequelize } from "../models/index";
 const { Op } = require("sequelize");
 
-const getBestStudentInEachGrade = async (year) => {
-  try {
-    let bestStudentInGrade10 = await sequelize.query(
-      `select a.id, a.studentname, b.concludecore, c.classname from students a inner join schoolreports b on 
-      a.id = b.studentId inner join classes c on b.classId = c.id inner join grades d on c.gradeId = d.id where
-      d.gradename = "10" and d.year = :year order by b.concludecore desc limit 1`,
-      {
-        replacements: { year },
-        type: sequelize.QueryTypes.SELECT,
+const getBestStudentInEachGrade = async(year) => {
+    try {
+      let bestStudentInGrade10 = await sequelize.query(`select a.id, a.studentname, b.concludecore, c.classname from students a inner join schoolreports b on 
+      a.id = b.studentId inner join classes c on b.classId = c.id inner join grades d on c.gradeId = d.id inner join users e on a.userId = e.id where
+      d.gradename = "10" and d.year = :year and e.isLocked = 0 order by b.concludecore desc limit 1`, {
+        replacements:{year},
+        type: sequelize.QueryTypes.SELECT
+      });
+      let bestStudentInGrade11 = await sequelize.query(`select a.id, a.studentname, b.concludecore, c.classname from students a inner join schoolreports b on 
+      a.id = b.studentId inner join classes c on b.classId = c.id inner join grades d on c.gradeId = d.id inner join users e on a.userId = e.id where
+      d.gradename = "11" and d.year = :year and e.isLocked = 0 order by b.concludecore desc limit 1`, {
+        replacements:{year},
+        type: sequelize.QueryTypes.SELECT
+      });
+      let bestStudentInGrade12 = await sequelize.query(`select a.id, a.studentname, b.concludecore, c.classname from students a inner join schoolreports b on 
+      a.id = b.studentId inner join classes c on b.classId = c.id inner join grades d on c.gradeId = d.id inner join users e on a.userId = e.id where
+      d.gradename = "12" and d.year = :year and e.isLocked = 0 order by b.concludecore desc limit 1`, {
+        replacements:{year},
+        type: sequelize.QueryTypes.SELECT
+      });
+      return {
+        EM: "success",
+        EC: 0,
+        DT: [
+            bestStudentInGrade10[0],
+            bestStudentInGrade11[0],
+            bestStudentInGrade12[0],
+        ]
       }
-    );
-    let bestStudentInGrade11 = await sequelize.query(
-      `select a.id, a.studentname, b.concludecore, c.classname from students a inner join schoolreports b on 
-      a.id = b.studentId inner join classes c on b.classId = c.id inner join grades d on c.gradeId = d.id where
-      d.gradename = "11" and d.year = :year order by b.concludecore desc limit 1`,
-      {
-        replacements: { year },
-        type: sequelize.QueryTypes.SELECT,
-      }
-    );
-    let bestStudentInGrade12 = await sequelize.query(
-      `select a.id, a.studentname, b.concludecore, c.classname from students a inner join schoolreports b on 
-      a.id = b.studentId inner join classes c on b.classId = c.id inner join grades d on c.gradeId = d.id where
-      d.gradename = "12" and d.year = :year order by b.concludecore desc limit 1`,
-      {
-        replacements: { year },
-        type: sequelize.QueryTypes.SELECT,
-      }
-    );
-    return {
-      EM: "success",
-      EC: 0,
-      DT: [
-        bestStudentInGrade10[0],
-        bestStudentInGrade11[0],
-        bestStudentInGrade12[0],
-      ],
-    };
-  } catch (e) {
-    console.log(e);
-    return {
-      EM: "something wrong with service",
-      EC: 1,
-      DT: "",
-    };
-  }
-};
+    } catch(e) {
+      console.log(e);
+      return {
+        EM: "something wrong with service",
+        EC: 1,
+        DT: "",
+      };
+    }
+}
 
 const getExcellentStudentInEachGrade = async (year) => {
   try {
@@ -57,9 +48,12 @@ const getExcellentStudentInEachGrade = async (year) => {
       SELECT COALESCE(COUNT(schoolreports.studentId), 0) AS NumberHSG, grades.total AS NumberHSTotal, grades.gradename AS grade
       FROM grades 
       LEFT JOIN classes ON grades.id = classes.gradeId 
-      LEFT JOIN schoolreports ON classes.id = schoolreports.classId 
+      LEFT JOIN schoolreports ON classes.id = schoolreports.classId
+      JOIN students ON schoolreports.studentId = students.id
+      JOIN users ON students.userId = users.id
       AND schoolreports.concludetitle = 'giỏi'
       WHERE grades.gradename = '10' AND grades.year = :year
+      AND users.isLocked = 0
       GROUP BY 
       grades.total, grades.gradename;
       `,
@@ -74,8 +68,11 @@ const getExcellentStudentInEachGrade = async (year) => {
       FROM grades 
       LEFT JOIN classes ON grades.id = classes.gradeId 
       LEFT JOIN schoolreports ON classes.id = schoolreports.classId 
+      JOIN students ON schoolreports.studentId = students.id
+      JOIN users ON students.userId = users.id
       AND schoolreports.concludetitle = 'giỏi'
       WHERE grades.gradename = '11'AND grades.year = :year
+      AND users.isLocked = 0
       GROUP BY 
       grades.total, grades.gradename;
       `,
@@ -89,9 +86,12 @@ const getExcellentStudentInEachGrade = async (year) => {
       SELECT COALESCE(COUNT(schoolreports.studentId), 0) AS NumberHSG, grades.total AS NumberHSTotal, grades.gradename AS grade
       FROM grades 
       LEFT JOIN classes ON grades.id = classes.gradeId 
-      LEFT JOIN schoolreports ON classes.id = schoolreports.classId 
+      LEFT JOIN schoolreports ON classes.id = schoolreports.classId
+      JOIN students ON schoolreports.studentId = students.id
+      JOIN users ON students.userId = users.id 
       AND schoolreports.concludetitle = 'giỏi'
       WHERE grades.gradename = '12'AND grades.year = :year
+      AND users.isLocked = 0
       GROUP BY 
       grades.total, grades.gradename;
       `,
@@ -134,15 +134,16 @@ const compareNumOfStudentInTwoYears = async (year) => {
     JOIN classes ON schoolreports.classId = classes.id
     JOIN students ON students.id = schoolreports.studentId
     JOIN users ON students.userId = users.id
+    JOIN classes ON schoolreports.classId = classes.id
+    JOIN students ON students.id = schoolreports.studentId
+    JOIN users ON students.userId = users.id
     JOIN grades ON classes.gradeId = grades.id 
     WHERE grades.year = :year
     AND users.isLocked = 0
-      `,
-      {
-        replacements: { year },
-        type: sequelize.QueryTypes.SELECT,
-      }
-    );
+      `, {
+        replacements:{year},
+        type: sequelize.QueryTypes.SELECT
+      });
 
     let NumOfStudentByTitleInLastYear = await sequelize.query(
       `
@@ -228,12 +229,11 @@ const getTopTenBestStudents = async (year) => {
     inner join schoolreports b on a.id = b.studentId 
     inner join classes c on b.classId = c.id 
     inner join grades d on c.gradeId = d.id 
-    where d.year = :year order by b.concludecore desc limit 10`,
-      {
-        replacements: { year },
-        type: sequelize.QueryTypes.SELECT,
-      }
-    );
+    inner join users e on a.userId = e.id
+    where d.year = :year order by b.concludecore desc limit 10`, {
+      replacements:{year},
+      type: sequelize.QueryTypes.SELECT
+    });
     return {
       EM: "success",
       EC: 0,

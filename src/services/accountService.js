@@ -169,6 +169,7 @@ const loginService = async (rawUsername, rawPass) => {
         let tokenJson = {
           username: user.username,
           email: user.email,
+          role: user.groupId,
         }
         let token = createJWT(tokenJson);
         return {
