@@ -26,7 +26,7 @@ const findAllSubjectResultService = async (summaryId) => {
     };
   } catch (e) {
     return {
-      EM: "can't delete subject",
+      EM: "can't find any subject result",
       EC: 1,
       DT: "",
     };
@@ -55,7 +55,7 @@ const findSubjectResultBySubjectService = async (summaryId, subjectId) => {
     };
   } catch (e) {
     return {
-      EM: "can't delete subject",
+      EM: "can't find any subject result",
       EC: 1,
       DT: "",
     };
@@ -214,7 +214,6 @@ const importScoreByExcel = async (data) => {
       attributes: ["paramValue"],
       raw: true,
     });
-
     let subjectTemp = await db.subjects.findOne({
       where: { id: data[0].subjectId },
     });
@@ -315,7 +314,7 @@ const importScoreByExcel = async (data) => {
     };
   } catch (e) {
     return {
-      EM: "can't delete subject",
+      EM: "can't import score",
       EC: 1,
       DT: "",
     };
