@@ -14,8 +14,19 @@ class subjectResult {
     let subjectId = req.body.subjectId;
     let finalExam = req.body.finalExam;
     try {
-      let data = await subjectResultService.inputScoreService( classId, studentId, teacherComment, fifteen_1, 
-        fifteen_2, fifteen_3, fifteen_4, fourtyFive_1, fourtyFive_2, finalExam, subjectId);
+      let data = await subjectResultService.inputScoreService(
+        classId,
+        studentId,
+        teacherComment,
+        fifteen_1,
+        fifteen_2,
+        fifteen_3,
+        fifteen_4,
+        fourtyFive_1,
+        fourtyFive_2,
+        finalExam,
+        subjectId
+      );
       return res.status(200).json({
         EM: data.EM,
         EC: data.EC,
@@ -28,6 +39,8 @@ class subjectResult {
 
   handleImportSoreByExcel = async (req, res) => {
     let data = req.body.data;
+    let a = req.User;
+    console.log("DATA", a);
     try {
       let result = await subjectResultService.importScoreByExcel(data);
       return res.status(200).json({

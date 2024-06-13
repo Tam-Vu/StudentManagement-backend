@@ -2,7 +2,6 @@ import studentService from "../services/studentService";
 //thêm các hàm xủ lý ở đây
 class StudentController {
   handleCreateNewStudent = async (req, res) => {
-    console.log(req.body);
     try {
       let studentname = req.body.studentname;
       let birthDate = req.body.birthDate;
@@ -21,7 +20,7 @@ class StudentController {
     }
   };
   handleFindAllStudent = async (req, res) => {
-    console.log(req.user);
+    // console.log(req.user);
     try {
       await studentService
         .getAllStudentService()
