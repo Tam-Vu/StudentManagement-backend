@@ -19,15 +19,7 @@ const hashUserPassword = (userPass) => {
   return hashPassword;
 };
 
-const serviceCreateNewStudent = async (
-  file,
-  studentname,
-  birthDate,
-  startDate,
-  gender,
-  address,
-  email
-) => {
+const serviceCreateNewStudent = async ( file, studentname, birthDate, startDate, gender, address, email) => {
   try {
     let params = await db.params.findAll({
       where: {},
@@ -57,11 +49,20 @@ const serviceCreateNewStudent = async (
     let maxAge = getParamValue("maxage");
     let minAge = getParamValue("minage");
     const today = new Date();
+    const yearnow = today.getFullYear();
+    const studentbirth = new Date(birthDate);
+    const studentyear = studentbirth.getFullYear();
+    let checkage = yearnow - studentyear;
+    if(checkage > maxAge || checkage < minAge) {
+      return {
+        EM: "student age is not allow",
+        EC: 1,
+        DT: "",
+      };
+    } 
 
     let slug = getParamValue("studentSlug");
-    let userandpass = `hocsinh${String(getParamValue("term"))}${String(
-      slug
-    ).padStart(4, "0")}`;
+    let userandpass = `hocsinh${String(getParamValue("term"))}${String(slug).padStart(4, "0")}`;
     let hashPass = hashUserPassword(userandpass);
     let downloadURL = null;
     if (file != null) {

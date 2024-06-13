@@ -14,6 +14,7 @@ import subjectRoute from "./routes/subjectRoute";
 import tuitionsRoute from "./routes/tuitionsRoute";
 import loginRoute from "./routes/loginRoute";
 import StatisticsRoute from "./routes/statisticsRoute";
+import ParamRoute from "./routes/paramRoute"
 
 import cookieParser from "cookie-parser";
 import { checkUserJwt } from "./middleware/jwtService";
@@ -49,6 +50,7 @@ subjectRoute(app);
 tuitionsRoute(app);
 loginRoute(app);
 StatisticsRoute(app);
+ParamRoute(app);
 Connection();
 app.use((req, res) => {
   return res.send("404 not found");

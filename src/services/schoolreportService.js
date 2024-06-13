@@ -1,6 +1,7 @@
 import { where } from "sequelize";
 import db, { Sequelize, sequelize } from "../models/index";
 import middlewareTrigger from "../middleware/trigger"
+import availableFunc from "../middleware/availableFunction"
 
 const getAllClassByStudentIdService = async (studentId) => {
     let data = [];
@@ -62,6 +63,22 @@ const getAllClassByStudentIdService = async (studentId) => {
           DT: [],
         }
       }
+      let maxStudents = await availableFunc.findParamsByName("maxattendances");
+      let totalStudents = await db.classes.findOne({
+        attribute: ['total'],
+        where: {
+          id: classId,
+        },
+        raw: true,
+      })
+      if(total['totalStudents'] == maxStudents) {
+        return {
+          EM: "this class is full",
+          EC: 1,
+          DT: [],
+        };
+      }
+
       arrayStudentId.forEach(async(studentId) => {        
         await db.students.update({
           statusinyear: 1,
@@ -72,7 +89,7 @@ const getAllClassByStudentIdService = async (studentId) => {
             classId: classId,
             studentId: studentId,
         });
-  
+
         await middlewareTrigger.totalStudentInclass(classId);
 
         let summaries = await db.summaries.bulkCreate(
