@@ -134,9 +134,6 @@ const compareNumOfStudentInTwoYears = async (year) => {
     JOIN classes ON schoolreports.classId = classes.id
     JOIN students ON students.id = schoolreports.studentId
     JOIN users ON students.userId = users.id
-    JOIN classes ON schoolreports.classId = classes.id
-    JOIN students ON students.id = schoolreports.studentId
-    JOIN users ON students.userId = users.id
     JOIN grades ON classes.gradeId = grades.id 
     WHERE grades.year = :year
     AND users.isLocked = 0
