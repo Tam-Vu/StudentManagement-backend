@@ -106,8 +106,84 @@ const  deleteViolationsSummaryDetail = async (id) =>{
     }
 }
 
+const getAllStudentThisYear = async() => {
+    try {
+        let year = await availableFunc.findParamsByName("term");
+        let data = await db.schoolreports.findAll({
+            attributes: { exclude: ["createdAt", "updatedAt", "statusinyear", "concludecore", "concludetitle"] },
+            include: [
+                {
+                    model: db.students,
+                    required: true,
+                    include: [
+                        {
+                            model: db.User,
+                            required: true,
+                            where: {
+                                isLocked: 0,
+                            },
+                            attributes: ['username', 'password', 'email'],
+                        }
+                    ],
+                    attributes: { exclude: ["createdAt", "updatedAt", "statusinyear"] },
+                },
+                {
+                    model: db.classes,
+                    required: true,
+                    attributes: ['classname', 'gradeId'],
+                    include: [
+                        {
+                            model: db.grades,
+                            required: true,
+                            attributes: ['year', 'id'],
+                            where: {
+                                year: year,
+                            }
+                        }
+                    ]
+                }
+            ]
+        })
+        return {
+            EM: 'success.',
+            EC: 0,
+            DT: data,
+        }
+    } catch(e) {
+        console.log(e);
+        return {
+            EM: "student not found",
+            EC: 1,
+            DT: [],
+        };
+    }
+}
+
+const getAllFringes = async() => {
+    try {
+        let data = await db.typeinfringes.findAll({
+            where: {},
+            attributes: { exclude: ["createdAt", "updatedAt"]}
+        })
+        return {
+            EM: 'success.',
+            EC: 0,
+            DT: data,
+        }
+    } catch(e) {
+        console.log(e);
+        return {
+            EM: "not found",
+            EC: 1,
+            DT: [],
+        };
+    }
+}
+
 module.exports = {
     createSummaryDetailsService,
     findAllSummaryDetailsBySummaryIdService,
     deleteViolationsSummaryDetail,
+    getAllStudentThisYear,
+    getAllFringes
 }

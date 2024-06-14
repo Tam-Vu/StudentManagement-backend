@@ -47,6 +47,7 @@ class TuitionsController {
 
     handlePayTuition = async(req, res) => {
       try {
+          let check = req.user.payload.role;
           let tuitionId = req.params.id;
           let data = await tuitionsService.payTuition(tuitionId);
           res.status(200).json({
@@ -99,24 +100,6 @@ class TuitionsController {
     }
   }
 
-  handlePayDebt = async(req, res) => {
-  try {
-     let tuitionId = req.params.id;
-      let price = req.body.price;
-      let month = req.body.month;
-      let year = req.body.year;
-      let closingdate = req.body.closingdate;
-      let data = await tuitionsService.paySingleDebt(tuitionId, price, month, year, closingdate);
-      res.status(200).json({
-        EM: data.EM,
-        EC: data.EC,
-        DT: data.DT,
-      });
-    } catch(e) {
-      return res.status(500).json({ message: e.message });
-    }
-  }
-
   handleFindAllTuitionsOfOneStudent = async(req, res) => {
     try { 
       let id = req.params.id;
@@ -132,11 +115,4 @@ class TuitionsController {
   }
 
 }
-
-
-
-
-// payTuition,
-// getAllTuitionsByStudentId,
-//getAllTuitionOfStudentInYear
 module.exports = new TuitionsController();
