@@ -35,7 +35,7 @@ class SummaryDetailsController {
 
     handleDeleteSummaryDetails = async(req, res) => {
         try {
-            let data = await summaryDetailsService.deleteViolationsSummaryDetail(req.body.id);
+            let data = await summaryDetailsService.deleteViolationsSummaryDetail(req.params.id);
             return res.status(200).json({
                 EM: data.EM,
                 EC: data.EC,

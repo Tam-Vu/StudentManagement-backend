@@ -1,5 +1,6 @@
 import { where } from "sequelize";
 import db, { Sequelize, sequelize } from "../models/index";
+import availableFunc from "../middleware/availableFunction"
 
 const getAllSubject = async() => {
     let data = [];
@@ -41,7 +42,7 @@ const findSubjectById = async(subjectId) => {
         }
         return {
             EM: "success",
-            EC: 1,
+            EC: 0,
             DT: subject,
         }
     } catch (e) {
@@ -55,6 +56,15 @@ const findSubjectById = async(subjectId) => {
 
 const createSubject = async(name, fifteenMinFactor, fourtyFiveMinFactor, finalFactor, factor, minPassScore) => {
     try {
+        let changeable = await availableFunc.findParamsByName("changeable");
+        if (changeable == 0) {
+            return {
+                EM: "you can only create subject before the term starts",
+                EC: 1,
+                DT: "",
+            }
+        }
+
         let checkSubject = await db.subjects.findOne({
             where: {
                 subjectname: name,
@@ -78,7 +88,7 @@ const createSubject = async(name, fifteenMinFactor, fourtyFiveMinFactor, finalFa
         });
         return {
             EM: "success",
-            EC: 1,
+            EC: 0,
             DT: newSubject,
         };
     } catch (e) {
@@ -93,6 +103,15 @@ const createSubject = async(name, fifteenMinFactor, fourtyFiveMinFactor, finalFa
 
 const updateSubject = async(subjectId, name, fifteenMinFactor, fourtyFiveMinFactor, finalFactor, factor, minPassScore) => {
     try {
+        let changeable = await availableFunc.findParamsByName("changeable");
+        if (changeable == 0) {
+            return {
+                EM: "you can only update subject before the term starts",
+                EC: 1,
+                DT: "",
+            }
+        }
+
         let subject = {};
         subject = await db.subjects.findOne({
             where: {
@@ -121,7 +140,7 @@ const updateSubject = async(subjectId, name, fifteenMinFactor, fourtyFiveMinFact
                 }
             })
             return {
-                EM: "Update user success",
+                EM: "Update subject success",
                 EC: 0,
                 DT: data,
             };
@@ -143,6 +162,14 @@ const updateSubject = async(subjectId, name, fifteenMinFactor, fourtyFiveMinFact
 
 const deleteSubject = async(subjectId) => {
     try {
+        let changeable = await availableFunc.findParamsByName("changeable");
+        if (changeable == 0) {
+            return {
+                EM: "you can only delete subject before the term starts",
+                EC: 1,
+                DT: "",
+            }
+        }
         let subject = {};
         subject = await db.subjects.findOne({
             where: {

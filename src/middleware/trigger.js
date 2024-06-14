@@ -110,13 +110,17 @@ const updateBehavior = async(summaryId) => {
         where: {
             summaryId: summaryId,
         },
-        raw: true,
+        include: [
+            {
+                model: db.typeinfringes,
+                attributes: ['minuspoint'],
+            }
+        ]
     })
-
     let sumBadBehaviorPoint = 0;
 
     for(let singleBadBehaviorPoint of badBehaviorPoint) {
-        sumBadBehaviorPoint += singleBadBehaviorPoint['negativepoint'];
+        sumBadBehaviorPoint += singleBadBehaviorPoint.typeinfringe.minuspoint;
     }
 
     await db.summaries.update({
@@ -137,7 +141,7 @@ const updateBehavior = async(summaryId) => {
         attributes: ['schoolreportId'],
     });
     
-    let schoolreport = await db.findOne({
+    let schoolreport = await db.schoolreports.findOne({
         where: {
             id: summary['schoolreportId'],
         },
