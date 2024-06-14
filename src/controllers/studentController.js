@@ -54,12 +54,8 @@ class StudentController {
   handleUpdateStudent = async (req, res) => {
     try {
       let id = req.params.id;
-      let belongtoclassId = req.params.btcId;
-      let updatedAccount = await studentService.updateStudentService(
-        req.body,
-        id,
-        belongtoclassId
-      );
+      let image = req.file;
+      let updatedAccount = await studentService.updateStudentService(req.body, id, image);
       res.status(200).json({
         EM: updatedAccount.EM,
         EC: updatedAccount.EC,

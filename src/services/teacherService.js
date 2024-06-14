@@ -186,11 +186,24 @@ const getTeacherByIdService = async (id) => {
   }
 };
 
-const updateTeacherService = async (data, id) => {
+const updateTeacherService = async (data, id, image) => {
   try {
+    let checkemail = await db.User.findOne({
+      where: {
+        email: data.email,
+      },
+    });
+    if (checkemail) {
+      return {
+        EM: "this email is already used",
+        EC: 1,
+        DT: "",
+      };
+    }
     let user = await db.teachers.findOne({
       where: { id: id },
     });
+    console.log(user);
     if (user) {
       await user.update({
         teachername: data.teachername,
@@ -199,8 +212,29 @@ const updateTeacherService = async (data, id) => {
         subjectId: data.subjectId,
         gender: data.gender,
       });
+
+      if (image != null) {
+        const storageRef = ref(storage, `image/${image.originalname}`);
+        const metadata = {
+          contentType: image.mimetype,
+        };
+        const snapshot = await uploadBytesResumable(
+          storageRef,
+          image.buffer,
+          metadata
+        );
+        let downloadURL = await getDownloadURL(snapshot.ref);
+
+        await db.User.update({
+          image: downloadURL
+        }, {
+          where: {
+            id: user.userId,
+          }
+        })
+      }
       return {
-        EM: "Update user succeeds",
+        EM: "Update user success",
         EC: 0,
         DT: "",
       };
