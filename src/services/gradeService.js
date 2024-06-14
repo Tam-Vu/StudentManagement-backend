@@ -52,6 +52,14 @@ const createNewYearGrade = async (newYear) => {
         paramName: "typeterm",
       }
     });
+    await db.params.update({
+      paramValue: 1,
+    }, 
+    {
+      where: {
+        paramName: "changeable",
+      }
+    });
 
     return {
       EM: "success",

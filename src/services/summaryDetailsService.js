@@ -1,6 +1,7 @@
 import { where } from "sequelize";
 import db, { sequelize } from "../models/index";
 import availableFunc from "../middleware/availableFunction"
+import middlewareTrigger from "../middleware/trigger"
 
 const createSummaryDetailsService = async(body) => {
     try {
@@ -10,14 +11,15 @@ const createSummaryDetailsService = async(body) => {
                     schoolreportId: body.schoolreportId,
                     term: term,
                 }
-            })
+            });
             let data = await db.summariesdetails.create({
             summaryId: summary.id,
             violaterule: body.violaterule,
             reason: body.reason,
             violateruledate: body.violateruledate,
-            typeinfringeId: body.negativepoint,
+            typeinfringeId: body.typeinfringeId,
         })
+        await middlewareTrigger.updateBehavior(summary.id);
         return {
             EM: 'success.',
             EC: 0,
@@ -33,12 +35,25 @@ const createSummaryDetailsService = async(body) => {
     }
 }
 
-const findAllSummaryDetailsBySummaryIdService = async(summaryId) =>{
+const findAllSummaryDetailsBySummaryIdService = async(schoolreportId) =>{
     try {
+        let term = await availableFunc.findParamsByName("typeterm");
+        let summary = await db.summaries.findOne({
+            where: {
+                schoolreportId: schoolreportId,
+                term: term,
+            }
+        });
         const data = await db.summariesdetails.findAll({
             where: {
-                summaryId: summaryId,
-            }
+                summaryId: summary.id,
+            },
+            include: [
+                {
+                    model: db.typeinfringes,
+                    attributes: ['typename', 'minuspoint'],
+                }
+            ]
         });
         if (data.length === 0) {
             return {
@@ -64,11 +79,18 @@ const findAllSummaryDetailsBySummaryIdService = async(summaryId) =>{
 
 const  deleteViolationsSummaryDetail = async (id) =>{
     try {
+        let summaryDetail = await db.summariesdetails.findOne({
+            where: {
+                id: id
+            },
+        })
+        console.log(summaryDetail);
         let result = await db.summariesdetails.destroy({
             where:{
                 id: id
             }
-        });
+            });
+        await middlewareTrigger.updateBehavior(summaryDetail.summaryId);
         return {
             EM: 'success.',
             EC: 0,
