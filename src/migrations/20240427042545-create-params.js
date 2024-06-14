@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       paramValue: {
-        type: Sequelize.INTEGER
+        type: Sequelize.FLOAT
       },
       paramNote: {
         type: Sequelize.STRING
