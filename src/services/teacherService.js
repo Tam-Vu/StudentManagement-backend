@@ -10,6 +10,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import config from "../config/firebasestorage";
+import availableFunc from "../middleware/availableFunction"
 
 const app = initializeApp(config.firebaseConfig);
 const storage = getStorage();
@@ -270,6 +271,34 @@ const deleteTeacherService = async (id) => {
       await user.update({
         isLocked: 1,
       });
+      let year = await availableFunc.findParamsByName("term");
+      let classesAssigment = await db.assignments.findAll({
+        where: {
+          teacherId: id,
+        },
+        include: [
+          {
+            model: db.classes,
+            required: true,
+            attributes: ['gradeId'],
+            include: [
+              {
+                model: db.grades,
+                required: true,
+                where: {
+                  year: year,
+                },
+                attributes: []
+              }
+            ]
+          }
+        ]
+      }) 
+      for(let singleAssigment of classesAssigment) {
+        await singleAssigment.update({
+          teacherId: null
+        })
+      }
       return {
         EM: "Delete Succeed!!!",
         EC: 0,

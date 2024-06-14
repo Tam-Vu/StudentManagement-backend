@@ -55,13 +55,6 @@ const findAllSummaryDetailsBySummaryIdService = async(schoolreportId) =>{
                 }
             ]
         });
-        if (data.length === 0) {
-            return {
-                EM: "summary  details not found.",
-                EC: 1,
-                DT: [],
-            };
-        }
         return {
             EM: 'success.',
             EC: 0,
