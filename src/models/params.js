@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   params.init({
     paramName: DataTypes.STRING,
-    paramValue: DataTypes.INTEGER,
+    paramValue: DataTypes.FLOAT,
     paramNote: DataTypes.STRING
   }, {
     sequelize,
