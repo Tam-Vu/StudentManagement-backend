@@ -103,6 +103,22 @@ class AccountController {
       return res.status(500).json({ message: e.message });
     }
   };
+
+  handleChangePassUser = async(req, res) => {
+    let userId = req.body.id;
+    let password = req.body.password;
+    let newPassword = req.body.newPassword;
+    try {
+      let data = await accountService.changePassService(userId, password, newPassword);
+      res.status(200).json({
+        EM: data.EM,
+        EC: data.EC,
+        DT: data.DT,
+      });
+    } catch(e) {
+      return res.status(500).json({ message: e.message });
+    }
+  }
 }
 
 module.exports = new AccountController();

@@ -71,7 +71,7 @@ const getAllClassByStudentIdService = async (studentId) => {
         },
         raw: true,
       })
-      if(total['totalStudents'] == maxStudents) {
+      if(totalStudents['total'] == maxStudents) {
         return {
           EM: "this class is full",
           EC: 1,
@@ -136,7 +136,6 @@ const getAllClassByStudentIdService = async (studentId) => {
 const getAllStudentByClassIdService = async (classId) => {
     let data = [];
     let checkClass = {};
-    console.log("CLASSID: " + classId);
     try {
       checkClass = await db.classes.findAll({
         where: {

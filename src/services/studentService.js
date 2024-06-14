@@ -264,6 +264,30 @@ const getAllStudentService = async () => {
 };
 
 const getStudentByIdService = async (id) => {
+  try {
+    let data = await db.students.findOne({
+      where: {
+        id: id,
+      },
+      include: [
+        {
+          model: db.User,
+          attributes: ['email', 'username', 'image'],
+        }
+      ]
+    });
+    return {
+      EM: "success",
+      EC: 0,
+      DT: data,
+    };
+  } catch (e) {
+    return {
+      EM: "something wrong with service",
+      EC: 0,
+      DT: data,
+    };
+  }
   let data = {};
   data = await db.students.findByPk(id);
   return data.get({ plain: true });
