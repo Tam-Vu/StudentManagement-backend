@@ -1,10 +1,18 @@
 import { where } from "sequelize";
 import db, { sequelize } from "../models/index";
+import availableFunc from "../middleware/availableFunction"
 
 const createSummaryDetailsService = async(body) => {
     try {
-        let data = await db.summariesdetails.create({
-            summaryId: body.summaryId,
+            let term = await availableFunc.findParamsByName("typeterm");
+            let summary = await db.summaries.findOne({
+                where: {
+                    schoolreportId: body.schoolreportId,
+                    term: term,
+                }
+            })
+            let data = await db.summariesdetails.create({
+            summaryId: summary.id,
             violaterule: body.violaterule,
             reason: body.reason,
             violateruledate: body.violateruledate,

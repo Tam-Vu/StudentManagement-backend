@@ -132,54 +132,6 @@ const getAllClassByStudentIdService = async (studentId) => {
     }
   };
 
-//lấy học sinh theo lớp
-const getAllStudentByClassIdService = async (classId) => {
-    let data = [];
-    let checkClass = {};
-    try {
-      checkClass = await db.classes.findAll({
-        where: {
-          id: classId,
-        },
-      });
-      console.log(checkClass);
-      if (checkClass.length === 0) {
-        return {
-          EM: "No class found",
-          EC: 1,
-          DT: "",
-        };
-      }
-      data = await db.schoolreports.findAll({
-        where: {
-          classId: classId,
-        },
-        include: [
-          {
-            model: db.classes,
-            attributes: { exclude: ["createdAt", "updatedAt"] },
-          },
-          {
-            model: db.students,
-            attributes: { exclude: ["createdAt", "updatedAt"] },
-          },
-        ],
-      });
-      return {
-        EM: "success",
-        EC: 0,
-        DT: data,
-      };
-    } catch (e) {
-      console.log(e);
-      return {
-        EM: "something wrong with service",
-        EC: 1,
-        DT: "",
-      };
-    }
-};
-
 const getDetailsTranscriptByStudentId = async(studentId, gradename) => {
     try {
       let schoolReports = await db.schoolreports.findAll({
@@ -334,7 +286,6 @@ const deleteSchoolreportsService = async(studentId, classId) => {
   module.exports = {
     getAllClassByStudentIdService,
     createSchoolreportService,
-    getAllStudentByClassIdService,
     getDetailsTranscriptByStudentId,
     deleteSchoolreportsService
   }
