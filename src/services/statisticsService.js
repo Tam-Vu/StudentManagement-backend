@@ -222,12 +222,14 @@ const compareNumOfStudentInTwoYears = async (year) => {
 const getTopTenBestStudents = async (year) => {
   try {
     let bestStudents = await sequelize.query(
-      `select a.id, a.studentname, b.concludecore, c.classname from students a 
+      `select a.id, a.studentname, b.concludecore, c.classname, e.username, e.email, e.image from students a 
     inner join schoolreports b on a.id = b.studentId 
     inner join classes c on b.classId = c.id 
     inner join grades d on c.gradeId = d.id 
     inner join users e on a.userId = e.id
-    where d.year = :year order by b.concludecore desc limit 10`, {
+    where d.year = :year
+    and e.isLocked = 0
+    order by b.concludecore desc limit 10`, {
       replacements:{year},
       type: sequelize.QueryTypes.SELECT
     });

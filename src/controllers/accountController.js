@@ -106,10 +106,11 @@ class AccountController {
 
   handleChangePassUser = async(req, res) => {
     let userId = req.body.id;
-    let password = req.body.password;
+    let oldPassword = req.body.oldPassword;
     let newPassword = req.body.newPassword;
+    let retypeNewPassword = req.body.retypeNewPassword;
     try {
-      let data = await accountService.changePassService(userId, password, newPassword);
+      let data = await accountService.changePassService(userId, oldPassword, newPassword, retypeNewPassword);
       res.status(200).json({
         EM: data.EM,
         EC: data.EC,

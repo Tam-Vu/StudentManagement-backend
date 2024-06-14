@@ -490,7 +490,7 @@ const getAllNonClassStudentByClassId = async (classId) => {
     //lấy học sinh chưa có lớp 10: tức là chưa có bất kì học bạ nào đạt
     if (className.startsWith("10")) {
       freeStudentsInThisYear = await sequelize.query(
-        `select distinct s.* from students s
+        `select distinct s.id, s.studentname, s.gender, u.username, u.email, u.image from students s
       left join schoolreports sr 
       on s.id = sr.studentId 
       inner join users u 
@@ -505,17 +505,18 @@ const getAllNonClassStudentByClassId = async (classId) => {
       );
     }
 
-    //lấy học sinh chưa có lớp 10: tức là có 1 học bạ đạt
+    //lấy học sinh chưa có lớp 11: tức là có 2 học bạ đạt
     else if (className.startsWith("11")) {
       freeStudentsInThisYear = await sequelize.query(
-        `select distinct s.* from students s
+        `select distinct s.id, s.studentname, s.gender, u.username, u.email, u.image from students s
       left join schoolreports sr 
       on s.id = sr.studentId 
       inner join users u 
       on s.userId = u.id
       where u.isLocked = "0"
       and sr.concludetitle <> 'yếu'
-      group by s.id having count(*) = 1 and s.statusinyear = 0`,
+      and s.statusinyear = 0
+      group by s.id having count(*) = 1`,
         {
           replacements: { year },
           type: sequelize.QueryTypes.SELECT,
@@ -523,15 +524,15 @@ const getAllNonClassStudentByClassId = async (classId) => {
       );
     } else if (className.startsWith("12")) {
       freeStudentsInThisYear = await sequelize.query(
-        `select distinct s.* from students s
+        `select distinct s.id, s.studentname, s.gender, u.username, u.email, u.image from students s
       left join schoolreports sr 
       on s.id = sr.studentId 
       inner join users u 
       on s.userId = u.id
       where u.isLocked = "0"
       and sr.concludetitle <> 'yếu'
-      group by s.id having count(*) = 2 
-      and s.statusinyear = 0`,
+      and s.statusinyear = 0
+      group by s.id having count(*) = 2 `,
         {
           replacements: { year },
           type: sequelize.QueryTypes.SELECT,

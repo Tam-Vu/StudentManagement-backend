@@ -9,7 +9,6 @@ const getAllSubject = async() => {
                 isdeleted: 0,
             }
         });
-        console.log(data)
         return {
             EM: "success",
             EC: 0,

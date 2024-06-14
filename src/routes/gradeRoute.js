@@ -6,6 +6,7 @@ const GradeRoutes = (app) => {
   router.post("/new-year", gradeController.newYearGrade);
   router.get("/find/:year", gradeController.findGradeByYear);
   router.get("/get-year", gradeController.findAllYear);
+  router.get("/change-term", gradeController.handleChangeTerm);
   return app.use("/grade", router);
 };
 export default GradeRoutes;

@@ -9,6 +9,20 @@ const createTuitionByClassId = async (
   closingdate
 ) => {
   try {
+    let checkTuition = await db.tuitions.findOne({
+      where: {
+        month: month,
+        year: year,
+      }
+    })
+    if(checkTuition != null) {
+      return {
+        EM: "this tuition is already exist",
+        EC: 1,
+        DT: "",
+      };
+    }
+
     let studentsTemp = await db.students.findAll({
       attributes: ["id"],
       include: [
