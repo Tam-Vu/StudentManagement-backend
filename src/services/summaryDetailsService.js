@@ -122,7 +122,7 @@ const getAllStudentThisYear = async() => {
                             where: {
                                 isLocked: 0,
                             },
-                            attributes: ['username', 'password', 'email'],
+                            attributes: ['username', 'image', 'email'],
                         }
                     ],
                     attributes: { exclude: ["createdAt", "updatedAt", "statusinyear"] },
@@ -135,7 +135,7 @@ const getAllStudentThisYear = async() => {
                         {
                             model: db.grades,
                             required: true,
-                            attributes: ['year', 'id'],
+                            attributes: ['year', 'id', 'gradename'],
                             where: {
                                 year: year,
                             }

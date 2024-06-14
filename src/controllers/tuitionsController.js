@@ -47,7 +47,13 @@ class TuitionsController {
 
     handlePayTuition = async(req, res) => {
       try {
-          let check = req.user.payload.role;
+          if(req.user.payload.role !== 3) {
+            res.status(200).json({
+              EM: "you don't have permission to do this",
+              EC: 1,
+              DT: '',
+            });
+          }
           let tuitionId = req.params.id;
           let data = await tuitionsService.payTuition(tuitionId);
           res.status(200).json({
