@@ -198,11 +198,16 @@ const getAllStudentSummariesByClassId = async (classId) => {
       include: [
         {
           model: db.students,
+          required: true,
           attributes: { exclude: ["createdAt", "updatedAt"] },
           include: [
             {
               model: db.User,
+              required: true,
               attributes: ["username", "image", "email"],
+              where: {
+                isLocked: 0,
+              }
             },
           ],
         },
