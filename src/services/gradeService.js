@@ -1,6 +1,7 @@
 import { where } from "sequelize";
 import db from "../models/index";
 import { FORCE } from "sequelize/lib/index-hints";
+import availableFunc from "../middleware/availableFunction"
 
 globalThis.yearBegin;
 const createNewYearGrade = async (newYear) => {
@@ -41,6 +42,14 @@ const createNewYearGrade = async (newYear) => {
     {
       where: {
         paramName: "studentSlug",
+      }
+    });
+    await db.params.update({
+      paramValue: 1,
+    }, 
+    {
+      where: {
+        paramName: "typeterm",
       }
     });
 
@@ -97,8 +106,46 @@ const findAllYear = async () => {
     };
   }
 };
+
+const changeTermService = async() => {
+  try {
+    let term = await availableFunc.findParamsByName("typeterm");
+    if(term == 1) {
+      await db.params.update({
+        paramValue: 2,
+      }, {
+        where: {
+          paramName: "typeterm"
+        }
+      })
+    }
+    if(term == 2) {
+      await db.params.update({
+        paramValue: 1,
+      }, {
+        where: {
+          paramName: "typeterm"
+        }
+      })
+    }
+    return {
+      EM: "success",
+      EC: 0,
+      DT: [],
+    };
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "Fail to change term",
+      EC: 1,
+      DT: [],
+    };
+  }
+}
+
 module.exports = {
   createNewYearGrade,
   findAllGradesByYear,
   findAllYear,
+  changeTermService
 };

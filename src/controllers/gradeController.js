@@ -48,5 +48,18 @@ class GradeController {
         res.status(500).json({ message: e.message });
       });
   };
+
+  handleChangeTerm = async(req, res) => {
+    try {
+      let data = await gradeService.changeTermService();
+      res.status(200).json({
+        EM: data.EM,
+        EC: data.EC,
+        DT: data.DT,
+    });
+    } catch(e) {
+      res.status(500).json({ message: e.message });
+    }
+  }
 }
 module.exports = new GradeController();

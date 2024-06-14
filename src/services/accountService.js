@@ -205,17 +205,37 @@ const loginService = async (rawUsername, rawPass) => {
   }
 };
 
-const changePassService = async(userId, password, newPassword) => {
+const changePassService = async(userId, oldPassword, newPassword, retypeNewPassword) => {
   try {
-    if (password !== newPassword) {
-      console.log(e);
+    let user = await db.User.findOne({
+      where: {
+        id: userId,
+      }
+    })
+    if (user == null) {
       return {
-        EM: "password doesn't match new password",
+        EM: "user not found",
         EC: 1,
         DT: "",
       };
     }
-    let hashPass = hashUserPassword(password);
+
+    let isCorrectPass = checkPass(oldPassword, user.password);
+    if (isCorrectPass == false) {
+      return {
+        EM: "wrong password",
+        EC: 1,
+        DT: "",
+      };
+    }
+    if (newPassword !== retypeNewPassword) {
+      return {
+        EM: "retype new password doesn't match new password",
+        EC: 1,
+        DT: "",
+      };
+    }
+    let hashPass = hashUserPassword(newPassword);
     await db.User.update({
       password: hashPass,
     }, {
