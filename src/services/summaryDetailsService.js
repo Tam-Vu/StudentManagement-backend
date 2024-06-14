@@ -7,8 +7,8 @@ const createSummaryDetailsService = async(body) => {
             summaryId: body.summaryId,
             violaterule: body.violaterule,
             reason: body.reason,
-            negativepoint: body.negativepoint,
-            violateruledate: body.violateruledate
+            violateruledate: body.violateruledate,
+            typeinfringeId: body.negativepoint,
         })
         return {
             EM: 'success.',
@@ -54,51 +54,6 @@ const findAllSummaryDetailsBySummaryIdService = async(summaryId) =>{
     }
 }
 
-const  updateSummaryDetailService = async(body) => {
-    try {
-        let checkdata = await db.summariesdetails.findOne({
-            where:{
-                id: body.summaryDetailId, 
-            }
-        });
-        if (checkdata === null) {
-            return {
-                EM: "summary  detail is not exist.",
-                EC: 1,
-                DT: [],
-            };
-        }
-        await db.summariesdetails.update({
-            violaterule: body.violaterule,
-            reason: body.reason,
-            negativepoint: body.negativepoint,
-            violateruledate: body.violateruledate
-        },
-        {
-            where: {
-                id: body.summaryDetailId,
-            }
-        });
-        let data = await db.summariesdetails.findOne({
-            where: {
-                id: body.summaryDetailId,
-            }
-        });
-    return {
-        EM: 'success.',
-        EC: 0,
-        DT: data,
-    }
-    } catch(e) {
-        console.log(e);
-        return {
-            EM: "something wrong with service",
-            EC: 1,
-            DT: [],
-        };
-    }   
-}
-
 const  deleteViolationsSummaryDetail = async (id) =>{
     try {
         let result = await db.summariesdetails.destroy({
@@ -124,6 +79,5 @@ const  deleteViolationsSummaryDetail = async (id) =>{
 module.exports = {
     createSummaryDetailsService,
     findAllSummaryDetailsBySummaryIdService,
-    updateSummaryDetailService,
     deleteViolationsSummaryDetail,
 }

@@ -13,6 +13,7 @@ const AccountRoutes = (app) => {
   router.get("/", accountController.handleFindAllUser);
   router.post("/update-account/:id", accountController.handleUpdateUser);
   router.post("/delete-account/:id", accountController.handleDeleteUser);
+  router.post("/change-password", accountController.handleChangePassUser);
   return app.use("/account", router);
 };
 

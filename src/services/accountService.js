@@ -205,7 +205,38 @@ const loginService = async (rawUsername, rawPass) => {
   }
 };
 
-const logoutService = () => {};
+const changePassService = async(userId, password, newPassword) => {
+  try {
+    if (password !== newPassword) {
+      console.log(e);
+      return {
+        EM: "password doesn't match new password",
+        EC: 1,
+        DT: "",
+      };
+    }
+    let hashPass = hashUserPassword(password);
+    await db.User.update({
+      password: hashPass,
+    }, {
+      where: {
+        id: userId,
+      }
+    })
+    return {
+      EM: "success",
+      EC: 0,
+      DT: "",
+    };
+  } catch(e) {
+    console.log(e);
+    return {
+      EM: "server error",
+      EC: 1,
+      DT: "",
+    };
+  }
+}
 
 module.exports = {
   serviceCreateNewAccount,
@@ -214,5 +245,5 @@ module.exports = {
   updateUserService,
   deleteUserService,
   loginService,
-  logoutService,
+  changePassService
 };

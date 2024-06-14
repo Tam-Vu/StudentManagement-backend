@@ -162,7 +162,7 @@ const getTeacherByIdService = async (id) => {
       include: [
         {
           model: db.User,
-          attributes: ["image", "username"],
+          attributes: ["image", "username", "email"],
         },
         {
           model: db.subjects,

@@ -11,15 +11,17 @@ module.exports = (sequelize, DataTypes) => {
       summariesdetails.belongsTo(models.summaries, {
         foreignKey: "summaryId",
       });
+      summariesdetails.belongsTo(models.typeinfringes, {
+        foreignKey: "typeinfringeId",
+      });
     }
   }
   summariesdetails.init(
     {
       summaryId: DataTypes.INTEGER,
-      violateruletype: DataTypes.INTEGER,
       violaterule: DataTypes.STRING,
       reason: DataTypes.STRING,
-      negativepoint: DataTypes.INTEGER,
+      typeinfringeId: DataTypes.INTEGER,
       violateruledate: DataTypes.DATE,
     },
     {
