@@ -169,7 +169,7 @@ const getTeacherByIdService = async (id) => {
           attributes: ["subjectname"],
         },
       ],
-      attributes: ["teachername", "gender", "startDate"],
+      attributes: { exclude: ["createdAt", "updatedAt"] },
     });
     return {
       EM: "success",
@@ -225,13 +225,16 @@ const updateTeacherService = async (data, id, image) => {
         );
         let downloadURL = await getDownloadURL(snapshot.ref);
 
-        await db.User.update({
-          image: downloadURL
-        }, {
-          where: {
-            id: user.userId,
+        await db.User.update(
+          {
+            image: downloadURL,
+          },
+          {
+            where: {
+              id: user.userId,
+            },
           }
-        })
+        );
       }
       return {
         EM: "Update user success",
