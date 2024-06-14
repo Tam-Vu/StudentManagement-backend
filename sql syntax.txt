@@ -1,0 +1,107 @@
+Môn học sẽ tự nhập tay, lần lượt gồm: tên, hệ số điểm 15p, hệ số điểm 45p, hệ số điểm cuối kì, hệ số điểm của môn 
+
+------------------------------------------------------------------------------------------------------------
+select * from subjectresults
+select * from summaries
+select * from subjects
+select * from tuitions
+select * from users
+select * from subjectresults
+select * from students
+select * from teachers
+select * from classes
+select * from grades
+select * from subjects
+select * from assignments
+select * from params
+select * from schoolreports
+select * from users
+select * from typeinfringes
+select * from summariesdetails
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('excellentCore', '8', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('excellentDiscipline', '90', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('goodCore', '7', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('goodDiscipline', '80', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('averageCore', '5', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('averageDiscipline', '70', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('badCore', '3', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('badDiscipline', '60', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('teacherSlug', '1', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('studentSlug', '1', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('term', '2024', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('typeterm', '1', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('changeable', '1', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('maxage', '20', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('minage', '15', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('maxattendances', '40', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('maxtenthclasses', '4', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('maxtwelfthclasses', '3', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`params` (`paramName`, `paramValue`, `paramNote`, `createdAt`, `updatedAt`) 
+VALUES ('maxeleventhclasses', '2', null, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('vô lễ', '5', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('sử dụng chất kích thích', '5', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('đánh bạc', '5', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('đánh nhau, gây rối', '5', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('nói tục, chửi thề', '5', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('mang vũ khí, vật sắc nhọn, chất nổ', '5',CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('lưu trữ các loại văn hóa phẩm đồi trụy', '5', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('đi xe trong trường', '5', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('đi xe khi chưa có bằng', '5', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('phá hoại tài sản nhà trường', '5', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('áo bỏ ngoài quần', '5', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('nằm, ngồi trên lan can, bàn ghế', '5', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('nhuộm tóc, để tóc quá dài hoặc quá ngắn', '5', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('cấm tô son, sơn móng', '2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('vẽ lên tường bàn ghế', '2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `studentmanagement`.`typeinfringes` (`typename`, `minuspoint`, `createdAt`, `updatedAt`) 
+VALUES ('đi học trễ', '3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+    

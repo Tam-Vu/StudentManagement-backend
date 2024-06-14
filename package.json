@@ -1,0 +1,46 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --exec babel-node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EdogawaCoTrung/StudentManagement-frontend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EdogawaCoTrung/StudentManagement-frontend/issues"
+  },
+  "homepage": "https://github.com/EdogawaCoTrung/StudentManagement-frontend#readme",
+  "dependencies": {
+    "@types/node": "^20.12.7",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "csv-parser": "^3.0.0",
+    "dotenv": "^16.4.5",
+    "exceljs": "^4.4.0",
+    "express": "^4.19.2",
+    "firebase": "^10.12.2",
+    "global": "^4.4.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.9.3",
+    "nodemon": "^3.1.0",
+    "sequelize": "^6.37.3",
+    "sequelize-auto-migrations": "^1.0.3",
+    "sequelize-cli": "^6.6.2",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.4",
+    "@babel/node": "^7.23.9",
+    "@babel/preset-env": "^7.24.4"
+  }
+}
