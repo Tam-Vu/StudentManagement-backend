@@ -12,7 +12,7 @@ const upload = multer();
 const teacherRouter = (app) => {
   router.get("/:id", teacherController.handleFindTeacherById);
   router.get("/", teacherController.handleFindAllTeacher);
-  router.put("/update-teacher/:id", teacherController.handleUpdateTeacher);
+  router.put("/update-teacher/:id",upload.single("image"), teacherController.handleUpdateTeacher);
   router.put("/delete-teacher/:id", teacherController.handleDeleteTeacher);
   router.post("/create-teacher", upload.single("image"), teacherController.handleCreateNewTeacher);
   router.post("/class-without-subject-teacher", teacherController.handleFindClassNonSubjectClass);

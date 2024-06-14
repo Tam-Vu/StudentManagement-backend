@@ -46,12 +46,10 @@ class teacherController {
     }
   };
   handleUpdateTeacher = async (req, res) => {
+    let id = req.params.id;
+    let image = req.file;
     try {
-      let id = req.params.id;
-      let updatedAccount = await teacherService.updateTeacherService(
-        req.body,
-        id
-      );
+      let updatedAccount = await teacherService.updateTeacherService(req.body, id, image);
       res.status(200).json({
         EM: updatedAccount.EM,
         EC: updatedAccount.EC,

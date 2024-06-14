@@ -293,48 +293,41 @@ const getStudentByIdService = async (id) => {
   return data.get({ plain: true });
 };
 
-const updateStudentService = async (data, id, btcId) => {
+const updateStudentService = async (data, id, image) => {
   try {
     let user = await db.students.findOne({
       where: { id: id },
     });
-    console.log("USER: ", user.get({ raw: true }));
     if (user) {
       await user.update({
         studentname: data.studentname,
         birthDate: data.birthDate,
         gender: data.gender,
         address: data.address,
-        parentId: data.parentId,
       });
-      if (data.gradeId && data.classId) {
-        console.log("UPDATE");
-        console.log(data.gradeId, data.classId);
-        let res = await db.summaries.findOne({
+
+      if (image != null) {
+        const storageRef = ref(storage, `image/${image.originalname}`);
+        const metadata = {
+          contentType: image.mimetype,
+        };
+        const snapshot = await uploadBytesResumable(
+          storageRef,
+          image.buffer,
+          metadata
+        );
+        let downloadURL = await getDownloadURL(snapshot.ref);
+
+        await db.User.update({
+          image: downloadURL
+        }, {
           where: {
-            id: btcId,
-          },
-        });
-        if (res) {
-          console.log("Chay vao update");
-          let check = {};
-          try {
-            check = await res.update({
-              classId: data.classId,
-            });
-            console.log("CHECK: ", check.get({ raw: true }));
-          } catch (error) {
-            console.log(error);
-            return {
-              EM: "Something wrong with service",
-              EC: 1,
-              DT: "",
-            };
+            id: user.userId,
           }
-        }
+        })
       }
       return {
-        EM: "Update user succeeds",
+        EM: "Update user success",
         EC: 0,
         DT: "",
       };
