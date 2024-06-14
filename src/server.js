@@ -35,7 +35,7 @@ app.use(
   })
 );
 
-// app.all('*', checkUserJwt);
+app.all('*', checkUserJwt);
 
 GradeRoutes(app);
 AccountRoutes(app);

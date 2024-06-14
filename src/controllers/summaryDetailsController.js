@@ -1,3 +1,4 @@
+import { sum } from "firebase/firestore";
 import summaryDetailsService from "../services/summaryDetailsService"
 
 class SummaryDetailsController {
@@ -45,9 +46,31 @@ class SummaryDetailsController {
             return res.status(500).json({ message: e.message });
         }
     }
+
+    handleGetAllStudentThisYear = async(req, res) => {
+        try {
+            let data = await summaryDetailsService.getAllStudentThisYear();
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT,
+            })
+        } catch(e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
+
+    handleGetAllFringes = async(req, res) => {
+        try {
+            let data = await summaryDetailsService.getAllFringes();
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT,
+            })
+        } catch(e) {
+            return res.status(500).json({ message: e.message });
+        }
+    }
 }
 module.exports = new SummaryDetailsController();
-// createSummaryDetailsService,
-// findAllSummaryDetailsBySummaryIdService,
-// updateSummaryDetailService,
-// deleteViolationsSummaryDetail,

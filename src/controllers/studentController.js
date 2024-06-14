@@ -20,7 +20,6 @@ class StudentController {
     }
   };
   handleFindAllStudent = async (req, res) => {
-    // console.log(req.user);
     try {
       await studentService
         .getAllStudentService()
