@@ -28,6 +28,9 @@ module.exports = {
       violateruledate: {
         type: Sequelize.DATE,
       },
+      typeinfringeId: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
