@@ -53,13 +53,11 @@
 
       `Frontend`
 
-           ```bash
            git clone https://github.com/EdogawaCoTrung/StudentManagement-frontend-Reactjs-TailwindCSS.git
 
       **`Backend`**
 
-          ```bash
-              git clone https://github.com/Tam-Vu/StudentManagement-backend.git
+           git clone https://github.com/Tam-Vu/StudentManagement-backend.git
         
    3. Login:
    
